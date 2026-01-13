@@ -1,0 +1,14 @@
+{
+  "name": "formulario-deposito",
+  "version": "1.0.0",
+  "description": "Formulario de Deposito FEUSP",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alexandre de Paula",
+  "license": "ISC",
+  "dependencies": {
+    "@types/google-apps-script": "^2.0.8"
+  }
+}
