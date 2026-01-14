@@ -1,3 +1,12 @@
+function doGet() {
+  return HtmlService.createTemplateFromFile('web').evaluate().setTitle('Formulário de Depósito');
+}
+
+function obterDadosHtml(nome)
+{
+  return HtmlService.createHtmlOutputFromFile(nome).getContent();
+}
+
 function onOpen(){
   DocumentApp.getUi().createAddonMenu('Opções Avançadas')
   .addItem('Formulário HTML', 'mostrarFormulario')
@@ -12,3 +21,4 @@ function mostrarFormulario() {
 
   DocumentApp.getUi().showModalDialog(html, "Formulário personalizado com Google Apps Script");
 }
+
