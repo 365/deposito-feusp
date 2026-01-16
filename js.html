@@ -1,3 +1,66 @@
 <script>
+
+    function criarNotificacao(mensagem, titulo)
+    {
+        document.getElementById('mensagemNotificacao').textContent = mensagem;
+        document.getElementById('tituloNotificacao').textContent = titulo;
+        
+        let elementoNotificacao = document.getElementById('notificacao');
+        bootstrap.Toast.getOrCreateInstance(elementoNotificacao).show();
+    }
+
+    function criarNotificacaoOK(mensagem, titulo)
+    {
+        criarNotificacao(mensagem, titulo);
+        criarIconeNotificacaoOk();
+        criarCorNotificacao('--verde-escuro');
+    }
+
+    function criarNotificacaoErro(mensagem, titulo)
+    {
+        criarNotificacao(mensagem, titulo);
+        criarIconeNotificacaoErro();
+        criarCorNotificacao('--vermelho-escuro');    
+    }
+
+    function criarNotificacaoAdvertencia(mensagem, titulo)
+    {
+        criarNotificacao(mensagem, titulo);
+        criarIconeNotificacaoAdvertencia();
+        criarCorNotificacao('--amarelo');
+    }
+
+    function criarIconeNotificacaoOk()
+    {
+        document.getElementById('iconeNotificacao').className = '';
+        document.getElementById('iconeNotificacao').classList.add('bi', 'bi-check2-square');
+    }
+
+    function criarIconeNotificacaoErro()
+    {
+        document.getElementById('iconeNotificacao').className = '';
+        document.getElementById('iconeNotificacao').classList.add('bi', 'bi-exclamation-triangle-fill');
+    }
+
+    function criarIconeNotificacaoAdvertencia()
+    {
+        document.getElementById('iconeNotificacao').className = '';
+        document.getElementById('iconeNotificacao').classList.add('bi', 'bi-exclamation-square');
+    }
+
+    function criarCorNotificacao(cor)
+    {
+        let elementoNotificacao = document.getElementById('notificacao');
+        elementoNotificacao.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue(cor);
+    }
     
+    function mostrarNotificacaoErro()
+    {
+        // Mostrar notificacao de ERRO
+    }
+
+    function mostrarNotificacaoOK()
+    {
+        // Mostrar notificacao de OK
+    }
 </script>
