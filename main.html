@@ -1,0 +1,117 @@
+<main class="flex-grow-1">
+    <div class="container-xl py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8">
+                <div class="card border-0 shadow" id="form-container">
+                    
+                    <!-- Barra de Progresso -->
+                    <div class="progress" style="height: 5px; border-radius: 0;">
+                        <div id="progress-bar" class="progress-bar bg-primary" role="progressbar" style="width: 33%;"></div>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <form id="formulario">
+
+                            <!-- ============================================ -->
+                            <!-- ETAPA 1: DADOS DE IDENTIFICAÇÃO -->
+                            <!-- ============================================ -->
+                            <div class="step-section" id="step-1">
+                                <div class="mb-4">
+                                    <h2 class="h4 fw-bold text-dark">Dados de Identificação</h2>
+                                    <p class="text-muted small">Insira seus dados acadêmicos básicos e a data pretendida.</p>
+                                </div>
+
+                                <div class="row g-3">
+                                    <!-- Nome Completo -->
+                                    <div class="col-12">
+                                        <label for="nome" class="form-label fw-semibold">Nome Completo</label>
+                                        <input type="text" class="form-control custom-input" id="nome" name="nome" placeholder="Digite seu nome completo">
+                                    </div>
+
+                                    <!-- N° USP -->
+                                    <div class="col-md-6">
+                                        <label for="nrUsp" class="form-label fw-semibold">N° USP</label>
+                                        <input type="number" class="form-control custom-input" id="nrUsp" name="nrUsp" placeholder="0000000">
+                                    </div>
+
+                                    <!-- E-mail USP -->
+                                    <div class="col-md-6">
+                                        <label for="emailUSP" class="form-label fw-semibold">E-mail USP</label>
+                                        <input type="email" class="form-control custom-input" id="emailUSP" name="emailUSP" placeholder="seuemail@usp.br">
+                                    </div>
+
+                                    <!-- Título da Tese -->
+                                    <div class="col-12">
+                                        <label for="tituloTese" class="form-label fw-semibold">Título da tese</label>
+                                        <input type="text" class="form-control custom-input" id="tituloTese" name="tituloTese" placeholder="Digite o título da sua tese">
+                                    </div>
+
+                                    <!-- Data do Depósito -->
+                                    <div class="col-md-6">
+                                        <label for="dataDeposito" class="form-label fw-semibold">Data do Depósito</label>
+                                        <input type="date" class="form-control custom-input" id="dataDeposito" name="dataDeposito" required>
+                                    </div>
+                                </div>
+
+                                <!-- Botões de Ação -->
+                                <div class="d-flex justify-content-end mt-4 gap-2">
+                                    <button type="button" class="btn btn-success px-4" id="btn-consultar">
+                                        <i class="bi bi-calendar-check me-1"></i> CONSULTAR DATA
+                                    </button>
+                                    <button type="button" class="btn btn-primary px-5 btn-next" id="btn-proximo-etapa1" disabled>
+                                        Próximo <i class="bi bi-arrow-right ms-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- ============================================ -->
+                            <!-- ETAPA 2: INFORMAÇÕES DO DEPÓSITO -->
+                            <!-- ============================================ -->
+                            <div class="step-section d-none" id="step-2">
+                                <div class="mb-4">
+                                    <h2 class="h4 fw-bold text-dark">Informações do Depósito</h2>
+                                    <p class="text-muted small">Sobre o seu trabalho e área de concentração.</p>
+                                </div>
+
+                                <div class="row g-3">
+                                    <!-- Área de Concentração -->
+                                    <div class="col-12">
+                                        <label for="areaConcentracao" class="form-label fw-semibold">Área de concentração</label>
+                                        <input type="text" class="form-control custom-input" id="areaConcentracao" name="areaConcentracao" placeholder="Ex: Educação e Cultura">
+                                    </div>
+                                </div>
+
+                                <!-- Botões de Navegação -->
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" id="btn-voltar-etapa2" class="btn btn-outline-secondary px-4">
+                                        <i class="bi bi-arrow-left me-1"></i> Voltar
+                                    </button>
+                                    <button type="submit" class="btn btn-success px-5">
+                                        <i class="bi bi-check-circle me-1"></i> Finalizar Depósito
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TOAST DE NOTIFICAÇÕES -->
+    <!-- ============================================ -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="notificacao" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i id="iconeNotificacao" class="bi me-2"></i>
+                <strong class="me-auto" id="tituloNotificacao">Notificação</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="mensagemNotificacao">
+                Mensagem aqui
+            </div>
+        </div>
+    </div>
+</main>

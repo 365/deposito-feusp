@@ -1,0 +1,121 @@
+<script>
+
+    // 1. CONSULTA DE DISPONIBILIDADE
+    document.getElementById('btn-consultar').addEventListener('click', function () {
+        const dataCampo = document.getElementById('dataDeposito');
+        const dataVal = dataCampo.value;
+        const btn = this;
+        const btnProximo = document.getElementById('btn-proximo-etapa1');
+
+        if (!dataVal) {
+            criarNotificacaoAdvertencia("Por favor, selecione uma data.", "Data Necessária");
+            return;
+        }
+
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Verificando...';
+        btn.disabled = true;
+
+        google.script.run
+            .withSuccessHandler(function (res) {
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+
+                if (res && res.disponivel) {
+                    criarNotificacaoOK(res.mensagem, "Data Disponível");
+                    btnProximo.disabled = false;
+                } else {
+                    criarNotificacaoErro(res.mensagem || "Data lotada", "Agenda Cheia");
+                    btnProximo.disabled = true;
+                }
+            })
+            .withFailureHandler(function (err) {
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+                criarNotificacaoErro(err.message, "Erro Crítico");
+            })
+            .consultarDisponibilidadeData(dataVal);
+    });
+
+    // 2. NAVEGAÇÃO ENTRE ETAPAS
+    const step1 = document.getElementById('step-1');
+    const step2 = document.getElementById('step-2');
+    const progressBar = document.getElementById('progress-bar');
+
+    document.getElementById('btn-proximo-etapa1').addEventListener('click', function () {
+        const nome = document.getElementById('nome').value;
+        const nrUsp = document.getElementById('nrUsp').value;
+        const emailUSP = document.getElementById('emailUSP').value;
+        const tituloTese = document.getElementById('tituloTese').value;
+        const dataDeposito = document.getElementById('dataDeposito').value;
+
+        if (!nome || !nrUsp || !emailUSP || !tituloTese || !dataDeposito) {
+            criarNotificacaoAdvertencia("Preencha todos os campos antes de prosseguir.", "Atenção");
+            return;
+        }
+        
+        step1.classList.add('d-none');
+        step2.classList.remove('d-none');
+        progressBar.style.width = '100%'; // Ajustado para 100% na última etapa
+    });
+
+    document.getElementById('btn-voltar-etapa2').addEventListener('click', function () {
+        step2.classList.add('d-none');
+        step1.classList.remove('d-none');
+        progressBar.style.width = '33%';
+    });
+
+    // Resetar se mudar a data
+    document.getElementById('dataDeposito').addEventListener('change', function () {
+        document.getElementById('btn-proximo-etapa1').disabled = true;
+    });
+
+    // 3. SISTEMA DE NOTIFICAÇÕES (PADRONIZADO)
+    function criarNotificacao(mensagem, titulo) {
+        document.getElementById('mensagemNotificacao').textContent = mensagem;
+        document.getElementById('tituloNotificacao').textContent = titulo;
+        let elementoNotificacao = document.getElementById('notificacao');
+        bootstrap.Toast.getOrCreateInstance(elementoNotificacao).show();
+    }
+
+    function criarNotificacaoOK(mensagem, titulo) {
+        criarNotificacao(mensagem, titulo);
+        definirIcone('bi-check2-square');
+        definirCor('--verde-escuro');
+    }
+
+    function criarNotificacaoErro(mensagem, titulo) {
+        criarNotificacao(mensagem, titulo);
+        definirIcone('bi-exclamation-triangle-fill');
+        definirCor('--vermelho-feusp');
+    }
+
+    function criarNotificacaoAdvertencia(mensagem, titulo) {
+        criarNotificacao(mensagem, titulo);
+        definirIcone('bi-exclamation-square');
+        definirCor('--amarelo');
+    }
+
+    function definirIcone(classe) {
+        document.getElementById('iconeNotificacao').className = 'bi ' + classe;
+    }
+
+    function definirCor(variavel) {
+        let cor = getComputedStyle(document.documentElement).getPropertyValue(variavel);
+        document.getElementById('notificacao').style.backgroundColor = cor;
+        document.getElementById('notificacao').classList.add('text-white');
+    }
+
+    function criarCorNotificacao(cor) {
+        let elementoNotificacao = document.getElementById('notificacao');
+        elementoNotificacao.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue(cor);
+    }
+
+    function mostrarNotificacaoErro() {
+        // Mostrar notificacao de ERRO
+    }
+
+    function mostrarNotificacaoOK() {
+        // Mostrar notificacao de OK
+    }
+</script>
