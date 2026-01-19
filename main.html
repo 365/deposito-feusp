@@ -47,10 +47,20 @@
                                     </div>
 
                                     <!-- Data do Depósito -->
-                                    <div class="col-md-6">
-                                        <label for="dataDeposito" class="form-label fw-semibold">Data do Depósito</label>
-                                        <input type="date" class="form-control custom-input" id="dataDeposito" name="dataDeposito" required>
-                                    </div>
+<div class="row g-3">
+    <div class="col-md-6">
+        <label for="dataDeposito" class="form-label fw-semibold">Data do Depósito</label>
+        <input type="date" class="form-control custom-input" id="dataDeposito"
+            name="dataDeposito" required
+            value="<?= Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd') ?>">
+    </div>
+
+    <div class="col-md-6">
+        <label for="horaDeposito" class="form-label fw-semibold">Horário do Depósito</label>
+        <input type="time" class="form-control custom-input" id="horaDeposito"
+            name="horaDeposito" required>
+    </div>
+</div>
                                 </div>
 
                                 <!-- Botões de Ação -->

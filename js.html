@@ -1,121 +1,170 @@
 <script>
+    const btnProximo = document.getElementById('btn-proximo-etapa1');
+    const progressBar = document.getElementById('progress-bar');
 
     // 1. CONSULTA DE DISPONIBILIDADE
     document.getElementById('btn-consultar').addEventListener('click', function () {
-        const dataCampo = document.getElementById('dataDeposito');
-        const dataVal = dataCampo.value;
-        const btn = this;
-        const btnProximo = document.getElementById('btn-proximo-etapa1');
+        const dataVal = document.getElementById('dataDeposito').value;
+        const horaVal = document.getElementById('horaDeposito').value;
 
-        if (!dataVal) {
-            criarNotificacaoAdvertencia("Por favor, selecione uma data.", "Data Necessária");
+        if (!dataVal || !horaVal) {
+            criarNotificacaoAdvertencia("Por favor, preencha Data e Horário.", "Dados Incompletos");
             return;
         }
 
-        const textoOriginal = btn.innerHTML;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Verificando...';
-        btn.disabled = true;
+        toggleLoading(true, "Consultando agenda...");
 
         google.script.run
             .withSuccessHandler(function (res) {
-                btn.innerHTML = textoOriginal;
-                btn.disabled = false;
-
+                toggleLoading(false);
                 if (res && res.disponivel) {
-                    criarNotificacaoOK(res.mensagem, "Data Disponível");
-                    btnProximo.disabled = false;
+                    mostrarModalDecisao(res.mensagem, "Data Disponível", "sucesso");
                 } else {
-                    criarNotificacaoErro(res.mensagem || "Data lotada", "Agenda Cheia");
-                    btnProximo.disabled = true;
+                    mostrarModalDecisao(res.mensagem || "Data lotada", "Agenda Cheia", "erro");
                 }
             })
             .withFailureHandler(function (err) {
-                btn.innerHTML = textoOriginal;
-                btn.disabled = false;
+                toggleLoading(false);
                 criarNotificacaoErro(err.message, "Erro Crítico");
             })
             .consultarDisponibilidadeData(dataVal);
     });
 
-    // 2. NAVEGAÇÃO ENTRE ETAPAS
-    const step1 = document.getElementById('step-1');
-    const step2 = document.getElementById('step-2');
-    const progressBar = document.getElementById('progress-bar');
+    // 2. FUNÇÃO DO MODAL (CORRIGIDA)
+    // 2. FUNÇÃO DO MODAL (CORRIGIDA)
+    function mostrarModalDecisao(mensagem, titulo, tipo) {
+        const modalElement = document.getElementById('modalResultado');
+        const header = document.getElementById('modalHeaderCor');
+        const icone = document.getElementById('modalIcone');
+        const txtTitulo = document.getElementById('modalTituloText');
+        const txtMensagem = document.getElementById('modalMensagem');
+        const btnAgendar = document.getElementById('btnModalAgendar');
+        const btnVoltar = document.getElementById('btnModalVoltar');
+        const pergunta = document.getElementById('perguntaAgendamento');
+        const detalhesFinal = document.getElementById('detalhesAgendamentoFinal'); // ADICIONADO ESTA LINHA QUE FALTAVA
+
+        // Reset inicial dos elementos
+        pergunta.style.display = 'none';
+        btnAgendar.style.display = 'none';
+        detalhesFinal.classList.add('d-none'); // Agora não vai mais dar erro aqui
+        btnVoltar.textContent = "Voltar";
+        btnVoltar.style.display = 'inline-block';
+
+        // Reset de cores do Header
+        header.classList.remove('bg-success', 'bg-danger', 'bg-sucesso-modal', 'bg-erro-modal');
+
+        if (tipo === 'sucesso') {
+            header.classList.add('bg-sucesso-modal');
+            icone.className = 'bi bi-calendar-check-fill me-2';
+            txtTitulo.textContent = titulo;
+            txtMensagem.innerHTML = mensagem;
+            pergunta.style.display = 'block';
+            btnAgendar.style.display = 'inline-block';
+        } else {
+            header.classList.add('bg-erro-modal');
+            icone.className = 'bi bi-calendar-x-fill me-2';
+            txtTitulo.textContent = "Data Indisponível";
+            txtMensagem.innerHTML = `<span class="fw-bold text-danger">Atenção!</span><br>${mensagem}<br><br>Por favor, escolha outro dia.`;
+            btnAgendar.style.display = 'none';
+            btnVoltar.textContent = "Entendido";
+        }
+
+        // Criar e mostrar a instância do modal
+        const instanciaModal = new bootstrap.Modal(modalElement);
+
+        // EVENTO DE CLIQUE NO BOTÃO AGENDAR
+        btnAgendar.onclick = function () {
+            const dados = {
+                nome: document.getElementById('nome').value,
+                nrUsp: document.getElementById('nrUsp').value,
+                emailUSP: document.getElementById('emailUSP').value,
+                tituloTese: document.getElementById('tituloTese').value,
+                dataDeposito: document.getElementById('dataDeposito').value,
+                horaDeposito: document.getElementById('horaDeposito').value
+            };
+
+            if (!dados.nome || !dados.tituloTese) {
+                instanciaModal.hide();
+                criarNotificacaoAdvertencia("Preencha Nome e Título da Tese antes de agendar.", "Campos Faltando");
+                return;
+            }
+
+            txtMensagem.innerHTML = `Aguarde, agendando para <strong>${dados.nome}</strong>...`;
+            pergunta.style.display = 'none';
+            btnAgendar.style.display = 'none';
+            btnVoltar.style.display = 'none';
+            toggleLoading(true, "Finalizando agendamento...");
+
+            google.script.run
+                .withSuccessHandler(function (res) {
+                    toggleLoading(false);
+                    if (res.sucesso) {
+                        header.classList.remove('bg-sucesso-modal');
+                        header.classList.add('bg-info-modal');
+                        txtTitulo.textContent = "Agendamento Confirmado!";
+                        txtMensagem.innerHTML = `<strong>${res.nome}</strong>, agendamento realizado com sucesso!`;
+
+                        // Trava campos
+                        document.getElementById('btn-consultar').disabled = true;
+                        const campos = ['nome', 'nrUsp', 'emailUSP', 'tituloTese', 'dataDeposito', 'horaDeposito'];
+                        campos.forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) el.readOnly = true;
+                        });
+
+                        detalhesFinal.innerHTML = `
+                            <p class="mb-1 small">📅 <strong>Data:</strong> ${res.data}</p>
+                            <p class="mb-1 small">⏰ <strong>Horário:</strong> ${res.hora}</p>
+                            <p class="mb-0 small">📖 <strong>Título:</strong> ${res.titulo}</p>
+                        `;
+                        detalhesFinal.classList.remove('d-none');
+
+                        btnVoltar.textContent = "Fechar e Prosseguir";
+                        btnVoltar.style.display = 'inline-block';
+                        btnProximo.disabled = false;
+                    }
+                })
+                .processarAgendamento(dados);
+        };
+
+        instanciaModal.show();
+    }
+
+    // 3. NAVEGAÇÃO E AUXILIARES
+    document.getElementById('dataDeposito').addEventListener('change', () => btnProximo.disabled = true);
+    document.getElementById('horaDeposito').addEventListener('change', () => btnProximo.disabled = true);
 
     document.getElementById('btn-proximo-etapa1').addEventListener('click', function () {
-        const nome = document.getElementById('nome').value;
-        const nrUsp = document.getElementById('nrUsp').value;
-        const emailUSP = document.getElementById('emailUSP').value;
-        const tituloTese = document.getElementById('tituloTese').value;
-        const dataDeposito = document.getElementById('dataDeposito').value;
-
-        if (!nome || !nrUsp || !emailUSP || !tituloTese || !dataDeposito) {
-            criarNotificacaoAdvertencia("Preencha todos os campos antes de prosseguir.", "Atenção");
-            return;
-        }
-        
-        step1.classList.add('d-none');
-        step2.classList.remove('d-none');
-        progressBar.style.width = '100%'; // Ajustado para 100% na última etapa
+        document.getElementById('step-1').classList.add('d-none');
+        document.getElementById('step-2').classList.remove('d-none');
+        progressBar.style.width = '100%';
     });
 
     document.getElementById('btn-voltar-etapa2').addEventListener('click', function () {
-        step2.classList.add('d-none');
-        step1.classList.remove('d-none');
+        document.getElementById('step-2').classList.add('d-none');
+        document.getElementById('step-1').classList.remove('d-none');
         progressBar.style.width = '33%';
     });
 
-    // Resetar se mudar a data
-    document.getElementById('dataDeposito').addEventListener('change', function () {
-        document.getElementById('btn-proximo-etapa1').disabled = true;
-    });
+    function toggleLoading(show, texto = "Carregando...") {
+        const overlay = document.getElementById('loadingOverlay');
+        const txt = document.getElementById('loadingTexto');
+        if (txt) txt.textContent = texto;
+        overlay.classList.toggle('d-none', !show);
+        overlay.classList.toggle('d-flex', show);
+    }
 
-    // 3. SISTEMA DE NOTIFICAÇÕES (PADRONIZADO)
     function criarNotificacao(mensagem, titulo) {
         document.getElementById('mensagemNotificacao').textContent = mensagem;
         document.getElementById('tituloNotificacao').textContent = titulo;
-        let elementoNotificacao = document.getElementById('notificacao');
-        bootstrap.Toast.getOrCreateInstance(elementoNotificacao).show();
+        bootstrap.Toast.getOrCreateInstance(document.getElementById('notificacao')).show();
     }
-
-    function criarNotificacaoOK(mensagem, titulo) {
-        criarNotificacao(mensagem, titulo);
-        definirIcone('bi-check2-square');
-        definirCor('--verde-escuro');
-    }
-
-    function criarNotificacaoErro(mensagem, titulo) {
-        criarNotificacao(mensagem, titulo);
-        definirIcone('bi-exclamation-triangle-fill');
-        definirCor('--vermelho-feusp');
-    }
-
-    function criarNotificacaoAdvertencia(mensagem, titulo) {
-        criarNotificacao(mensagem, titulo);
-        definirIcone('bi-exclamation-square');
-        definirCor('--amarelo');
-    }
-
-    function definirIcone(classe) {
-        document.getElementById('iconeNotificacao').className = 'bi ' + classe;
-    }
-
-    function definirCor(variavel) {
-        let cor = getComputedStyle(document.documentElement).getPropertyValue(variavel);
+    function criarNotificacaoOK(m, t) { criarNotificacao(m, t); definirIcone('bi-check2-square'); definirCor('--verde-sucesso'); }
+    function criarNotificacaoErro(m, t) { criarNotificacao(m, t); definirIcone('bi-exclamation-triangle-fill'); definirCor('--vermelho-feusp'); }
+    function criarNotificacaoAdvertencia(m, t) { criarNotificacao(m, t); definirIcone('bi-exclamation-square'); definirCor('--amarelo'); }
+    function definirIcone(c) { document.getElementById('iconeNotificacao').className = 'bi ' + c; }
+    function definirCor(v) {
+        let cor = getComputedStyle(document.documentElement).getPropertyValue(v).trim();
         document.getElementById('notificacao').style.backgroundColor = cor;
-        document.getElementById('notificacao').classList.add('text-white');
-    }
-
-    function criarCorNotificacao(cor) {
-        let elementoNotificacao = document.getElementById('notificacao');
-        elementoNotificacao.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue(cor);
-    }
-
-    function mostrarNotificacaoErro() {
-        // Mostrar notificacao de ERRO
-    }
-
-    function mostrarNotificacaoOK() {
-        // Mostrar notificacao de OK
     }
 </script>
