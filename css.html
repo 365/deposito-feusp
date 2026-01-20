@@ -100,6 +100,52 @@
         cursor: not-allowed;
     }
 
+
+.bg-light {
+    background-color: #f8f9fa !important;
+    transition: var(--transicao);
+}
+
+.form-check-input:checked {
+    background-color: var(--azul-institucional);
+    border-color: var(--azul-institucional);
+}
+
+
+/* Container Pai da Banca - Cinza muito claro */
+    /* Cores e profundidade da banca */
+    .banca-container {
+        background-color: #f4f6f8; 
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #e9ecef;
+    }
+
+/* Cartões dos Membros (Sub-titulares) - Branco */
+    .membro-card {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        border: 1px solid #dee2e6;
+        margin-top: 15px;
+    }
+
+.text-preto { color: #000000 !important; }
+
+    /* Ajuste para Radio Buttons de Passagem */
+    .btn-check:checked + .btn-outline-primary {
+        background-color: var(--azul-institucional);
+        color: white;
+    }
+
+
+/* Divisor fino para separar seções internas dos cards */
+    .divisor-interno {
+        border-top: 1px solid #dee2e6;
+        margin: 15px 0;
+        opacity: 0.6;
+    }
+
     /* ================================================ */
     /* 4. BOTÕES (Peso 500 Uniforme)                    */
     /* ================================================ */

@@ -2,35 +2,36 @@
     const btnProximo = document.getElementById('btn-proximo-etapa1');
     const progressBar = document.getElementById('progress-bar');
 
-    // 1. CONSULTA DE DISPONIBILIDADE
-    document.getElementById('btn-consultar').addEventListener('click', function () {
-        const dataVal = document.getElementById('dataDeposito').value;
-        const horaVal = document.getElementById('horaDeposito').value;
+    // 1. CONSULTA DE DISPONIBILIDADE (ATUALIZADO)
+document.getElementById('btn-consultar').addEventListener('click', function () {
+    const dataVal = document.getElementById('dataDeposito').value;
+    const horaVal = document.getElementById('horaDeposito').value;
 
-        if (!dataVal || !horaVal) {
-            criarNotificacaoAdvertencia("Por favor, preencha Data e Horário.", "Dados Incompletos");
-            return;
-        }
+    if (!dataVal || !horaVal) {
+        criarNotificacaoAdvertencia("Por favor, preencha Data e Horário.", "Dados Incompletos");
+        return;
+    }
 
-        toggleLoading(true, "Consultando agenda...");
+    toggleLoading(true, "Consultando agenda...");
 
-        google.script.run
-            .withSuccessHandler(function (res) {
-                toggleLoading(false);
-                if (res && res.disponivel) {
-                    mostrarModalDecisao(res.mensagem, "Data Disponível", "sucesso");
-                } else {
-                    mostrarModalDecisao(res.mensagem || "Data lotada", "Agenda Cheia", "erro");
-                }
-            })
-            .withFailureHandler(function (err) {
-                toggleLoading(false);
-                criarNotificacaoErro(err.message, "Erro Crítico");
-            })
-            .consultarDisponibilidadeData(dataVal);
-    });
+    google.script.run
+        .withSuccessHandler(function (res) {
+            toggleLoading(false);
+            if (res && res.disponivel) {
+                // DISPONÍVEL - Modal verde
+                mostrarModalDecisao(res.mensagem, "Data Disponível", "sucesso");
+            } else {
+                // INDISPONÍVEL - Modal vermelho (mensagem já vem completa do backend)
+                mostrarModalDecisao(res.mensagem, "Período Indisponível", "erro");
+            }
+        })
+        .withFailureHandler(function (err) {
+            toggleLoading(false);
+            criarNotificacaoErro(err.message, "Erro Crítico");
+        })
+        .consultarDisponibilidadeData(dataVal, horaVal);
+});
 
-    // 2. FUNÇÃO DO MODAL (CORRIGIDA)
     // 2. FUNÇÃO DO MODAL (CORRIGIDA)
     function mostrarModalDecisao(mensagem, titulo, tipo) {
         const modalElement = document.getElementById('modalResultado');
@@ -64,7 +65,7 @@
             header.classList.add('bg-erro-modal');
             icone.className = 'bi bi-calendar-x-fill me-2';
             txtTitulo.textContent = "Data Indisponível";
-            txtMensagem.innerHTML = `<span class="fw-bold text-danger">Atenção!</span><br>${mensagem}<br><br>Por favor, escolha outro dia.`;
+            txtMensagem.innerHTML = `<span class="fw-bold text-danger">Atenção!</span><br>${mensagem}<br><br>`;
             btnAgendar.style.display = 'none';
             btnVoltar.textContent = "Entendido";
         }
@@ -130,20 +131,60 @@
         instanciaModal.show();
     }
 
+    // Função para carregar os orientadores no select
+    // No início do seu script ou dentro do evento do botão Próximo
+    function carregarOrientadores() {
+        const select = document.getElementById('orientador');
+        if (!select) return;
+
+        google.script.run
+            .withSuccessHandler(function (lista) {
+                select.innerHTML = '<option value="" selected disabled>Selecione o Orientador...</option>';
+                if (lista && lista.length > 0) {
+                    lista.forEach(nome => {
+                        let opt = document.createElement('option');
+                        opt.value = nome;
+                        opt.textContent = nome;
+                        select.appendChild(opt);
+                    });
+                }
+            })
+            .listarOrientadores();
+    }
+
+    // Chamar ao carregar a página
+    window.addEventListener('load', carregarOrientadores);
+
     // 3. NAVEGAÇÃO E AUXILIARES
     document.getElementById('dataDeposito').addEventListener('change', () => btnProximo.disabled = true);
     document.getElementById('horaDeposito').addEventListener('change', () => btnProximo.disabled = true);
 
-    document.getElementById('btn-proximo-etapa1').addEventListener('click', function () {
-        document.getElementById('step-1').classList.add('d-none');
-        document.getElementById('step-2').classList.remove('d-none');
-        progressBar.style.width = '100%';
-    });
+document.getElementById('btn-proximo-etapa1').addEventListener('click', function () {
+    document.getElementById('step-1').classList.add('d-none');
+    document.getElementById('step-2').classList.remove('d-none');
+    progressBar.style.width = '66%';
+
+    // SCROLL OTIMIZADO - Aguarda renderização e rola para o topo do formulário
+    setTimeout(() => {
+        const container = document.getElementById('form-container');
+        const headerHeight = document.querySelector('.sticky-top').offsetHeight;
+        const offset = headerHeight + 20; // 20px de margem extra
+        
+        const elementPosition = container.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+    }, 100);
+});
 
     document.getElementById('btn-voltar-etapa2').addEventListener('click', function () {
         document.getElementById('step-2').classList.add('d-none');
         document.getElementById('step-1').classList.remove('d-none');
         progressBar.style.width = '33%';
+        carregarOrientadores();
     });
 
     function toggleLoading(show, texto = "Carregando...") {
@@ -166,5 +207,38 @@
     function definirCor(v) {
         let cor = getComputedStyle(document.documentElement).getPropertyValue(v).trim();
         document.getElementById('notificacao').style.backgroundColor = cor;
+    }
+
+
+    /**
+     * Mostra/Esconde campos de logística (Diária/Passagem)
+     */
+    function toggleLogistica(id, mostrar) {
+        const divLogistica = document.getElementById('logistica' + id);
+        if (mostrar) {
+            divLogistica.classList.remove('d-none');
+        } else {
+            divLogistica.classList.add('d-none');
+            // Limpa as seleções internas se esconder
+            resetCamposLogistica(id);
+        }
+    }
+
+    /**
+     * Mostra/Esconde campo de Upload e Passagens
+     */
+    function toggleUpload(id, mostrar) {
+        const divUpload = document.getElementById('campoUpload' + id);
+        if (mostrar) {
+            divUpload.classList.remove('d-none');
+        } else {
+            divUpload.classList.add('d-none');
+        }
+    }
+
+    function resetCamposLogistica(id) {
+        document.getElementById('diaria' + id + 'Sim').checked = false;
+        document.getElementById('diaria' + id + 'Nao').checked = false;
+        document.getElementById('campoUpload' + id).classList.add('d-none');
     }
 </script>
