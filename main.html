@@ -3,10 +3,11 @@
         <div class="row justify-content-center">
             <div class="col-12 col-lg-8">
                 <div class="card border-0 shadow" id="form-container">
-                    
+
                     <!-- Barra de Progresso -->
                     <div class="progress" style="height: 5px; border-radius: 0;">
-                        <div id="progress-bar" class="progress-bar bg-primary" role="progressbar" style="width: 33%;"></div>
+                        <div id="progress-bar" class="progress-bar bg-primary" role="progressbar" style="width: 33%;">
+                        </div>
                     </div>
 
                     <div class="card-body p-4 p-md-5">
@@ -18,38 +19,55 @@
                             <div class="step-section" id="step-1">
                                 <div class="mb-4">
                                     <h2 class="h4 fw-bold text-dark">Dados de Identificação</h2>
-                                    <p class="text-muted small">Insira seus dados acadêmicos básicos e a data pretendida.</p>
+                                    <p class="text-muted small">Insira seus dados acadêmicos básicos e a data
+                                        pretendida.</p>
                                 </div>
 
                                 <div class="row g-3">
                                     <!-- Nome Completo -->
                                     <div class="col-12">
                                         <label for="nome" class="form-label fw-semibold">Nome Completo</label>
-                                        <input type="text" class="form-control custom-input" id="nome" name="nome" placeholder="Digite seu nome completo">
+                                        <input type="text" class="form-control custom-input" id="nome" name="nome"
+                                            placeholder="Digite seu nome completo">
                                     </div>
 
                                     <!-- N° USP -->
                                     <div class="col-md-6">
                                         <label for="nrUsp" class="form-label fw-semibold">N° USP</label>
-                                        <input type="number" class="form-control custom-input" id="nrUsp" name="nrUsp" placeholder="0000000">
+                                        <input type="number" class="form-control custom-input" id="nrUsp" name="nrUsp"
+                                            placeholder="0000000">
                                     </div>
 
                                     <!-- E-mail USP -->
                                     <div class="col-md-6">
                                         <label for="emailUSP" class="form-label fw-semibold">E-mail USP</label>
-                                        <input type="email" class="form-control custom-input" id="emailUSP" name="emailUSP" placeholder="seuemail@usp.br">
+                                        <input type="email" class="form-control custom-input" id="emailUSP"
+                                            name="emailUSP" placeholder="seuemail@usp.br">
                                     </div>
 
                                     <!-- Título da Tese -->
                                     <div class="col-12">
                                         <label for="tituloTese" class="form-label fw-semibold">Título da tese</label>
-                                        <input type="text" class="form-control custom-input" id="tituloTese" name="tituloTese" placeholder="Digite o título da sua tese">
+                                        <input type="text" class="form-control custom-input" id="tituloTese"
+                                            name="tituloTese" placeholder="Digite o título da sua tese">
                                     </div>
 
                                     <!-- Data do Depósito -->
-                                    <div class="col-md-6">
-                                        <label for="dataDeposito" class="form-label fw-semibold">Data do Depósito</label>
-                                        <input type="date" class="form-control custom-input" id="dataDeposito" name="dataDeposito" required>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="dataDeposito" class="form-label fw-semibold">Data do
+                                                Depósito</label>
+                                            <input type="date" class="form-control custom-input" id="dataDeposito"
+                                                name="dataDeposito" required
+                                                value="<?= Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd') ?>">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="horaDeposito" class="form-label fw-semibold">Horário do
+                                                Depósito</label>
+                                            <input type="time" class="form-control custom-input" id="horaDeposito"
+                                                name="horaDeposito" required>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -58,7 +76,8 @@
                                     <button type="button" class="btn btn-success px-4" id="btn-consultar">
                                         <i class="bi bi-calendar-check me-1"></i> CONSULTAR DATA
                                     </button>
-                                    <button type="button" class="btn btn-primary px-5 btn-next" id="btn-proximo-etapa1" disabled>
+                                    <button type="button" class="btn btn-primary px-5 btn-next" id="btn-proximo-etapa1"
+                                        disabled>
                                         Próximo <i class="bi bi-arrow-right ms-1"></i>
                                     </button>
                                 </div>
@@ -69,26 +88,309 @@
                             <!-- ============================================ -->
                             <div class="step-section d-none" id="step-2">
                                 <div class="mb-4">
-                                    <h2 class="h4 fw-bold text-dark">Informações do Depósito</h2>
-                                    <p class="text-muted small">Sobre o seu trabalho e área de concentração.</p>
+                                    <h2 class="h4 fw-bold text-dark">Dados da Banca e Tese</h2>
                                 </div>
 
                                 <div class="row g-3">
-                                    <!-- Área de Concentração -->
-                                    <div class="col-12">
-                                        <label for="areaConcentracao" class="form-label fw-semibold">Área de concentração</label>
-                                        <input type="text" class="form-control custom-input" id="areaConcentracao" name="areaConcentracao" placeholder="Ex: Educação e Cultura">
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label fw-bold">Área de Concentração</label>
+                                        <select class="form-select custom-input" id="areaConcentracao">
+                                            <option value="" selected disabled>Selecione...</option>
+                                            <option value="Educação e Ciências">Educação e Ciências</option>
+                                            <option value="Linguagem e Educação">Linguagem e Educação</option>
+                                            <option value="Psicologia e Educação">Psicologia e Educação</option>
+                                            <option value="Sociologia da Educação">Sociologia da Educação</option>
+                                            <option value="Filosofia da Educação">Filosofia da Educação</option>
+                                        </select>
                                     </div>
-                                </div>
 
-                                <!-- Botões de Navegação -->
-                                <div class="d-flex justify-content-between mt-4">
-                                    <button type="button" id="btn-voltar-etapa2" class="btn btn-outline-secondary px-4">
-                                        <i class="bi bi-arrow-left me-1"></i> Voltar
-                                    </button>
-                                    <button type="submit" class="btn btn-success px-5">
-                                        <i class="bi bi-check-circle me-1"></i> Finalizar Depósito
-                                    </button>
+                                    <div class="banca-container">
+                                        <h5 class="fw-bold text-preto mb-4">MEMBROS TITULARES</h5>
+
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold">Orientador(a)</label>
+                                            <select class="form-select custom-input" id="orientador">
+                                                <option value="">Selecione o Orientador...</option>
+                                            </select>
+                                        </div>
+                                        <!-- SEGUNDO TITULAR -->
+                                        <div class="membro-card">
+                                            <h6 class="fw-bold text-dark">SEGUNDO TITULAR</h6>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Prof. (a) Dr. (a):</label>
+                                                <input type="text" class="form-control custom-input" id="nomeTitular2">
+                                            </div>
+
+<div class="col-md-6">
+    <label for="emailTitular2" class="form-label fw-semibold">E-mail</label>
+    <input type="email" class="form-control custom-input" id="emailTitular2"
+        name="emailTitular2" placeholder="seuemail@dominio.com.br">
+</div>
+
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Instituição de vínculo:</label>
+                                                <input type="text" class="form-control custom-input"
+                                                    id="vinculoTitular2" placeholder="Ex: USP, UNICAMP...">
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label d-block fw-bold">Participação:</label>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="part2"
+                                                        id="part2Presencial" value="Presencial"
+                                                        onchange="toggleLogistica(2, true)">
+                                                    <label class="form-check-label"
+                                                        for="part2Presencial">Presencial</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="part2"
+                                                        id="part2Distancia" value="Distancia"
+                                                        onchange="toggleLogistica(2, false)">
+                                                    <label class="form-check-label"
+                                                        for="part2Distancia">Distância</label>
+                                                </div>
+                                            </div>
+
+                                            <div id="logistica2" class="d-none">
+
+                                                <div class="divisor-interno"></div>
+
+                                                <label class="form-label fw-bold">Precisa de diária?</label>
+                                                <div class="form-check form-check-inline ms-2">
+                                                    <input class="form-check-input" type="radio" name="diaria2"
+                                                        id="diaria2Sim" value="Sim" onchange="toggleUpload(2, true)">
+                                                    <label class="form-check-label" for="diaria2Sim">Sim</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="diaria2"
+                                                        id="diaria2Nao" value="Nao" onchange="toggleUpload(2, false)">
+                                                    <label class="form-check-label" for="diaria2Nao">Não</label>
+                                                </div>
+
+                                                <div id="campoUpload2" class="d-none mt-3">
+                                                    <div class="mb-3">
+                                                        <label class="small fw-bold d-block mb-2">Tipo de
+                                                            Passagem:</label>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="tipoPassagem2" id="aerea2" value="Aerea">
+                                                            <label class="small" for="aerea2">Aérea</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="tipoPassagem2" id="rodoviaria2"
+                                                                value="Rodoviaria">
+                                                            <label class="small" for="rodoviaria2">Rodoviária</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="divisor-interno"></div>
+
+                                                    <label class="form-label text-danger small fw-bold">Anexar Cadastro
+                                                        de Professor (PDF/DOC):</label>
+                                                    <input class="form-control form-control-sm" type="file"
+                                                        id="arquivo2" accept=".pdf,.doc,.docx">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- TERCEIRO TITULAR (cópia do SEGUNDO) -->
+<div class="membro-card">
+    <h6 class="fw-bold text-dark">TERCEIRO TITULAR</h6>
+
+    <div class="mb-3">
+        <label class="form-label">Prof. (a) Dr. (a):</label>
+        <input type="text" class="form-control custom-input" id="nomeTitular3">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Instituição de vínculo:</label>
+        <input type="text" class="form-control custom-input" id="vinculoTitular3" placeholder="Ex: USP, UNICAMP...">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label d-block fw-bold">Participação:</label>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="part3" id="part3Presencial" value="Presencial"
+                onchange="toggleLogistica(3, true)">
+            <label class="form-check-label" for="part3Presencial">Presencial</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="part3" id="part3Distancia" value="Distancia"
+                onchange="toggleLogistica(3, false)">
+            <label class="form-check-label" for="part3Distancia">Distância</label>
+        </div>
+    </div>
+
+    <div id="logistica3" class="d-none">
+        <div class="divisor-interno"></div>
+
+        <label class="form-label fw-bold">Precisa de diária?</label>
+        <div class="form-check form-check-inline ms-2">
+            <input class="form-check-input" type="radio" name="diaria3" id="diaria3Sim" value="Sim" 
+                onchange="toggleUpload(3, true)">
+            <label class="form-check-label" for="diaria3Sim">Sim</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="diaria3" id="diaria3Nao" value="Nao" 
+                onchange="toggleUpload(3, false)">
+            <label class="form-check-label" for="diaria3Nao">Não</label>
+        </div>
+
+        <div id="campoUpload3" class="d-none mt-3">
+            <div class="mb-3">
+                <label class="small fw-bold d-block mb-2">Tipo de Passagem:</label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="tipoPassagem3" id="aerea3" value="Aerea">
+                    <label class="small" for="aerea3">Aérea</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="tipoPassagem3" id="rodoviaria3" value="Rodoviaria">
+                    <label class="small" for="rodoviaria3">Rodoviária</label>
+                </div>
+            </div>
+
+            <div class="divisor-interno"></div>
+
+            <label class="form-label text-danger small fw-bold">Anexar Cadastro de Professor (PDF/DOC):</label>
+            <input class="form-control form-control-sm" type="file" id="arquivo3" accept=".pdf,.doc,.docx">
+        </div>
+    </div>
+</div>
+<!-- QUARTO TITULAR (cópia do SEGUNDO) -->
+<div class="membro-card">
+    <h6 class="fw-bold text-dark">QUARTO TITULAR</h6>
+
+    <div class="mb-3">
+        <label class="form-label">Prof. (a) Dr. (a):</label>
+        <input type="text" class="form-control custom-input" id="nomeTitular4">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Instituição de vínculo:</label>
+        <input type="text" class="form-control custom-input" id="vinculoTitular4" placeholder="Ex: USP, UNICAMP...">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label d-block fw-bold">Participação:</label>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="part4" id="part4Presencial" value="Presencial"
+                onchange="toggleLogistica(4, true)">
+            <label class="form-check-label" for="part4Presencial">Presencial</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="part4" id="part4Distancia" value="Distancia"
+                onchange="toggleLogistica(4, false)">
+            <label class="form-check-label" for="part4Distancia">Distância</label>
+        </div>
+    </div>
+
+    <div id="logistica4" class="d-none">
+        <div class="divisor-interno"></div>
+
+        <label class="form-label fw-bold">Precisa de diária?</label>
+        <div class="form-check form-check-inline ms-2">
+            <input class="form-check-input" type="radio" name="diaria4" id="diaria4Sim" value="Sim" 
+                onchange="toggleUpload(4, true)">
+            <label class="form-check-label" for="diaria4Sim">Sim</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="diaria4" id="diaria4Nao" value="Nao" 
+                onchange="toggleUpload(4, false)">
+            <label class="form-check-label" for="diaria4Nao">Não</label>
+        </div>
+
+        <div id="campoUpload4" class="d-none mt-3">
+            <div class="mb-3">
+                <label class="small fw-bold d-block mb-2">Tipo de Passagem:</label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="tipoPassagem4" id="aerea4" value="Aerea">
+                    <label class="small" for="aerea4">Aérea</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="tipoPassagem4" id="rodoviaria4" value="Rodoviaria">
+                    <label class="small" for="rodoviaria4">Rodoviária</label>
+                </div>
+            </div>
+
+            <div class="divisor-interno"></div>
+
+            <label class="form-label text-danger small fw-bold">Anexar Cadastro de Professor (PDF/DOC):</label>
+            <input class="form-control form-control-sm" type="file" id="arquivo4" accept=".pdf,.doc,.docx">
+        </div>
+    </div>
+</div>
+<!-- QUINTO TITULAR (cópia do SEGUNDO) -->
+ <div class="membro-card">
+    <h6 class="fw-bold text-dark">QUINTO TITULAR</h6>
+
+    <div class="mb-3">
+        <label class="form-label">Prof. (a) Dr. (a):</label>
+        <input type="text" class="form-control custom-input" id="nomeTitular5">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Instituição de vínculo:</label>
+        <input type="text" class="form-control custom-input" id="vinculoTitular5" placeholder="Ex: USP, UNICAMP...">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label d-block fw-bold">Participação:</label>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="part5" id="part5Presencial" value="Presencial"
+                onchange="toggleLogistica(5, true)">
+            <label class="form-check-label" for="part5Presencial">Presencial</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="part5" id="part5Distancia" value="Distancia"
+                onchange="toggleLogistica(5, false)">
+            <label class="form-check-label" for="part5Distancia">Distância</label>
+        </div>
+    </div>
+
+    <div id="logistica5" class="d-none">
+        <div class="divisor-interno"></div>
+
+        <label class="form-label fw-bold">Precisa de diária?</label>
+        <div class="form-check form-check-inline ms-2">
+            <input class="form-check-input" type="radio" name="diaria5" id="diaria5Sim" value="Sim" 
+                onchange="toggleUpload(5, true)">
+            <label class="form-check-label" for="diaria5Sim">Sim</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="diaria5" id="diaria5Nao" value="Nao" 
+                onchange="toggleUpload(5, false)">
+            <label class="form-check-label" for="diaria5Nao">Não</label>
+        </div>
+
+        <div id="campoUpload5" class="d-none mt-3">
+            <div class="mb-3">
+                <label class="small fw-bold d-block mb-2">Tipo de Passagem:</label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="tipoPassagem5" id="aerea5" value="Aerea">
+                    <label class="small" for="aerea5">Aérea</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="tipoPassagem5" id="rodoviaria5" value="Rodoviaria">
+                    <label class="small" for="rodoviaria5">Rodoviária</label>
+                </div>
+            </div>
+
+            <div class="divisor-interno"></div>
+
+            <label class="form-label text-danger small fw-bold">Anexar Cadastro de Professor (PDF/DOC):</label>
+            <input class="form-control form-control-sm" type="file" id="arquivo5" accept=".pdf,.doc,.docx">
+        </div>
+    </div>
+</div>
+
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-between mt-4">
+                                        <button type="button" id="btn-voltar-etapa2"
+                                            class="btn btn-outline-secondary px-4">Voltar</button>
+                                        <button type="submit" class="btn btn-success px-5">Finalizar Depósito</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -103,7 +405,8 @@
     <!-- TOAST DE NOTIFICAÇÕES -->
     <!-- ============================================ -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="notificacao" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div id="notificacao" class="toast align-items-center border-0" role="alert" aria-live="assertive"
+            aria-atomic="true">
             <div class="toast-header">
                 <i id="iconeNotificacao" class="bi me-2"></i>
                 <strong class="me-auto" id="tituloNotificacao">Notificação</strong>
