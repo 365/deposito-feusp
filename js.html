@@ -1,38 +1,76 @@
 <script>
+// DADOS GLOBAIS - PRIMEIRA LINHA!
+window.dadosForm = {
+  nome: '', nrUsp: '', emailUSP: '', tituloTese: '',
+  dataDeposito: '', horaDeposito: '', tipoDefesa: ''
+};
+
     const btnProximo = document.getElementById('btn-proximo-etapa1');
     const progressBar = document.getElementById('progress-bar');
 
-    // 1. CONSULTA DE DISPONIBILIDADE (ATUALIZADO)
-document.getElementById('btn-consultar').addEventListener('click', function () {
-    const dataVal = document.getElementById('dataDeposito').value;
-    const horaVal = document.getElementById('horaDeposito').value;
+/** =============================================
+     1. CONSULTA DE DISPONIBILIDADE (ATUALIZADO)
+    ============================================= */
+    document.getElementById('btn-consultar').addEventListener('click', function () {
+        const dataVal = document.getElementById('dataDeposito').value;
+        const horaVal = document.getElementById('horaDeposito').value;
 
-    if (!dataVal || !horaVal) {
-        criarNotificacaoAdvertencia("Por favor, preencha Data e Horário.", "Dados Incompletos");
-        return;
+        if (!dataVal || !horaVal) {
+            criarNotificacaoAdvertencia("Por favor, preencha Data e Horário.", "Dados Incompletos");
+            return;
+        }
+
+        toggleLoading(true, "Consultando agenda...");
+
+        google.script.run
+            .withSuccessHandler(function (res) {
+                toggleLoading(false);
+                if (res && res.disponivel) {
+                    // DISPONÍVEL - Modal verde
+                    mostrarModalDecisao(res.mensagem, "Data Disponível", "sucesso");
+                } else {
+                    // INDISPONÍVEL - Modal vermelho (mensagem já vem completa do backend)
+                    mostrarModalDecisao(res.mensagem, "Período Indisponível", "erro");
+                }
+            })
+            .withFailureHandler(function (err) {
+                toggleLoading(false);
+                criarNotificacaoErro(err.message, "Erro Crítico");
+            })
+            .consultarDisponibilidadeData(dataVal, horaVal);
+    });
+
+/** =============================================
+     VALIDADOR EMAIL GLOBAL (toast nativo)
+    ============================================= */
+    function validarEmail(campoId) {
+        const campo = document.getElementById(campoId);
+        const label = campo.previousElementSibling ? campo.previousElementSibling.textContent.trim() : 'E-mail';
+        const email = campo.value.trim();
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        
+        // Remove classes antigas
+        campo.classList.remove('is-valid', 'is-invalid');
+        
+        if (email === '') return true;  // Vazio OK
+        
+        if (regex.test(email)) {
+            campo.classList.add('is-valid');  // Verde
+            return true;
+        } else {
+            campo.classList.add('is-invalid');  // Vermelho
+            // TOAST EXISTENTE (amarelo)
+            criarNotificacaoAdvertencia(
+                `E-mail inválido: "${label}". Use formato exemplo@dominio.com`, 
+                'Formato inválido'
+            );
+            return false;
+        }
     }
 
-    toggleLoading(true, "Consultando agenda...");
-
-    google.script.run
-        .withSuccessHandler(function (res) {
-            toggleLoading(false);
-            if (res && res.disponivel) {
-                // DISPONÍVEL - Modal verde
-                mostrarModalDecisao(res.mensagem, "Data Disponível", "sucesso");
-            } else {
-                // INDISPONÍVEL - Modal vermelho (mensagem já vem completa do backend)
-                mostrarModalDecisao(res.mensagem, "Período Indisponível", "erro");
-            }
-        })
-        .withFailureHandler(function (err) {
-            toggleLoading(false);
-            criarNotificacaoErro(err.message, "Erro Crítico");
-        })
-        .consultarDisponibilidadeData(dataVal, horaVal);
-});
-
-    // 2. FUNÇÃO DO MODAL (CORRIGIDA)
+/** ===================================
+     2. FUNÇÃO DO MODAL (CORRIGIDA)
+    =================================== */
     function mostrarModalDecisao(mensagem, titulo, tipo) {
         const modalElement = document.getElementById('modalResultado');
         const header = document.getElementById('modalHeaderCor');
@@ -73,7 +111,9 @@ document.getElementById('btn-consultar').addEventListener('click', function () {
         // Criar e mostrar a instância do modal
         const instanciaModal = new bootstrap.Modal(modalElement);
 
-        // EVENTO DE CLIQUE NO BOTÃO AGENDAR
+    /** ===================================
+         EVENTO DE CLIQUE NO BOTÃO AGENDAR
+        =================================== */
         btnAgendar.onclick = function () {
             const dados = {
                 nome: document.getElementById('nome').value,
@@ -131,11 +171,15 @@ document.getElementById('btn-consultar').addEventListener('click', function () {
         instanciaModal.show();
     }
 
-    // Função para carregar os orientadores no select
+/** ================================================
+     Função para carregar os orientadores no select
+    ================================================ */
     // No início do seu script ou dentro do evento do botão Próximo
     function carregarOrientadores() {
         const select = document.getElementById('orientador');
         if (!select) return;
+
+        const valorSalvo = window.orientadorSelecionado || '';
 
         google.script.run
             .withSuccessHandler(function (lista) {
@@ -148,6 +192,10 @@ document.getElementById('btn-consultar').addEventListener('click', function () {
                         select.appendChild(opt);
                     });
                 }
+                // ← RESTAURAR SELEÇÃO
+                if (valorSalvo) {
+                    select.value = valorSalvo;
+                }
             })
             .listarOrientadores();
     }
@@ -155,36 +203,157 @@ document.getElementById('btn-consultar').addEventListener('click', function () {
     // Chamar ao carregar a página
     window.addEventListener('load', carregarOrientadores);
 
-    // 3. NAVEGAÇÃO E AUXILIARES
+/** =============================
+     3. NAVEGAÇÃO E AUXILIARES
+    ============================= */
     document.getElementById('dataDeposito').addEventListener('change', () => btnProximo.disabled = true);
     document.getElementById('horaDeposito').addEventListener('change', () => btnProximo.disabled = true);
 
-document.getElementById('btn-proximo-etapa1').addEventListener('click', function () {
-    document.getElementById('step-1').classList.add('d-none');
-    document.getElementById('step-2').classList.remove('d-none');
-    progressBar.style.width = '66%';
+    document.getElementById('btn-proximo-etapa1').addEventListener('click', function () {
+        document.getElementById('step-1').classList.add('d-none');
 
-    // SCROLL OTIMIZADO - Aguarda renderização e rola para o topo do formulário
-    setTimeout(() => {
-        const container = document.getElementById('form-container');
-        const headerHeight = document.querySelector('.sticky-top').offsetHeight;
-        const offset = headerHeight + 20; // 20px de margem extra
-        
-        const elementPosition = container.getBoundingClientRect().top + window.pageYOffset;
-        const offsetPosition = elementPosition - offset;
+  // SALVA STEP-1 AQUI 👇
+  window.dadosForm.nome = document.getElementById('nome').value;
+  window.dadosForm.nrUsp = document.getElementById('nrUsp').value;
+  window.dadosForm.emailUSP = document.getElementById('emailUSP').value;
+  window.dadosForm.tituloTese = document.getElementById('tituloTese').value;
+  window.dadosForm.dataDeposito = document.getElementById('dataDeposito').value;
+  window.dadosForm.horaDeposito = document.getElementById('horaDeposito').value;
+  console.log('✅ STEP-1 SALVO:', window.dadosForm.nome);
 
-        window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-        });
-    }, 100);
-});
+        document.getElementById('step-2').classList.remove('d-none');
+        progressBar.style.width = '25%';
+
+        // SCROLL OTIMIZADO - Aguarda renderização e rola para o topo do formulário
+        setTimeout(() => {
+            const container = document.getElementById('form-container');
+            const headerHeight = document.querySelector('.sticky-top').offsetHeight;
+            const offset = headerHeight + 20; // 20px de margem extra
+
+            const elementPosition = container.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }, 100);
+    });
 
     document.getElementById('btn-voltar-etapa2').addEventListener('click', function () {
+    // ← SALVAR ORIENTADOR antes de esconder
+        window.orientadorSelecionado = document.getElementById('orientador').value;
+
         document.getElementById('step-2').classList.add('d-none');
         document.getElementById('step-1').classList.remove('d-none');
-        progressBar.style.width = '33%';
+        progressBar.style.width = '25%';
         carregarOrientadores();
+    });
+
+    /** =============================
+         ETAPA 2 → ETAPA 3 (CORRETO)
+        ============================= */
+    document.getElementById('btn-proximo-etapa2').addEventListener('click', function () {
+        document.getElementById('step-2').classList.add('d-none');
+        document.getElementById('step-3').classList.remove('d-none');
+        //document.getElementById('progress-bar').style.width = '50%';
+        progressBar.style.width = '50%'; // <-- Mude aqui (está 66%)
+
+        // ← Scroll da pagina para iniciar no topo (cópia da etapa1)
+        setTimeout(() => {
+            const container = document.getElementById('form-container');
+            const headerHeight = document.querySelector('.sticky-top').offsetHeight;
+            const offset = headerHeight + 20;  // 20px margem
+            const elementPosition = container.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - offset;
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }, 100);
+    });
+
+    /** =============================
+         ETAPA 3 → ETAPA 2 (CORRETO)
+        ============================= */
+    document.getElementById('btn-voltar-etapa3').addEventListener('click', function () {
+        document.getElementById('step-3').classList.add('d-none');
+        document.getElementById('step-2').classList.remove('d-none');
+        document.getElementById('progress-bar').style.width = '50%';
+
+        // ← Scroll da pagina para iniciar no topo (cópia da etapa1)
+        setTimeout(() => {
+            const container = document.getElementById('form-container');
+            const headerHeight = document.querySelector('.sticky-top').offsetHeight;
+            const offset = headerHeight + 20;
+            const elementPosition = container.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - offset;
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }, 100);
+    });
+
+/** =============================
+     ETAPA 3 → ETAPA 4 (FINAL)
+============================= */
+    document.addEventListener('DOMContentLoaded', function() {
+    const btnStep4 = document.getElementById('btn-proximo-etapa4');
+    if (btnStep4) {
+btnStep4.addEventListener('click', function() {
+  console.log('🔥 CLIQUE step-4');
+  document.getElementById('step-3').classList.add('d-none');
+  document.getElementById('step-4').classList.remove('d-none');
+  
+  // ESPERA DOM step-4 renderizar
+  setTimeout(() => {
+    console.log('⏳ RESUMO após render');
+    document.getElementById('resumoNome').textContent = window.dadosForm.nome || '-';
+    document.getElementById('resumoNrUsp').textContent = window.dadosForm.nrUsp || '-';
+    document.getElementById('resumoEmail').textContent = window.dadosForm.emailUSP || '-';
+    document.getElementById('resumoTitulo').textContent = window.dadosForm.tituloTese || '-';
+    console.log('✅ TELA:', document.getElementById('resumoNome').textContent);
+  }, 300);  // 300ms espera Bootstrap render
+  
+  document.getElementById('progress-bar').style.width = '75%';
+        
+        // SCROLL
+        setTimeout(() => {
+            document.getElementById('form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 200);
+        
+        console.log('✅ STEP-4 CARREGADA');
+        });
+        console.log('Evento step-4 ATIVO!');
+    } else {
+        console.error('BOTÃO step-4 NÃO ENCONTRADO!');
+    }
+    });
+
+/** =============================
+        ETAPA 4 → ETAPA 3 (VOLTAR)
+    ============================= */
+    document.getElementById('btn-voltar-etapa3').addEventListener('click', function () {
+        document.getElementById('step-4').classList.add('d-none');
+        document.getElementById('step-3').classList.remove('d-none');
+        
+        // AJUSTE: Se voltou para a 3, a barra volta para 50%
+        progressBar.style.width = '50%'; 
+
+        // Scroll da pagina para iniciar no topo
+        setTimeout(() => {
+            const container = document.getElementById('form-container');
+            const headerElement = document.querySelector('.sticky-top');
+            const headerHeight = headerElement ? headerElement.offsetHeight : 0;
+            const offset = headerHeight + 20;
+            const elementPosition = container.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - offset;
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }, 100);
     });
 
     function toggleLoading(show, texto = "Carregando...") {
@@ -200,6 +369,7 @@ document.getElementById('btn-proximo-etapa1').addEventListener('click', function
         document.getElementById('tituloNotificacao').textContent = titulo;
         bootstrap.Toast.getOrCreateInstance(document.getElementById('notificacao')).show();
     }
+
     function criarNotificacaoOK(m, t) { criarNotificacao(m, t); definirIcone('bi-check2-square'); definirCor('--verde-sucesso'); }
     function criarNotificacaoErro(m, t) { criarNotificacao(m, t); definirIcone('bi-exclamation-triangle-fill'); definirCor('--vermelho-feusp'); }
     function criarNotificacaoAdvertencia(m, t) { criarNotificacao(m, t); definirIcone('bi-exclamation-square'); definirCor('--amarelo'); }
@@ -209,10 +379,9 @@ document.getElementById('btn-proximo-etapa1').addEventListener('click', function
         document.getElementById('notificacao').style.backgroundColor = cor;
     }
 
-
-    /**
-     * Mostra/Esconde campos de logística (Diária/Passagem)
-     */
+    /** ======================================================
+         Mostra/Esconde campos de logística (Diária/Passagem)
+        ====================================================== */
     function toggleLogistica(id, mostrar) {
         const divLogistica = document.getElementById('logistica' + id);
         if (mostrar) {
@@ -224,9 +393,10 @@ document.getElementById('btn-proximo-etapa1').addEventListener('click', function
         }
     }
 
-    /**
-     * Mostra/Esconde campo de Upload e Passagens
-     */
+    /** ============================================
+         Mostra/Esconde campo de Upload e Passagens
+        ============================================ */
+    
     function toggleUpload(id, mostrar) {
         const divUpload = document.getElementById('campoUpload' + id);
         if (mostrar) {
@@ -241,4 +411,52 @@ document.getElementById('btn-proximo-etapa1').addEventListener('click', function
         document.getElementById('diaria' + id + 'Nao').checked = false;
         document.getElementById('campoUpload' + id).classList.add('d-none');
     }
+
+    /** ============================================
+         CALCULA FORMATO TESE (coluna I)
+        ============================================ */
+    function calcularFormatoTese() {
+        const radios = [];  // Pega 10 radios (5 tit + 5 supl)
+        for (let i = 1; i <= 5; i++) {
+            radios.push(`part${i}Presencial`, `part${i}Distancia`);
+        }
+        
+        let presencialCount = 0;
+        let totalMarcados = 0;
+        
+        radios.forEach(id => {
+            const radio = document.getElementById(id);
+            if (radio && radio.checked) {
+                totalMarcados++;
+                if (radio.value === 'Presencial') presencialCount++;
+            }
+        });
+        
+        if (totalMarcados === 0) return '';  // Nenhum marcado
+        
+        if (presencialCount === totalMarcados) return 'Presencial';
+        if (presencialCount === 0) return 'Virtual';
+        return 'Híbrido';  // Mistura
+    }
+
+/** ============================================
+     Exibindo a ETAPA 4 - Upload da tese
+    ============================================ */
+    function mostrarEtapa4() {
+        // Esconde a etapa anterior e mostra a 4
+        document.getElementById('step-3').style.display = 'none';
+        document.getElementById('step-4').style.display = 'block';
+
+        // Puxa os valores dos inputs das etapas anteriores
+        document.getElementById('resumoNome').innerText = document.getElementById('nome').value || "Não preenchido";
+        document.getElementById('resumoNrUsp').innerText = document.getElementById('nrUsp').value || "Não preenchido";
+        document.getElementById('resumoEmail').innerText = document.getElementById('emailUSP').value || "Não preenchido";
+        document.getElementById('resumoTitulo').innerText = document.getElementById('tituloTese').value || "Não preenchido";
+
+        progressBar.style.width = '75%'; // <--- Etapa 4 mostra 75%
+        
+        // Atualiza a barra de progresso (se você estiver usando uma)
+        //updateProgressBar(100); 
+    }
+
 </script>

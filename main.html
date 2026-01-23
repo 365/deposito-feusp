@@ -2,73 +2,70 @@
     <div class="container-xl py-5">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-8">
+                
+                <!-- ============================================ -->
+                <!-- CARD PRINCIPAL DO FORMULÁRIO                 -->
+                <!-- ============================================ -->
                 <div class="card border-0 shadow" id="form-container">
 
                     <!-- Barra de Progresso -->
                     <div class="progress" style="height: 5px; border-radius: 0;">
-                        <div id="progress-bar" class="progress-bar bg-primary" role="progressbar" style="width: 33%;">
-                        </div>
+                        <div id="progress-bar" class="progress-bar bg-primary" role="progressbar" style="width: 25%;"></div>
                     </div>
 
+                    <!-- Corpo do Card -->
                     <div class="card-body p-4 p-md-5">
                         <form id="formulario">
 
                             <!-- ============================================ -->
-                            <!-- ETAPA 1: DADOS DE IDENTIFICAÇÃO -->
+                            <!-- ETAPA 1: DADOS DE IDENTIFICAÇÃO              -->
                             <!-- ============================================ -->
                             <div class="step-section" id="step-1">
+                                
+                                <!-- Título da Etapa -->
                                 <div class="mb-4">
                                     <h2 class="h4 fw-bold text-dark">Dados de Identificação</h2>
-                                    <p class="text-muted small">Insira seus dados acadêmicos básicos e a data
-                                        pretendida.</p>
+                                    <p class="text-muted small">Insira seus dados acadêmicos básicos e a data pretendida.</p>
                                 </div>
 
+                                <!-- Campos do Formulário -->
                                 <div class="row g-3">
+                                    
                                     <!-- Nome Completo -->
                                     <div class="col-12">
                                         <label for="nome" class="form-label fw-semibold">Nome Completo</label>
-                                        <input type="text" class="form-control custom-input" id="nome" name="nome"
-                                            placeholder="Digite seu nome completo">
+                                        <input type="text" class="form-control custom-input" id="nome" name="nome" placeholder="Digite seu nome completo">
                                     </div>
 
                                     <!-- N° USP -->
                                     <div class="col-md-6">
                                         <label for="nrUsp" class="form-label fw-semibold">N° USP</label>
-                                        <input type="number" class="form-control custom-input" id="nrUsp" name="nrUsp"
-                                            placeholder="0000000">
+                                        <input type="number" class="form-control custom-input" id="nrUsp" name="nrUsp" placeholder="0000000">
                                     </div>
 
                                     <!-- E-mail USP -->
                                     <div class="col-md-6">
-                                        <label for="emailUSP" class="form-label fw-semibold">E-mail USP</label>
-                                        <input type="email" class="form-control custom-input" id="emailUSP"
-                                            name="emailUSP" placeholder="seuemail@usp.br">
+                                        <label for="emailUSP" class="form-label fw-semibold">Seu E-mail</label>
+                                        <input type="email" class="form-control custom-input" id="emailUSP" name="emailUSP" placeholder="coloque seu melhor e-mail" onblur="validarEmail('emailUSP')">
                                     </div>
 
                                     <!-- Título da Tese -->
                                     <div class="col-12">
                                         <label for="tituloTese" class="form-label fw-semibold">Título da tese</label>
-                                        <input type="text" class="form-control custom-input" id="tituloTese"
-                                            name="tituloTese" placeholder="Digite o título da sua tese">
+                                        <input type="text" class="form-control custom-input" id="tituloTese" name="tituloTese" placeholder="Digite o título da sua tese">
                                     </div>
 
-                                    <!-- Data do Depósito -->
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label for="dataDeposito" class="form-label fw-semibold">Data do
-                                                Depósito</label>
-                                            <input type="date" class="form-control custom-input" id="dataDeposito"
-                                                name="dataDeposito" required
-                                                value="<?= Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd') ?>">
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <label for="horaDeposito" class="form-label fw-semibold">Horário do
-                                                Depósito</label>
-                                            <input type="time" class="form-control custom-input" id="horaDeposito"
-                                                name="horaDeposito" required>
-                                        </div>
+                                    <!-- Data e Horário do Depósito -->
+                                    <div class="col-md-6">
+                                        <label for="dataDeposito" class="form-label fw-semibold">Data do Depósito</label>
+                                        <input type="date" class="form-control custom-input" id="dataDeposito" name="dataDeposito" required>
                                     </div>
+
+                                    <div class="col-md-6">
+                                        <label for="horaDeposito" class="form-label fw-semibold">Horário do Depósito</label>
+                                        <input type="time" class="form-control custom-input" id="horaDeposito" name="horaDeposito" required>
+                                    </div>
+
                                 </div>
 
                                 <!-- Botões de Ação -->
@@ -76,377 +73,541 @@
                                     <button type="button" class="btn btn-success px-4" id="btn-consultar">
                                         <i class="bi bi-calendar-check me-1"></i> CONSULTAR DATA
                                     </button>
-                                    <button type="button" class="btn btn-primary px-5 btn-next" id="btn-proximo-etapa1"
-                                        disabled>
+                                    <button type="button" class="btn btn-primary px-5 btn-next" id="btn-proximo-etapa1" disabled>
                                         Próximo <i class="bi bi-arrow-right ms-1"></i>
                                     </button>
                                 </div>
+
                             </div>
+                            <!-- FIM ETAPA 1 -->
 
                             <!-- ============================================ -->
-                            <!-- ETAPA 2: INFORMAÇÕES DO DEPÓSITO -->
+                            <!-- ETAPA 2: MEMBROS TITULARES                   -->
                             <!-- ============================================ -->
                             <div class="step-section d-none" id="step-2">
+                                
+                                <!-- Título da Etapa -->
                                 <div class="mb-4">
                                     <h2 class="h4 fw-bold text-dark">Dados da Banca e Tese</h2>
                                 </div>
 
-                                <div class="row g-3">
-                                    <div class="col-12 mb-3">
-                                        <label class="form-label fw-bold">Área de Concentração</label>
-                                        <select class="form-select custom-input" id="areaConcentracao">
-                                            <option value="" selected disabled>Selecione...</option>
-                                            <option value="Educação e Ciências">Educação e Ciências</option>
-                                            <option value="Linguagem e Educação">Linguagem e Educação</option>
-                                            <option value="Psicologia e Educação">Psicologia e Educação</option>
-                                            <option value="Sociologia da Educação">Sociologia da Educação</option>
-                                            <option value="Filosofia da Educação">Filosofia da Educação</option>
+                                <!-- Área de Concentração -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Área de Concentração</label>
+                                    <select class="form-select custom-input" id="areaConcentracao">
+                                        <option value="" selected disabled>Selecione...</option>
+                                        <option value="Educação e Ciências">Educação e Ciências</option>
+                                        <option value="Linguagem e Educação">Linguagem e Educação</option>
+                                        <option value="Psicologia e Educação">Psicologia e Educação</option>
+                                        <option value="Sociologia da Educação">Sociologia da Educação</option>
+                                        <option value="Filosofia da Educação">Filosofia da Educação</option>
+                                    </select>
+                                </div>
+
+                                <!-- Container da Banca -->
+                                <div class="banca-container">
+                                    <h5 class="fw-bold text-preto mb-4">MEMBROS TITULARES</h5>
+
+                                    <!-- Orientador -->
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">Orientador(a)</label>
+                                        <select class="form-select custom-input" id="orientador">
+                                            <option value="">Selecione o Orientador...</option>
                                         </select>
                                     </div>
 
+                                    <!-- SEGUNDO TITULAR -->
+                                    <div class="membro-card">
+                                        <h6 class="fw-bold text-dark">SEGUNDO TITULAR</h6>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label>
+                                            <input type="text" class="form-control custom-input" id="nomeTitular2">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="emailTitular2" class="form-label">E-mail</label>
+                                            <input type="email" class="form-control custom-input" id="emailTitular2" placeholder="seuemail@dominio.com.br" onblur="validarEmail('emailTitular2')">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Instituição de vínculo:</label>
+                                            <input type="text" class="form-control custom-input" id="vinculoTitular2" placeholder="Ex: USP, UNICAMP...">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label d-block fw-bold">Participação:</label>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="part2" id="part2Presencial" value="Presencial" onchange="toggleLogistica(2, true)">
+                                                <label class="form-check-label" for="part2Presencial">Presencial</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="part2" id="part2Distancia" value="Distancia" onchange="toggleLogistica(2, false)">
+                                                <label class="form-check-label" for="part2Distancia">Distância</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Logística (Diária/Passagem) -->
+                                        <div id="logistica2" class="d-none">
+                                            <div class="divisor-interno"></div>
+
+                                            <label class="form-label fw-bold">Precisa de diária?</label>
+                                            <div class="form-check form-check-inline ms-2">
+                                                <input class="form-check-input" type="radio" name="diaria2" id="diaria2Sim" value="Sim" onchange="toggleUpload(2, true)">
+                                                <label class="form-check-label" for="diaria2Sim">Sim</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="diaria2" id="diaria2Nao" value="Nao" onchange="toggleUpload(2, false)">
+                                                <label class="form-check-label" for="diaria2Nao">Não</label>
+                                            </div>
+
+                                            <!-- Upload de Passagem -->
+                                            <div id="campoUpload2" class="d-none mt-3">
+                                                <div class="mb-3">
+                                                    <label class="small fw-bold d-block mb-2">Tipo de Passagem:</label>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="tipoPassagem2" id="aerea2" value="Aerea">
+                                                        <label class="small" for="aerea2">Aérea</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="tipoPassagem2" id="rodoviaria2" value="Rodoviaria">
+                                                        <label class="small" for="rodoviaria2">Rodoviária</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divisor-interno"></div>
+
+                                                <label class="form-label text-danger small fw-bold">Anexar Cadastro de Professor (PDF/DOC):</label>
+                                                <input class="form-control form-control-sm" type="file" id="arquivo2" accept=".pdf,.doc,.docx">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- FIM SEGUNDO TITULAR -->
+
+                                    <!-- TERCEIRO TITULAR -->
+                                    <div class="membro-card">
+                                        <h6 class="fw-bold text-dark">TERCEIRO TITULAR</h6>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label>
+                                            <input type="text" class="form-control custom-input" id="nomeTitular3">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="emailTitular3" class="form-label">E-mail</label>
+                                            <input type="email" class="form-control custom-input" id="emailTitular3" placeholder="seuemail@dominio.com.br" onblur="validarEmail('emailTitular3')">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Instituição de vínculo:</label>
+                                            <input type="text" class="form-control custom-input" id="vinculoTitular3" placeholder="Ex: USP, UNICAMP...">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label d-block fw-bold">Participação:</label>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="part3" id="part3Presencial" value="Presencial" onchange="toggleLogistica(3, true)">
+                                                <label class="form-check-label" for="part3Presencial">Presencial</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="part3" id="part3Distancia" value="Distancia" onchange="toggleLogistica(3, false)">
+                                                <label class="form-check-label" for="part3Distancia">Distância</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Logística -->
+                                        <div id="logistica3" class="d-none">
+                                            <div class="divisor-interno"></div>
+
+                                            <label class="form-label fw-bold">Precisa de diária?</label>
+                                            <div class="form-check form-check-inline ms-2">
+                                                <input class="form-check-input" type="radio" name="diaria3" id="diaria3Sim" value="Sim" onchange="toggleUpload(3, true)">
+                                                <label class="form-check-label" for="diaria3Sim">Sim</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="diaria3" id="diaria3Nao" value="Nao" onchange="toggleUpload(3, false)">
+                                                <label class="form-check-label" for="diaria3Nao">Não</label>
+                                            </div>
+
+                                            <div id="campoUpload3" class="d-none mt-3">
+                                                <div class="mb-3">
+                                                    <label class="small fw-bold d-block mb-2">Tipo de Passagem:</label>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="tipoPassagem3" id="aerea3" value="Aerea">
+                                                        <label class="small" for="aerea3">Aérea</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="tipoPassagem3" id="rodoviaria3" value="Rodoviaria">
+                                                        <label class="small" for="rodoviaria3">Rodoviária</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divisor-interno"></div>
+
+                                                <label class="form-label text-danger small fw-bold">Anexar Cadastro de Professor (PDF/DOC):</label>
+                                                <input class="form-control form-control-sm" type="file" id="arquivo3" accept=".pdf,.doc,.docx">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- FIM TERCEIRO TITULAR -->
+
+                                    <!-- QUARTO TITULAR -->
+                                    <div class="membro-card">
+                                        <h6 class="fw-bold text-dark">QUARTO TITULAR</h6>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label>
+                                            <input type="text" class="form-control custom-input" id="nomeTitular4">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="emailTitular4" class="form-label">E-mail</label>
+                                            <input type="email" class="form-control custom-input" id="emailTitular4" placeholder="seuemail@dominio.com.br" onblur="validarEmail('emailTitular4')">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Instituição de vínculo:</label>
+                                            <input type="text" class="form-control custom-input" id="vinculoTitular4" placeholder="Ex: USP, UNICAMP...">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label d-block fw-bold">Participação:</label>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="part4" id="part4Presencial" value="Presencial" onchange="toggleLogistica(4, true)">
+                                                <label class="form-check-label" for="part4Presencial">Presencial</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="part4" id="part4Distancia" value="Distancia" onchange="toggleLogistica(4, false)">
+                                                <label class="form-check-label" for="part4Distancia">Distância</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Logística -->
+                                        <div id="logistica4" class="d-none">
+                                            <div class="divisor-interno"></div>
+
+                                            <label class="form-label fw-bold">Precisa de diária?</label>
+                                            <div class="form-check form-check-inline ms-2">
+                                                <input class="form-check-input" type="radio" name="diaria4" id="diaria4Sim" value="Sim" onchange="toggleUpload(4, true)">
+                                                <label class="form-check-label" for="diaria4Sim">Sim</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="diaria4" id="diaria4Nao" value="Nao" onchange="toggleUpload(4, false)">
+                                                <label class="form-check-label" for="diaria4Nao">Não</label>
+                                            </div>
+
+                                            <div id="campoUpload4" class="d-none mt-3">
+                                                <div class="mb-3">
+                                                    <label class="small fw-bold d-block mb-2">Tipo de Passagem:</label>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="tipoPassagem4" id="aerea4" value="Aerea">
+                                                        <label class="small" for="aerea4">Aérea</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="tipoPassagem4" id="rodoviaria4" value="Rodoviaria">
+                                                        <label class="small" for="rodoviaria4">Rodoviária</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divisor-interno"></div>
+
+                                                <label class="form-label text-danger small fw-bold">Anexar Cadastro de Professor (PDF/DOC):</label>
+                                                <input class="form-control form-control-sm" type="file" id="arquivo4" accept=".pdf,.doc,.docx">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- FIM QUARTO TITULAR -->
+
+                                    <!-- QUINTO TITULAR -->
+                                    <div class="membro-card">
+                                        <h6 class="fw-bold text-dark">QUINTO TITULAR</h6>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label>
+                                            <input type="text" class="form-control custom-input" id="nomeTitular5">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="emailTitular5" class="form-label">E-mail</label>
+                                            <input type="email" class="form-control custom-input" id="emailTitular5" placeholder="seuemail@dominio.com.br" onblur="validarEmail('emailTitular5')">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Instituição de vínculo:</label>
+                                            <input type="text" class="form-control custom-input" id="vinculoTitular5" placeholder="Ex: USP, UNICAMP...">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label d-block fw-bold">Participação:</label>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="part5" id="part5Presencial" value="Presencial" onchange="toggleLogistica(5, true)">
+                                                <label class="form-check-label" for="part5Presencial">Presencial</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="part5" id="part5Distancia" value="Distancia" onchange="toggleLogistica(5, false)">
+                                                <label class="form-check-label" for="part5Distancia">Distância</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Logística -->
+                                        <div id="logistica5" class="d-none">
+                                            <div class="divisor-interno"></div>
+
+                                            <label class="form-label fw-bold">Precisa de diária?</label>
+                                            <div class="form-check form-check-inline ms-2">
+                                                <input class="form-check-input" type="radio" name="diaria5" id="diaria5Sim" value="Sim" onchange="toggleUpload(5, true)">
+                                                <label class="form-check-label" for="diaria5Sim">Sim</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="diaria5" id="diaria5Nao" value="Nao" onchange="toggleUpload(5, false)">
+                                                <label class="form-check-label" for="diaria5Nao">Não</label>
+                                            </div>
+
+                                            <div id="campoUpload5" class="d-none mt-3">
+                                                <div class="mb-3">
+                                                    <label class="small fw-bold d-block mb-2">Tipo de Passagem:</label>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="tipoPassagem5" id="aerea5" value="Aerea">
+                                                        <label class="small" for="aerea5">Aérea</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="tipoPassagem5" id="rodoviaria5" value="Rodoviaria">
+                                                        <label class="small" for="rodoviaria5">Rodoviária</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divisor-interno"></div>
+
+                                                <label class="form-label text-danger small fw-bold">Anexar Cadastro de Professor (PDF/DOC):</label>
+                                                <input class="form-control form-control-sm" type="file" id="arquivo5" accept=".pdf,.doc,.docx">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- FIM QUINTO TITULAR -->
+
+                                </div>
+                                <!-- FIM BANCA CONTAINER -->
+
+                                <!-- Botões de Navegação -->
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" id="btn-voltar-etapa2" class="btn btn-outline-secondary px-4">
+                                        <i class="bi bi-arrow-left me-1"></i> Voltar
+                                    </button>
+                                    <button type="button" id="btn-proximo-etapa2" class="btn btn-primary px-5">
+                                        Próximo <i class="bi bi-arrow-right ms-1"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                            <!-- FIM ETAPA 2 -->
+
+                            <!-- ============================================ -->
+                            <!-- ETAPA 3: MEMBROS SUPLENTES                   -->
+                            <!-- ============================================ -->
+                            <div class="step-section d-none" id="step-3">
+                                
+                                <!-- Container da Banca Suplentes -->
+                                <div class="banca-container">
+                                    <h5 class="fw-bold text-preto mb-2">MEMBROS SUPLENTES</h5>
+                                    <p class="text-muted small">Adicione até 5 membros suplentes.</p>
+
+                                    <!-- PRIMEIRO SUPLENTE -->
+                                    <div class="membro-card">
+                                        <h6 class="fw-bold text-dark">PRIMEIRO SUPLENTE</h6>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label>
+                                            <input type="text" class="form-control custom-input" id="nomeSuplente1">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="emailSuplente1" class="form-label">E-mail</label>
+                                            <input type="email" class="form-control custom-input" id="emailSuplente1" placeholder="seuemail@dominio.com.br" onblur="validarEmail('emailSuplente1')">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Instituição de vínculo:</label>
+                                            <input type="text" class="form-control custom-input" id="vinculoSuplente1" placeholder="Ex: USP, UNICAMP...">
+                                        </div>
+                                    </div>
+
+                                    <!-- SEGUNDO SUPLENTE -->
+                                    <div class="membro-card">
+                                        <h6 class="fw-bold text-dark">SEGUNDO SUPLENTE</h6>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label>
+                                            <input type="text" class="form-control custom-input" id="nomeSuplente2">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="emailSuplente2" class="form-label">E-mail</label>
+                                            <input type="email" class="form-control custom-input" id="emailSuplente2" placeholder="seuemail@dominio.com.br" onblur="validarEmail('emailSuplente2')">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Instituição de vínculo:</label>
+                                            <input type="text" class="form-control custom-input" id="vinculoSuplente2" placeholder="Ex: USP, UNICAMP...">
+                                        </div>
+                                    </div>
+
+                                    <!-- TERCEIRO SUPLENTE -->
+                                    <div class="membro-card">
+                                        <h6 class="fw-bold text-dark">TERCEIRO SUPLENTE</h6>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label>
+                                            <input type="text" class="form-control custom-input" id="nomeSuplente3">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="emailSuplente3" class="form-label">E-mail</label>
+                                            <input type="email" class="form-control custom-input" id="emailSuplente3" placeholder="seuemail@dominio.com.br" onblur="validarEmail('emailSuplente3')">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Instituição de vínculo:</label>
+                                            <input type="text" class="form-control custom-input" id="vinculoSuplente3" placeholder="Ex: USP, UNICAMP...">
+                                        </div>
+                                    </div>
+
+                                    <!-- QUARTO SUPLENTE -->
+                                    <div class="membro-card">
+                                        <h6 class="fw-bold text-dark">QUARTO SUPLENTE</h6>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label>
+                                            <input type="text" class="form-control custom-input" id="nomeSuplente4">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="emailSuplente4" class="form-label">E-mail</label>
+                                            <input type="email" class="form-control custom-input" id="emailSuplente4" placeholder="seuemail@dominio.com.br" onblur="validarEmail('emailSuplente4')">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Instituição de vínculo:</label>
+                                            <input type="text" class="form-control custom-input" id="vinculoSuplente4" placeholder="Ex: USP, UNICAMP...">
+                                        </div>
+                                    </div>
+
+                                    <!-- QUINTO SUPLENTE -->
+                                    <div class="membro-card">
+                                        <h6 class="fw-bold text-dark">QUINTO SUPLENTE</h6>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label>
+                                            <input type="text" class="form-control custom-input" id="nomeSuplente5">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="emailSuplente5" class="form-label fw-semibold">E-mail</label>
+                                            <input type="email" class="form-control custom-input" id="emailSuplente5" name="emailSuplente5" placeholder="seuemail@dominio.com.br" onblur="validarEmail('emailSuplente5')">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Instituição de vínculo:</label>
+                                            <input type="text" class="form-control custom-input" id="vinculoSuplente5"
+                                                placeholder="Ex: USP, UNICAMP...">
+                                        </div>
+                                    </div>
+
+
+                                <!-- BOTOES NAVEGACAO -->
+                                <div class="d-flex justify-content-between mt-4 gap-2">
+                                    <button type="button" id="btn-voltar-etapa3" class="btn btn-outline-secondary px-4">
+                                        <i class="bi bi-arrow-left me-1"></i> Voltar
+                                    </button>
+                                    <button type="button" id="btn-proximo-etapa4" class="btn btn-primary px-5">
+                                        Próximo <i class="bi bi-arrow-right ms-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- FIM ETAPA 3 -->
+                            <!-- ================================== -->
+                            <!-- ETAPA 4: DADOS DO ALUNO E UPLOAD   -->
+                            <!-- ================================== -->
+                            <div class="step-section d-none" id="step-4">
                                     <div class="banca-container">
-                                        <h5 class="fw-bold text-preto mb-4">MEMBROS TITULARES</h5>
+                                    <h5 class="fw-bold text-preto mb-2">CONFERÊNCIA E ANEXO</h5>
+                                    <p class="text-muted small">Confira seus dados e anexe o arquivo final da tese/dissertação.</p>
 
-                                        <div class="mb-4">
-                                            <label class="form-label fw-bold">Orientador(a)</label>
-                                            <select class="form-select custom-input" id="orientador">
-                                                <option value="">Selecione o Orientador...</option>
-                                            </select>
+                                    <div class="card mb-4 border-0 shadow-sm">
+                                        <div class="card-header bg-light border-0">
+                                            <h6 class="mb-0 fw-bold text-preto"><i class="fas fa-user-graduate me-2"></i>Dados do Aluno</h6>
                                         </div>
-                                        <!-- SEGUNDO TITULAR -->
-                                        <div class="membro-card">
-                                            <h6 class="fw-bold text-dark">SEGUNDO TITULAR</h6>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Prof. (a) Dr. (a):</label>
-                                                <input type="text" class="form-control custom-input" id="nomeTitular2">
-                                            </div>
-
-                                            <div class="col-md-6 mb-3">
-                                                <label for="emailTitular2" class="form-label fw-semibold">E-mail</label>
-                                                <input type="email" class="form-control custom-input" id="emailTitular2"
-                                                    name="emailTitular2" placeholder="seuemail@dominio.com.br">
-                                            </div>
-
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Instituição de vínculo:</label>
-                                                <input type="text" class="form-control custom-input"
-                                                    id="vinculoTitular2" placeholder="Ex: USP, UNICAMP...">
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label d-block fw-bold">Participação:</label>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="part2"
-                                                        id="part2Presencial" value="Presencial"
-                                                        onchange="toggleLogistica(2, true)">
-                                                    <label class="form-check-label"
-                                                        for="part2Presencial">Presencial</label>
+                                        <div class="card-body">
+         <!--                                    <div class="row gx-3">
+                                                <div class="col-md-6">
+                                                    <p class="mb-1 small text-muted">Nome:</p>
+                                                    <p class="fw-bold mb-3" id="resumoNome">-</p>
+                                                    
+                                                    <p class="mb-1 small text-muted">Nº USP:</p>
+                                                    <p class="fw-bold mb-3" id="resumoNrUsp">-</p>
                                                 </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="part2"
-                                                        id="part2Distancia" value="Distancia"
-                                                        onchange="toggleLogistica(2, false)">
-                                                    <label class="form-check-label"
-                                                        for="part2Distancia">Distância</label>
+                                                <div class="col-md-6">
+                                                    <p class="mb-1 small text-muted">E-mail:</p>
+                                                    <p class="fw-bold mb-3" id="resumoEmail">-</p>
+                                                    
+                                                    <p class="mb-1 small text-muted">Título da Tese:</p>
+                                                    <p class="fw-bold mb-0" id="resumoTitulo">-</p>
                                                 </div>
-                                            </div>
-
-                                            <div id="logistica2" class="d-none">
-
-                                                <div class="divisor-interno"></div>
-
-                                                <label class="form-label fw-bold">Precisa de diária?</label>
-                                                <div class="form-check form-check-inline ms-2">
-                                                    <input class="form-check-input" type="radio" name="diaria2"
-                                                        id="diaria2Sim" value="Sim" onchange="toggleUpload(2, true)">
-                                                    <label class="form-check-label" for="diaria2Sim">Sim</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="diaria2"
-                                                        id="diaria2Nao" value="Nao" onchange="toggleUpload(2, false)">
-                                                    <label class="form-check-label" for="diaria2Nao">Não</label>
-                                                </div>
-
-                                                <div id="campoUpload2" class="d-none mt-3">
-                                                    <div class="mb-3">
-                                                        <label class="small fw-bold d-block mb-2">Tipo de
-                                                            Passagem:</label>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="tipoPassagem2" id="aerea2" value="Aerea">
-                                                            <label class="small" for="aerea2">Aérea</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="tipoPassagem2" id="rodoviaria2"
-                                                                value="Rodoviaria">
-                                                            <label class="small" for="rodoviaria2">Rodoviária</label>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="divisor-interno"></div>
-
-                                                    <label class="form-label text-danger small fw-bold">Anexar Cadastro
-                                                        de Professor (PDF/DOC):</label>
-                                                    <input class="form-control form-control-sm" type="file"
-                                                        id="arquivo2" accept=".pdf,.doc,.docx">
-                                                </div>
-                                            </div>
+                                            </div> -->
                                         </div>
-                                        <!-- TERCEIRO TITULAR (cópia do SEGUNDO) -->
-                                        <div class="membro-card">
-                                            <h6 class="fw-bold text-dark">TERCEIRO TITULAR</h6>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Prof. (a) Dr. (a):</label>
-                                                <input type="text" class="form-control custom-input" id="nomeTitular3">
-                                            </div>
-
-                                            <div class="col-md-6 mb-3">
-                                                <label for="emailTitular3" class="form-label fw-semibold">E-mail</label>
-                                                <input type="email" class="form-control custom-input" id="emailTitular3"
-                                                    name="emailTitular3" placeholder="seuemail@dominio.com.br">
-                                            </div>
 
 
-                                            <div class="mb-3">
-                                                <label class="form-label">Instituição de vínculo:</label>
-                                                <input type="text" class="form-control custom-input"
-                                                    id="vinculoTitular3" placeholder="Ex: USP, UNICAMP...">
-                                            </div>
+                                    <div class="col-12">
+                                        <label for="nome" class="form-label fw-semibold">Nome Completo</label>
+                                        <input type="text" class="form-control custom-input" id="resumoNome" name="nome">
+                                    </div>
 
-                                            <div class="mb-3">
-                                                <label class="form-label d-block fw-bold">Participação:</label>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="part3"
-                                                        id="part3Presencial" value="Presencial"
-                                                        onchange="toggleLogistica(3, true)">
-                                                    <label class="form-check-label"
-                                                        for="part3Presencial">Presencial</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="part3"
-                                                        id="part3Distancia" value="Distancia"
-                                                        onchange="toggleLogistica(3, false)">
-                                                    <label class="form-check-label"
-                                                        for="part3Distancia">Distância</label>
-                                                </div>
-                                            </div>
+                                    <!-- N° USP -->
+                                    <div class="col-md-6">
+                                        <label for="nrUsp" class="form-label fw-semibold">N° USP</label>
+                                        <input type="number" class="form-control custom-input" id="resumoNrUsp" name="nrUsp">
+                                    </div>
 
-                                            <div id="logistica3" class="d-none">
-                                                <div class="divisor-interno"></div>
+                                    <!-- E-mail USP -->
+                                    <div class="col-md-6">
+                                        <label for="emailUSP" class="form-label fw-semibold">Seu E-mail</label>
+                                        <input type="email" class="form-control custom-input" id="resumoEmail" name="emailUSP">
+                                    </div>
 
-                                                <label class="form-label fw-bold">Precisa de diária?</label>
-                                                <div class="form-check form-check-inline ms-2">
-                                                    <input class="form-check-input" type="radio" name="diaria3"
-                                                        id="diaria3Sim" value="Sim" onchange="toggleUpload(3, true)">
-                                                    <label class="form-check-label" for="diaria3Sim">Sim</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="diaria3"
-                                                        id="diaria3Nao" value="Nao" onchange="toggleUpload(3, false)">
-                                                    <label class="form-check-label" for="diaria3Nao">Não</label>
-                                                </div>
+                                    <!-- Título da Tese -->
+                                    <div class="col-12">
+                                        <label for="tituloTese" class="form-label fw-semibold">Título da tese</label>
+                                        <input type="text" class="form-control custom-input" id="resumoTitulo" name="tituloTese">
+                                    </div>
 
-                                                <div id="campoUpload3" class="d-none mt-3">
-                                                    <div class="mb-3">
-                                                        <label class="small fw-bold d-block mb-2">Tipo de
-                                                            Passagem:</label>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="tipoPassagem3" id="aerea3" value="Aerea">
-                                                            <label class="small" for="aerea3">Aérea</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="tipoPassagem3" id="rodoviaria3"
-                                                                value="Rodoviaria">
-                                                            <label class="small" for="rodoviaria3">Rodoviária</label>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="divisor-interno"></div>
-
-                                                    <label class="form-label text-danger small fw-bold">Anexar Cadastro
-                                                        de Professor (PDF/DOC):</label>
-                                                    <input class="form-control form-control-sm" type="file"
-                                                        id="arquivo3" accept=".pdf,.doc,.docx">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- QUARTO TITULAR (cópia do SEGUNDO) -->
-                                        <div class="membro-card">
-                                            <h6 class="fw-bold text-dark">QUARTO TITULAR</h6>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Prof. (a) Dr. (a):</label>
-                                                <input type="text" class="form-control custom-input" id="nomeTitular4">
-                                            </div>
-
-                                            <div class="col-md-6 mb-3">
-                                                <label for="emailTitular4" class="form-label fw-semibold">E-mail</label>
-                                                <input type="email" class="form-control custom-input" id="emailTitular4"
-                                                    name="emailTitular4" placeholder="seuemail@dominio.com.br">
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Instituição de vínculo:</label>
-                                                <input type="text" class="form-control custom-input"
-                                                    id="vinculoTitular4" placeholder="Ex: USP, UNICAMP...">
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label d-block fw-bold">Participação:</label>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="part4"
-                                                        id="part4Presencial" value="Presencial"
-                                                        onchange="toggleLogistica(4, true)">
-                                                    <label class="form-check-label"
-                                                        for="part4Presencial">Presencial</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="part4"
-                                                        id="part4Distancia" value="Distancia"
-                                                        onchange="toggleLogistica(4, false)">
-                                                    <label class="form-check-label"
-                                                        for="part4Distancia">Distância</label>
-                                                </div>
-                                            </div>
-
-                                            <div id="logistica4" class="d-none">
-                                                <div class="divisor-interno"></div>
-
-                                                <label class="form-label fw-bold">Precisa de diária?</label>
-                                                <div class="form-check form-check-inline ms-2">
-                                                    <input class="form-check-input" type="radio" name="diaria4"
-                                                        id="diaria4Sim" value="Sim" onchange="toggleUpload(4, true)">
-                                                    <label class="form-check-label" for="diaria4Sim">Sim</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="diaria4"
-                                                        id="diaria4Nao" value="Nao" onchange="toggleUpload(4, false)">
-                                                    <label class="form-check-label" for="diaria4Nao">Não</label>
-                                                </div>
-
-                                                <div id="campoUpload4" class="d-none mt-3">
-                                                    <div class="mb-3">
-                                                        <label class="small fw-bold d-block mb-2">Tipo de
-                                                            Passagem:</label>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="tipoPassagem4" id="aerea4" value="Aerea">
-                                                            <label class="small" for="aerea4">Aérea</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="tipoPassagem4" id="rodoviaria4"
-                                                                value="Rodoviaria">
-                                                            <label class="small" for="rodoviaria4">Rodoviária</label>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="divisor-interno"></div>
-
-                                                    <label class="form-label text-danger small fw-bold">Anexar Cadastro
-                                                        de Professor (PDF/DOC):</label>
-                                                    <input class="form-control form-control-sm" type="file"
-                                                        id="arquivo4" accept=".pdf,.doc,.docx">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- QUINTO TITULAR (cópia do SEGUNDO) -->
-                                        <div class="membro-card">
-                                            <h6 class="fw-bold text-dark">QUINTO TITULAR</h6>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Prof. (a) Dr. (a):</label>
-                                                <input type="text" class="form-control custom-input" id="nomeTitular5">
-                                            </div>
-
-                                            <div class="col-md-6 mb-3">
-                                                <label for="emailTitular5" class="form-label fw-semibold">E-mail</label>
-                                                <input type="email" class="form-control custom-input" id="emailTitular5"
-                                                    name="emailTitular5" placeholder="seuemail@dominio.com.br">
-                                            </div>
-
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Instituição de vínculo:</label>
-                                                <input type="text" class="form-control custom-input"
-                                                    id="vinculoTitular5" placeholder="Ex: USP, UNICAMP...">
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label d-block fw-bold">Participação:</label>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="part5"
-                                                        id="part5Presencial" value="Presencial"
-                                                        onchange="toggleLogistica(5, true)">
-                                                    <label class="form-check-label"
-                                                        for="part5Presencial">Presencial</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="part5"
-                                                        id="part5Distancia" value="Distancia"
-                                                        onchange="toggleLogistica(5, false)">
-                                                    <label class="form-check-label"
-                                                        for="part5Distancia">Distância</label>
-                                                </div>
-                                            </div>
-
-                                            <div id="logistica5" class="d-none">
-                                                <div class="divisor-interno"></div>
-
-                                                <label class="form-label fw-bold">Precisa de diária?</label>
-                                                <div class="form-check form-check-inline ms-2">
-                                                    <input class="form-check-input" type="radio" name="diaria5"
-                                                        id="diaria5Sim" value="Sim" onchange="toggleUpload(5, true)">
-                                                    <label class="form-check-label" for="diaria5Sim">Sim</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="diaria5"
-                                                        id="diaria5Nao" value="Nao" onchange="toggleUpload(5, false)">
-                                                    <label class="form-check-label" for="diaria5Nao">Não</label>
-                                                </div>
-
-                                                <div id="campoUpload5" class="d-none mt-3">
-                                                    <div class="mb-3">
-                                                        <label class="small fw-bold d-block mb-2">Tipo de
-                                                            Passagem:</label>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="tipoPassagem5" id="aerea5" value="Aerea">
-                                                            <label class="small" for="aerea5">Aérea</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="tipoPassagem5" id="rodoviaria5"
-                                                                value="Rodoviaria">
-                                                            <label class="small" for="rodoviaria5">Rodoviária</label>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="divisor-interno"></div>
-
-                                                    <label class="form-label text-danger small fw-bold">Anexar Cadastro
-                                                        de Professor (PDF/DOC):</label>
-                                                    <input class="form-control form-control-sm" type="file"
-                                                        id="arquivo5" accept=".pdf,.doc,.docx">
-                                                </div>
-                                            </div>
-                                        </div>
 
                                     </div>
-                                    <div class="col-12 d-flex justify-content-between mt-4">
-                                        <button type="button" id="btn-voltar-etapa2"
-                                            class="btn btn-outline-secondary px-4">Voltar</button>
-                                        <button type="submit" class="btn btn-success px-5">Finalizar Depósito</button>
+
+                                    <div class="mb-3">
+                                        <label for="arquivoPDF" class="form-label fw-bold text-preto small">ANEXAR TESE/DISSERTAÇÃO (PDF)</label>
+                                        <div class="input-group">
+                                            <input type="file" class="form-control" id="arquivoPDF" accept=".pdf">
+                                            <span class="input-group-text bg-white"><i class="fas fa-file-pdf text-danger"></i></span>
+                                        </div>
+                                        <div id="fileHelp" class="form-text text-muted italic">O sistema aceita apenas arquivos no formato .pdf</div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-secondary px-4 text-uppercase fw-bold" onclick="voltarEtapa(3)">
+                                        <i class="fas fa-chevron-left me-2"></i> Anterior
+                                    </button>
+                                    
+                                    <div>
+                                        <button type="button" class="btn btn-primary px-4 text-uppercase fw-bold me-2" id="btnConferir" onclick="prepararConferencia()">
+                                            <i class="fas fa-eye me-2"></i> Conferir Dados
+                                        </button>
+                                        
+                                        <button type="button" class="btn btn-success px-4 text-uppercase fw-bold disabled" id="btnGravarFinal" onclick="processarEnvioFinal()" disabled>
+                                            <i class="fas fa-save me-2"></i> Gravar Dados
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-
                         </form>
                     </div>
                 </div>
