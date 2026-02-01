@@ -1,0 +1,26 @@
+/** ============================================
+         CALCULA FORMATO TESE (coluna I)
+        ============================================ */
+    function calcularFormatoTese() {
+        const radios = [];  // Pega 10 radios (5 tit + 5 supl)
+        for (let i = 1; i <= 5; i++) {
+            radios.push(`part${i}Presencial`, `part${i}Distancia`);
+        }
+        
+        let presencialCount = 0;
+        let totalMarcados = 0;
+        
+        radios.forEach(id => {
+            const radio = document.getElementById(id);
+            if (radio && radio.checked) {
+                totalMarcados++;
+                if (radio.value === 'Presencial') presencialCount++;
+            }
+        });
+        
+        if (totalMarcados === 0) return '';  // Nenhum marcado
+        
+        if (presencialCount === totalMarcados) return 'Presencial';
+        if (presencialCount === 0) return 'Virtual';
+        return 'Híbrido';  // Mistura
+    }

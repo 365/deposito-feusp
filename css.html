@@ -3,12 +3,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <style>
-    /* ================================================ */
-    /* 1. VARIÁVEIS E CONFIGURAÇÕES GLOBAIS             */
-    /* ================================================ */
-    /* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap'); */
+    /* ========================================== */
+    /* 1. IMPORTS DE FONTES - Início do documento */
+    /* ========================================== */
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
+    /* ============================================================== */
+    /* 2. VARIÁVEIS CSS GLOBAIS - Definição das cores institucionais  */
+    /* ============================================================== */
     :root {
         --azul-institucional: #00567f;
         --verde-sucesso: #6fb973;
@@ -19,6 +21,9 @@
         --transicao: all 0.3s ease;
     }
 
+    /* ======================================================= */
+    /* 3. RESET E CONFIGURAÇÕES GLOBAIS - Limpeza e setup base */
+    /* ======================================================= */
     * {
         margin: 0;
         padding: 0;
@@ -27,7 +32,7 @@
 
     body {
         /* font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; */
-        /font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        /*font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;*/
         background-color: #f0f2f5;
         color: #444;
         -webkit-font-smoothing: antialiased;
@@ -37,7 +42,7 @@
     }
 
     /* ================================================ */
-    /* 2. HEADER                                        */
+    /* 4. HEADER - Barra superior fixa com logo FEUSP   */
     /* ================================================ */
     .sticky-top {
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
@@ -72,9 +77,9 @@
         text-align: center;
     }
 
-    /* ================================================ */
-    /* 3. FORMULÁRIO E INPUTS                           */
-    /* ================================================ */
+    /* ===================================================== */
+    /* 5. CONTAINER PRINCIPAL DO FORMULÁRIO - Card principal */
+    /* ===================================================== */
     #form-container {
         border-radius: 12px;
         overflow: hidden;
@@ -83,6 +88,17 @@
         background-color: #ffffff;
     }
 
+    /* ============= */
+    /* 6. SESSÕES    */
+    /* ============= */
+    .step-section {
+        width: 100%;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    /* ======================================================== */
+    /* 7. ESTILOS DE INPUTS - Campos de formulário customizados */
+    /* ======================================================== */
     .custom-input {
         border: 1px solid #dee2e6;
         border-radius: 8px;
@@ -102,20 +118,22 @@
         cursor: not-allowed;
     }
 
+    /* ======================================================== */
+    /* 8. ESTILOS DE BACKGROUND E CHECKBOX - Cores customizadas */
+    /* ======================================================== */
+    .bg-light {
+        background-color: #f8f9fa !important;
+        transition: var(--transicao);
+    }
 
-.bg-light {
-    background-color: #f8f9fa !important;
-    transition: var(--transicao);
-}
+    .form-check-input:checked {
+        background-color: var(--azul-institucional);
+        border-color: var(--azul-institucional);
+    }
 
-.form-check-input:checked {
-    background-color: var(--azul-institucional);
-    border-color: var(--azul-institucional);
-}
-
-
-/* Container Pai da Banca - Cinza muito claro */
-    /* Cores e profundidade da banca */
+    /* ======================================================== */
+    /* 9. CONTAINER DA BANCA - Fundo gradiente para seção banca */
+    /* =================================================== */
     .banca-container {
         /* background-color: #f4f6f8; */
         /* background: linear-gradient(135deg, #f8fbff 0%, #e8f4ff 50%, #f0f8ff 100%); */
@@ -126,7 +144,9 @@
         border: 1px solid #e9ecef;
     }
 
-/* Cartões dos Membros (Sub-titulares) - Branco */
+    /* ============================================================== */
+    /* 10. CARDS DOS MEMBROS - Cards individuais dos membros da banca */
+    /* ============================================================== */
     .membro-card {
         background-color: #ffffff;
         border-radius: 10px;
@@ -135,7 +155,10 @@
         margin-top: 15px;
     }
 
-.text-preto { color: #000000 !important; }
+    /* ================================================ */
+    /* 11. UTILITÁRIOS - Classes utilitárias diversas   */
+    /* ================================================ */
+    .text-preto { color: #000000 !important; }
 
     /* Ajuste para Radio Buttons de Passagem */
     .btn-check:checked + .btn-outline-primary {
@@ -143,17 +166,16 @@
         color: white;
     }
 
-
-/* Divisor fino para separar seções internas dos cards */
+    /* Divisor fino para separar seções internas dos cards */
     .divisor-interno {
         border-top: 1px solid #dee2e6;
         margin: 15px 0;
         opacity: 0.6;
     }
 
-    /* ================================================ */
-    /* 4. BOTÕES (Peso 500 Uniforme)                    */
-    /* ================================================ */
+    /* ================================================= */
+    /* 12. BOTÕES - Estilo uniforme para todos os botões */
+    /* ================================================= */
     .btn, .btn-custom, #btn-consultar, #btn-proximo-etapa1 {
         /* font-family: 'Segoe UI', Roboto, sans-serif !important; */
         font-family: 'Roboto', Segoe UI, sans-serif !important;
@@ -171,9 +193,9 @@
 
     .btn-outline-secondary { border: 2px solid #6c757d; color: #6c757d; }
 
-    /* ================================================ */
-    /* 5. MODAL (Borda 10px)                            */
-    /* ================================================ */
+    /* ==================================== */
+    /* 13. MODAL - Janela modal customizada */
+    /* ==================================== */
     .modal-content {
         border-radius: 10px !important; /* Arredondamento ajustado conforme pedido */
         border: none !important;
@@ -193,9 +215,9 @@
     .bg-erro-modal { background-color: var(--vermelho-feusp) !important; }
     .bg-info-modal { background-color: var(--azul-institucional) !important; }
 
-    /* ================================================ */
-    /* 6. TOAST E FEEDBACK                              */
-    /* ================================================ */
+    /* ============================================================ */
+    /* 14. TOAST E LOADING - Notificações e overlay de carregamento */
+    /* ============================================================ */
     .toast {
         min-width: 300px;
         border-radius: 10px;
@@ -208,17 +230,17 @@
         z-index: 9999;
     }
 
-    /* ================================================ */
-    /* 7. FOOTER                                        */
-    /* ================================================ */
+    /* ========================================== */
+    /* 15. FOOTER - Rodapé fixo na parte inferior */
+    /* ========================================== */
     footer { padding: 1.5rem 1rem !important; margin-top: auto; }
     #footerEsquerda, #footerDireita { height: 28px; opacity: 0.8; transition: var(--transicao); }
     #footerDireita { filter: invert(1); }
     #footerEsquerda:hover, #footerDireita:hover { opacity: 1; }
 
-    /* ================================================ */
-    /* 8. RESPONSIVIDADE                                */
-    /* ================================================ */
+    /* ===================================================== */
+    /* 16. RESPONSIVIDADE - Ajustes para dispositivos móveis */
+    /* ===================================================== */
     @media (max-width: 768px) {
         #tituloFormulario { font-size: 1.3rem; }
         .btn { font-size: 0.85rem; padding: 8px 16px; }

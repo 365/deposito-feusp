@@ -511,7 +511,7 @@
                                                 placeholder="Ex: USP, UNICAMP...">
                                         </div>
                                     </div>
-
+                                </div>
 
                                 <!-- BOTOES NAVEGACAO -->
                                 <div class="d-flex justify-content-between mt-4 gap-2">
@@ -522,13 +522,16 @@
                                         Próximo <i class="bi bi-arrow-right ms-1"></i>
                                     </button>
                                 </div>
+
                             </div>
                             <!-- FIM ETAPA 3 -->
+                             
                             <!-- ================================== -->
                             <!-- ETAPA 4: DADOS DO ALUNO E UPLOAD   -->
                             <!-- ================================== -->
                             <div class="step-section d-none" id="step-4">
-                                    <div class="banca-container">
+
+                                <div class="banca-container">
                                     <h5 class="fw-bold text-preto mb-2">CONFERÊNCIA E ANEXO</h5>
                                     <p class="text-muted small">Confira seus dados e anexe o arquivo final da tese/dissertação.</p>
 
@@ -536,8 +539,8 @@
                                         <div class="card-header bg-light border-0">
                                             <h6 class="mb-0 fw-bold text-preto"><i class="fas fa-user-graduate me-2"></i>Dados do Aluno</h6>
                                         </div>
-                                        <div class="card-body">
-         <!--                                    <div class="row gx-3">
+                                        <!-- <div class="card-body">
+                                            <div class="row gx-3">
                                                 <div class="col-md-6">
                                                     <p class="mb-1 small text-muted">Nome:</p>
                                                     <p class="fw-bold mb-3" id="resumoNome">-</p>
@@ -552,33 +555,32 @@
                                                     <p class="mb-1 small text-muted">Título da Tese:</p>
                                                     <p class="fw-bold mb-0" id="resumoTitulo">-</p>
                                                 </div>
-                                            </div> -->
+                                            </div> 
+                                        </div> -->
+
+
+                                        <div class="col-12">
+                                            <label for="nome" class="form-label fw-semibold">Nome Completo</label>
+                                            <input type="text" class="form-control custom-input" id="resumoNome" name="nome">
                                         </div>
 
+                                        <!-- N° USP -->
+                                        <div class="col-md-6">
+                                            <label for="nrUsp" class="form-label fw-semibold">N° USP</label>
+                                            <input type="number" class="form-control custom-input" id="resumoNrUsp" name="nrUsp">
+                                        </div>
 
-                                    <div class="col-12">
-                                        <label for="nome" class="form-label fw-semibold">Nome Completo</label>
-                                        <input type="text" class="form-control custom-input" id="resumoNome" name="nome">
-                                    </div>
+                                        <!-- E-mail USP -->
+                                        <div class="col-md-6">
+                                            <label for="emailUSP" class="form-label fw-semibold">Seu E-mail</label>
+                                            <input type="email" class="form-control custom-input" id="resumoEmail" name="emailUSP">
+                                        </div>
 
-                                    <!-- N° USP -->
-                                    <div class="col-md-6">
-                                        <label for="nrUsp" class="form-label fw-semibold">N° USP</label>
-                                        <input type="number" class="form-control custom-input" id="resumoNrUsp" name="nrUsp">
-                                    </div>
-
-                                    <!-- E-mail USP -->
-                                    <div class="col-md-6">
-                                        <label for="emailUSP" class="form-label fw-semibold">Seu E-mail</label>
-                                        <input type="email" class="form-control custom-input" id="resumoEmail" name="emailUSP">
-                                    </div>
-
-                                    <!-- Título da Tese -->
-                                    <div class="col-12">
-                                        <label for="tituloTese" class="form-label fw-semibold">Título da tese</label>
-                                        <input type="text" class="form-control custom-input" id="resumoTitulo" name="tituloTese">
-                                    </div>
-
+                                        <!-- Título da Tese -->
+                                        <div class="col-12">
+                                            <label for="tituloTese" class="form-label fw-semibold">Título da tese</label>
+                                            <input type="text" class="form-control custom-input" id="resumoTitulo" name="tituloTese">
+                                        </div>
 
                                     </div>
 

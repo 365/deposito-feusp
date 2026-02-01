@@ -1,12 +1,30 @@
 <script>
-// DADOS GLOBAIS - PRIMEIRA LINHA!
-window.dadosForm = {
-  nome: '', nrUsp: '', emailUSP: '', tituloTese: '',
-  dataDeposito: '', horaDeposito: '', tipoDefesa: ''
-};
+    // --- 1. TOPO DO ARQUIVO (AQUI você cria o objeto) ---
+    // Objeto criaddo para captura dos dados do aluno
+    //const dadosAluno = {}; // Ele começa vazio, como uma pasta pronta para receber papéis
+    window.dadosAluno = {};
 
     const btnProximo = document.getElementById('btn-proximo-etapa1');
     const progressBar = document.getElementById('progress-bar');
+
+/** =================================
+     0. MOSTRAR E ESCONDER AS STEPS
+    ================================= */
+    function mostrarEtapa(etapa) {
+        // Esconde TODAS as seções
+        document.querySelectorAll('.step-section').forEach(section => {
+            section.classList.add('d-none');
+        });
+        
+        // Mostra a etapa atual
+        const proximaEtapa = document.getElementById('step-' + etapa);
+        if (proximaEtapa) {
+            proximaEtapa.classList.remove('d-none');
+        }
+
+        // Scroll para o topo para evitar que o usuário "caia" no meio da página
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
 /** =============================================
      1. CONSULTA DE DISPONIBILIDADE (ATUALIZADO)
@@ -115,22 +133,24 @@ window.dadosForm = {
          EVENTO DE CLIQUE NO BOTÃO AGENDAR
         =================================== */
         btnAgendar.onclick = function () {
-            const dados = {
-                nome: document.getElementById('nome').value,
-                nrUsp: document.getElementById('nrUsp').value,
-                emailUSP: document.getElementById('emailUSP').value,
-                tituloTese: document.getElementById('tituloTese').value,
-                dataDeposito: document.getElementById('dataDeposito').value,
-                horaDeposito: document.getElementById('horaDeposito').value
-            };
 
-            if (!dados.nome || !dados.tituloTese) {
+        // Gravando direto no objeto que está lá no topo do seu script
+            dadosAluno.nome         = document.getElementById('nome').value;
+            dadosAluno.nrUsp        = document.getElementById('nrUsp').value;
+            dadosAluno.emailUSP     = document.getElementById('emailUSP').value;
+            dadosAluno.tituloTese   = document.getElementById('tituloTese').value;
+            dadosAluno.dataDeposito = document.getElementById('dataDeposito').value;
+            dadosAluno.horaDeposito = document.getElementById('horaDeposito').value;
+
+            console.log('✅ Dados salvos no objeto global:', dadosAluno);
+
+            if (!dadosAluno.nome || !dadosAluno.tituloTese) {
                 instanciaModal.hide();
                 criarNotificacaoAdvertencia("Preencha Nome e Título da Tese antes de agendar.", "Campos Faltando");
                 return;
             }
 
-            txtMensagem.innerHTML = `Aguarde, agendando para <strong>${dados.nome}</strong>...`;
+            txtMensagem.innerHTML = `Aguarde, agendando para <strong>${dadosAluno.nome}</strong>...`;
             pergunta.style.display = 'none';
             btnAgendar.style.display = 'none';
             btnVoltar.style.display = 'none';
@@ -165,7 +185,7 @@ window.dadosForm = {
                         btnProximo.disabled = false;
                     }
                 })
-                .processarAgendamento(dados);
+                .processarAgendamento(dadosAluno);
         };
 
         instanciaModal.show();
@@ -212,16 +232,17 @@ window.dadosForm = {
     document.getElementById('btn-proximo-etapa1').addEventListener('click', function () {
         document.getElementById('step-1').classList.add('d-none');
 
-  // SALVA STEP-1 AQUI 👇
-  window.dadosForm.nome = document.getElementById('nome').value;
-  window.dadosForm.nrUsp = document.getElementById('nrUsp').value;
-  window.dadosForm.emailUSP = document.getElementById('emailUSP').value;
-  window.dadosForm.tituloTese = document.getElementById('tituloTese').value;
-  window.dadosForm.dataDeposito = document.getElementById('dataDeposito').value;
-  window.dadosForm.horaDeposito = document.getElementById('horaDeposito').value;
-  console.log('✅ STEP-1 SALVO:', window.dadosForm.nome);
+        // SALVA STEP-1 AQUI 👇
+        window.dadosAluno.nome = document.getElementById('nome').value;
+        window.dadosAluno.nrUsp = document.getElementById('nrUsp').value;
+        window.dadosAluno.emailUSP = document.getElementById('emailUSP').value;
+        window.dadosAluno.tituloTese = document.getElementById('tituloTese').value;
+        window.dadosAluno.dataDeposito = document.getElementById('dataDeposito').value;
+        window.dadosAluno.horaDeposito = document.getElementById('horaDeposito').value;
+        console.log('✅ STEP-1 SALVO:', window.dadosAluno.nome);
 
-        document.getElementById('step-2').classList.remove('d-none');
+        //document.getElementById('step-2').classList.remove('d-none');
+        mostrarEtapa(2);
         progressBar.style.width = '25%';
 
         // SCROLL OTIMIZADO - Aguarda renderização e rola para o topo do formulário
@@ -244,19 +265,21 @@ window.dadosForm = {
     // ← SALVAR ORIENTADOR antes de esconder
         window.orientadorSelecionado = document.getElementById('orientador').value;
 
-        document.getElementById('step-2').classList.add('d-none');
-        document.getElementById('step-1').classList.remove('d-none');
+        //document.getElementById('step-2').classList.add('d-none');
+        //document.getElementById('step-1').classList.remove('d-none');
+        mostrarEtapa(1);
         progressBar.style.width = '25%';
         carregarOrientadores();
     });
 
-    /** =============================
-         ETAPA 2 → ETAPA 3 (CORRETO)
-        ============================= */
+/** =============================
+     ETAPA 2 → ETAPA 3 (CORRETO)
+    ============================= */
     document.getElementById('btn-proximo-etapa2').addEventListener('click', function () {
-        document.getElementById('step-2').classList.add('d-none');
-        document.getElementById('step-3').classList.remove('d-none');
+        //document.getElementById('step-2').classList.add('d-none');
+        //document.getElementById('step-3').classList.remove('d-none');
         //document.getElementById('progress-bar').style.width = '50%';
+        mostrarEtapa(3);
         progressBar.style.width = '50%'; // <-- Mude aqui (está 66%)
 
         // ← Scroll da pagina para iniciar no topo (cópia da etapa1)
@@ -273,13 +296,14 @@ window.dadosForm = {
         }, 100);
     });
 
-    /** =============================
-         ETAPA 3 → ETAPA 2 (CORRETO)
-        ============================= */
+/** =============================
+     ETAPA 3 → ETAPA 2 (CORRETO)
+    ============================= */
     document.getElementById('btn-voltar-etapa3').addEventListener('click', function () {
-        document.getElementById('step-3').classList.add('d-none');
-        document.getElementById('step-2').classList.remove('d-none');
-        document.getElementById('progress-bar').style.width = '50%';
+        //document.getElementById('step-3').classList.add('d-none');
+        //document.getElementById('step-2').classList.remove('d-none');
+        mostrarEtapa(2);
+        progressBar.style.width = '50%';
 
         // ← Scroll da pagina para iniciar no topo (cópia da etapa1)
         setTimeout(() => {
@@ -300,23 +324,25 @@ window.dadosForm = {
 ============================= */
     document.addEventListener('DOMContentLoaded', function() {
     const btnStep4 = document.getElementById('btn-proximo-etapa4');
+
     if (btnStep4) {
-btnStep4.addEventListener('click', function() {
-  console.log('🔥 CLIQUE step-4');
-  document.getElementById('step-3').classList.add('d-none');
-  document.getElementById('step-4').classList.remove('d-none');
-  
-  // ESPERA DOM step-4 renderizar
-  setTimeout(() => {
-    console.log('⏳ RESUMO após render');
-    document.getElementById('resumoNome').textContent = window.dadosForm.nome || '-';
-    document.getElementById('resumoNrUsp').textContent = window.dadosForm.nrUsp || '-';
-    document.getElementById('resumoEmail').textContent = window.dadosForm.emailUSP || '-';
-    document.getElementById('resumoTitulo').textContent = window.dadosForm.tituloTese || '-';
-    console.log('✅ TELA:', document.getElementById('resumoNome').textContent);
-  }, 300);  // 300ms espera Bootstrap render
-  
-  document.getElementById('progress-bar').style.width = '75%';
+        btnStep4.addEventListener('click', function() {
+        console.log('🔥 CLIQUE step-4');
+        //document.getElementById('step-3').classList.add('d-none');
+        //document.getElementById('step-4').classList.remove('d-none');
+        mostrarEtapa(4);
+        
+        // ESPERA DOM step-4 renderizar
+        setTimeout(() => {
+            console.log('⏳ RESUMO após render');
+            document.getElementById('resumoNome').textContent = window.dadosForm.nome || '-';
+            document.getElementById('resumoNrUsp').textContent = window.dadosForm.nrUsp || '-';
+            document.getElementById('resumoEmail').textContent = window.dadosForm.emailUSP || '-';
+            document.getElementById('resumoTitulo').textContent = window.dadosForm.tituloTese || '-';
+            console.log('✅ TELA:', document.getElementById('resumoNome').textContent);
+        }, 300);  // 300ms espera Bootstrap render
+        
+        document.getElementById('progress-bar').style.width = '75%';
         
         // SCROLL
         setTimeout(() => {
@@ -335,11 +361,12 @@ btnStep4.addEventListener('click', function() {
         ETAPA 4 → ETAPA 3 (VOLTAR)
     ============================= */
     document.getElementById('btn-voltar-etapa3').addEventListener('click', function () {
-        document.getElementById('step-4').classList.add('d-none');
-        document.getElementById('step-3').classList.remove('d-none');
+        //document.getElementById('step-4').classList.add('d-none');
+        //document.getElementById('step-3').classList.remove('d-none');
+        mostrarEtapa(3);
         
         // AJUSTE: Se voltou para a 3, a barra volta para 50%
-        progressBar.style.width = '50%'; 
+        progressBar.style.width = '50%';
 
         // Scroll da pagina para iniciar no topo
         setTimeout(() => {
@@ -444,8 +471,9 @@ btnStep4.addEventListener('click', function() {
     ============================================ */
     function mostrarEtapa4() {
         // Esconde a etapa anterior e mostra a 4
-        document.getElementById('step-3').style.display = 'none';
-        document.getElementById('step-4').style.display = 'block';
+        //document.getElementById('step-3').style.display = 'none';
+        //document.getElementById('step-4').style.display = 'block';
+        mostrarEtapa(4);
 
         // Puxa os valores dos inputs das etapas anteriores
         document.getElementById('resumoNome').innerText = document.getElementById('nome').value || "Não preenchido";
