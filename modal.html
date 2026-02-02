@@ -1,13 +1,13 @@
-<!-- ================================================ -->
+<!-- ============================================================== -->
 <!-- 1. MODAL PRINCIPAL - Resultado/Agendamento (backdrop estático) -->
-<!-- ================================================ -->
+<!-- ============================================================== -->
 <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow-lg">
 
-      <!-- ================================================ -->
+      <!-- ======================================================= -->
       <!-- 1.1 HEADER DINÂMICO - Cor/ícone/título alterados por JS -->
-      <!-- ================================================ -->
+      <!-- ======================================================= -->
       <div id="modalHeaderCor" class="modal-header text-white">
         <h5 class="modal-title">
           <i id="modalIcone" class="bi me-2"></i>
@@ -15,9 +15,9 @@
         </h5>
       </div>
 
-      <!-- ================================================ -->
+      <!-- ======================================================= -->
       <!-- 1.2 BODY - Mensagem principal + pergunta de agendamento -->
-      <!-- ================================================ -->
+      <!-- ======================================================= -->
       <div class="modal-body p-4 text-center">
         <!-- Mensagem principal (fs-5, alterada por JS) -->
         <p id="modalMensagem" class="fs-5 mb-3 text-dark"></p>
@@ -32,9 +32,9 @@
         </div>
       </div>
 
-      <!-- ================================================ -->
+      <!-- ==================================================== -->
       <!-- 1.3 FOOTER - Botões Voltar/Agendar (controle por JS) -->
-      <!-- ================================================ -->
+      <!-- ==================================================== -->
       <div class="modal-footer border-0 justify-content-center pb-4 gap-2">
         <!-- Botão Voltar (sempre visível) -->
         <button type="button" class="btn btn-outline-secondary btn-custom" id="btnModalVoltar" data-bs-dismiss="modal">
@@ -51,9 +51,9 @@
   </div>
 </div>
 
-<!-- ================================================ -->
+<!-- ========================================================= -->
 <!-- 2. OVERLAY DE LOADING - Spinner fullscreen (z-index 9999) -->
-<!-- ================================================ -->
+<!-- ========================================================= -->
 <div id="loadingOverlay" class="position-fixed top-0 start-0 w-100 h-100 d-none"
   style="background: rgba(255,255,255,0.9); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column;">
   <!-- Spinner Bootstrap grande (3rem) -->

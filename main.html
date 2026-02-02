@@ -518,7 +518,7 @@
                                     <button type="button" id="btn-voltar-etapa3" class="btn btn-outline-secondary px-4">
                                         <i class="bi bi-arrow-left me-1"></i> Voltar
                                     </button>
-                                    <button type="button" id="btn-proximo-etapa4" class="btn btn-primary px-5">
+                                    <button type="button" id="btn-proximo-etapa3" class="btn btn-primary px-5">
                                         Próximo <i class="bi bi-arrow-right ms-1"></i>
                                     </button>
                                 </div>
@@ -539,7 +539,7 @@
                                         <div class="card-header bg-light border-0">
                                             <h6 class="mb-0 fw-bold text-preto"><i class="fas fa-user-graduate me-2"></i>Dados do Aluno</h6>
                                         </div>
-                                        <!-- <div class="card-body">
+                                        <div class="card-body">
                                             <div class="row gx-3">
                                                 <div class="col-md-6">
                                                     <p class="mb-1 small text-muted">Nome:</p>
@@ -556,34 +556,11 @@
                                                     <p class="fw-bold mb-0" id="resumoTitulo">-</p>
                                                 </div>
                                             </div> 
-                                        </div> -->
-
-
-                                        <div class="col-12">
-                                            <label for="nome" class="form-label fw-semibold">Nome Completo</label>
-                                            <input type="text" class="form-control custom-input" id="resumoNome" name="nome">
-                                        </div>
-
-                                        <!-- N° USP -->
-                                        <div class="col-md-6">
-                                            <label for="nrUsp" class="form-label fw-semibold">N° USP</label>
-                                            <input type="number" class="form-control custom-input" id="resumoNrUsp" name="nrUsp">
-                                        </div>
-
-                                        <!-- E-mail USP -->
-                                        <div class="col-md-6">
-                                            <label for="emailUSP" class="form-label fw-semibold">Seu E-mail</label>
-                                            <input type="email" class="form-control custom-input" id="resumoEmail" name="emailUSP">
-                                        </div>
-
-                                        <!-- Título da Tese -->
-                                        <div class="col-12">
-                                            <label for="tituloTese" class="form-label fw-semibold">Título da tese</label>
-                                            <input type="text" class="form-control custom-input" id="resumoTitulo" name="tituloTese">
                                         </div>
 
                                     </div>
 
+                                    <!-- Anexar tese -->
                                     <div class="mb-3">
                                         <label for="arquivoPDF" class="form-label fw-bold text-preto small">ANEXAR TESE/DISSERTAÇÃO (PDF)</label>
                                         <div class="input-group">
@@ -594,13 +571,14 @@
                                     </div>
                                 </div>
 
+                                <!-- BOTOES NAVEGACAO -->
                                 <div class="d-flex justify-content-between mt-4">
-                                    <button type="button" class="btn btn-secondary px-4 text-uppercase fw-bold" onclick="voltarEtapa(3)">
-                                        <i class="fas fa-chevron-left me-2"></i> Anterior
+                                    <button type="button"  id="btn-voltar-etapa4" class="btn btn-secondary px-4 text-uppercase fw-bold">
+                                        <i class="fas fa-chevron-left me-2"></i> Voltar
                                     </button>
                                     
                                     <div>
-                                        <button type="button" class="btn btn-primary px-4 text-uppercase fw-bold me-2" id="btnConferir" onclick="prepararConferencia()">
+                                        <button type="button" class="btn btn-primary px-4 text-uppercase fw-bold me-2" id="btnConferir">
                                             <i class="fas fa-eye me-2"></i> Conferir Dados
                                         </button>
                                         

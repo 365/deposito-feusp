@@ -24,3 +24,73 @@
         if (presencialCount === 0) return 'Virtual';
         return 'Híbrido';  // Mistura
     }
+
+
+
+    /** =============================
+     ETAPA 3 → ETAPA 4 (FINAL)
+    ============================= */
+    document.addEventListener('DOMContentLoaded', function() {
+    const btnStep4 = document.getElementById('btn-proximo-etapa3');
+
+    if (btnStep4) {
+        btnStep4.addEventListener('click', function() {
+        console.log('🔥 CLIQUE step-4');
+        //document.getElementById('step-3').classList.add('d-none');
+        //document.getElementById('step-4').classList.remove('d-none');
+        mostrarEtapa(4);
+
+        const dados = window.dadosAluno || {};
+        
+        // ESPERA DOM step-4 renderizar
+        setTimeout(() => {
+            console.log('⏳ RESUMO após render');
+            document.getElementById('resumoNome').textContent = dados.nome || '-';
+            document.getElementById('resumoNrUsp').textContent = dados.nrUsp || '-';
+            document.getElementById('resumoEmail').textContent = dados.emailUSP || '-';
+            document.getElementById('resumoTitulo').textContent = dados.tituloTese || '-';
+            console.log('✅ TELA:', document.getElementById('resumoNome').textContent);
+        }, 300);  // 300ms espera Bootstrap render
+
+        // O setTimeout garante que o HTML já apareceu antes de tentar escrever nele
+        setTimeout(() => {
+            atualizarResumoFinal(); 
+        }, 100);
+        
+        document.getElementById('progress-bar').style.width = '75%';
+        
+        // SCROLL
+        setTimeout(() => {
+            document.getElementById('form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 200);
+        
+        console.log('✅ STEP-4 CARREGADA');
+        });
+        console.log('Evento step-4 ATIVO!');
+    } else {
+        console.error('BOTÃO step-4 NÃO ENCONTRADO!');
+    }
+    });
+
+
+
+    /** ============================================
+     Exibindo a ETAPA 4 - Upload da tese
+    ============================================ */
+    function mostrarEtapa4() {
+        // Esconde a etapa anterior e mostra a 4
+        //document.getElementById('step-3').style.display = 'none';
+        //document.getElementById('step-4').style.display = 'block';
+        mostrarEtapa(4);
+
+        // Puxa os valores dos inputs das etapas anteriores
+        document.getElementById('resumoNome').innerText = document.getElementById('nome').value || "Não preenchido";
+        document.getElementById('resumoNrUsp').innerText = document.getElementById('nrUsp').value || "Não preenchido";
+        document.getElementById('resumoEmail').innerText = document.getElementById('emailUSP').value || "Não preenchido";
+        document.getElementById('resumoTitulo').innerText = document.getElementById('tituloTese').value || "Não preenchido";
+
+        progressBar.style.width = '75%'; // <--- Etapa 4 mostra 75%
+        
+        // Atualiza a barra de progresso (se você estiver usando uma)
+        //updateProgressBar(100); 
+    }
