@@ -453,6 +453,11 @@
 
     if (btnConferir) {
         btnConferir.addEventListener('click', function() {
+
+            salvarDadosEtapa(4); // Garante que a etapa atual foi salva
+
+            console.log("📦 ESTADO ATUAL DO OBJETO DADOSALUNO:", window.dadosAluno);
+
             const d = window.dadosAluno || {};
             
             // 1. Definimos quais campos são obrigatórios (IDs do objeto)
@@ -472,24 +477,27 @@
                 }
             });
 
+            // 2. Verificação especial para o ARQUIVO (Verifica o input diretamente)
+            const inputArquivo = document.getElementById('arquivoPDF');
+            if (!inputArquivo || !inputArquivo.files || inputArquivo.files.length === 0) {
+                camposFaltando.push("Arquivo PDF da Tese/Dissertação");
+            }
+
             // 3. Verificação Final
             if (camposFaltando.length > 0) {
                 // Se faltar algo, avisa e NÃO libera o botão de gravar
                 alert("⚠️ Atenção! Os seguintes campos são obrigatórios e não foram preenchidos:\n\n• " + camposFaltando.join("\n• "));
                 console.warn("🚫 Conferência recusada: campos incompletos.");
             } else {
-                // Se tudo estiver OK, libera o botão de gravar
-                console.log("✅ Tudo preenchido. Liberando gravação...");
+                // ... dentro da validação do botão Conferir ...
+                console.log("✅ Campos validados. Abrindo modal de conferência...");
                 
-                this.innerHTML = '<i class="fas fa-check-double me-2"></i> Tudo Ok!';
-                this.classList.replace('btn-primary', 'btn-outline-success');
-                
-                if (btnGravar) {
-                    btnGravar.disabled = false;
-                    btnGravar.classList.remove('disabled');
-                    btnGravar.classList.add('btn-success');
-                    renderizarResumoNoModal();
-                }
+                // Mudamos o visual do botão conferir para indicar que a validação passou
+                this.innerHTML = '<i class="fas fa-eye me-2"></i> Revisando Dados...';
+                this.classList.replace('btn-primary', 'btn-warning');
+
+                // APENAS CHAMA O MODAL (Não libera o gravar ainda!)
+                renderizarResumoNoModal();
             }
         });
     }
@@ -584,57 +592,66 @@
  * Função para capturar dados de uma etapa específica
  * @param {number} etapa - O número da etapa que o usuário está saindo
  */
-function salvarDadosEtapa(etapa) {
-    console.log(`💾 Salvando dados da Etapa ${etapa}...`);
-    
-    if (etapa === 2) {
-        window.dadosAluno.areaConcentracao = document.getElementById('areaConcentracao')?.value;
-        window.dadosAluno.orientador = document.getElementById('orientador')?.value;
-        // SEGUNDO TITULAR
-        window.dadosAluno.nomeTitular2 = document.getElementById('nomeTitular2')?.value;
-        window.dadosAluno.emailTitular2 = document.getElementById('emailTitular2')?.value;
-        window.dadosAluno.vinculoTitular2 = document.getElementById('vinculoTitular2')?.value;
-        // TERCEIRO TITULAR
-        window.dadosAluno.nomeTitular3 = document.getElementById('nomeTitular3')?.value;
-        window.dadosAluno.emailTitular3 = document.getElementById('emailTitular3')?.value;
-        window.dadosAluno.vinculoTitular3 = document.getElementById('vinculoTitular3')?.value;
-        // QUARTO TITULAR
-        window.dadosAluno.nomeTitular4 = document.getElementById('nomeTitular4')?.value;
-        window.dadosAluno.emailTitular4 = document.getElementById('emailTitular4')?.value;
-        window.dadosAluno.vinculoTitular4 = document.getElementById('vinculoTitular4')?.value;
-        // QUINTO TITULAR
-        window.dadosAluno.nomeTitular5 = document.getElementById('nomeTitular5')?.value;
-        window.dadosAluno.emailTitular5 = document.getElementById('emailTitular5')?.value;
-        window.dadosAluno.vinculoTitular5 = document.getElementById('vinculoTitular5')?.value;
-    } 
-    else if (etapa === 3) {
-        // PRIMEIRO SUPLENTE
-        window.dadosAluno.nomeSuplente1 = document.getElementById('nomeSuplente1')?.value;
-        window.dadosAluno.emailSuplente1 = document.getElementById('emailSuplente1')?.value;
-        window.dadosAluno.vinculoSuplente1 = document.getElementById('vinculoSuplente1')?.value;
-        // SEGUNDO SUPLENTE
-        window.dadosAluno.nomeSuplente2 = document.getElementById('nomeSuplente2')?.value;
-        window.dadosAluno.emailSuplente2 = document.getElementById('emailSuplente2')?.value;
-        window.dadosAluno.vinculoSuplente2 = document.getElementById('vinculoSuplente2')?.value;
-        // TERCEIRO SUPLENTE
-        window.dadosAluno.nomeSuplente3 = document.getElementById('nomeSuplente3')?.value;
-        window.dadosAluno.emailSuplente3 = document.getElementById('emailSuplente3')?.value;
-        window.dadosAluno.vinculoSuplente3 = document.getElementById('vinculoSuplente3')?.value;
-        // QUARTO SUPLENTE
-        window.dadosAluno.nomeSuplente4 = document.getElementById('nomeSuplente4')?.value;
-        window.dadosAluno.emailSuplente4 = document.getElementById('emailSuplente4')?.value;
-        window.dadosAluno.vinculoSuplente4 = document.getElementById('vinculoSuplente4')?.value;
-        // QUINTO SUPLENTE
-        window.dadosAluno.nomeSuplente5 = document.getElementById('nomeSuplente5')?.value;
-        window.dadosAluno.emailSuplente5 = document.getElementById('emailSuplente5')?.value;
-        window.dadosAluno.vinculoSuplente5 = document.getElementById('vinculoSuplente5')?.value;
-    } 
-    else if (etapa === 4) {
-        window.dadosAluno.arquivoPDF = document.getElementById('arquivoPDF')?.value;
+    function salvarDadosEtapa(etapa) {
+        console.log(`💾 Salvando dados da Etapa ${etapa}...`);
+        
+        if (etapa === 2) {
+            window.dadosAluno.areaConcentracao = document.getElementById('areaConcentracao')?.value;
+            window.dadosAluno.orientador = document.getElementById('orientador')?.value;
+            // SEGUNDO TITULAR
+            window.dadosAluno.nomeTitular2 = document.getElementById('nomeTitular2')?.value;
+            window.dadosAluno.emailTitular2 = document.getElementById('emailTitular2')?.value;
+            window.dadosAluno.vinculoTitular2 = document.getElementById('vinculoTitular2')?.value;
+            // TERCEIRO TITULAR
+            window.dadosAluno.nomeTitular3 = document.getElementById('nomeTitular3')?.value;
+            window.dadosAluno.emailTitular3 = document.getElementById('emailTitular3')?.value;
+            window.dadosAluno.vinculoTitular3 = document.getElementById('vinculoTitular3')?.value;
+            // QUARTO TITULAR
+            window.dadosAluno.nomeTitular4 = document.getElementById('nomeTitular4')?.value;
+            window.dadosAluno.emailTitular4 = document.getElementById('emailTitular4')?.value;
+            window.dadosAluno.vinculoTitular4 = document.getElementById('vinculoTitular4')?.value;
+            // QUINTO TITULAR
+            window.dadosAluno.nomeTitular5 = document.getElementById('nomeTitular5')?.value;
+            window.dadosAluno.emailTitular5 = document.getElementById('emailTitular5')?.value;
+            window.dadosAluno.vinculoTitular5 = document.getElementById('vinculoTitular5')?.value;
+        } 
+        else if (etapa === 3) {
+            // PRIMEIRO SUPLENTE
+            window.dadosAluno.nomeSuplente1 = document.getElementById('nomeSuplente1')?.value;
+            window.dadosAluno.emailSuplente1 = document.getElementById('emailSuplente1')?.value;
+            window.dadosAluno.vinculoSuplente1 = document.getElementById('vinculoSuplente1')?.value;
+            // SEGUNDO SUPLENTE
+            window.dadosAluno.nomeSuplente2 = document.getElementById('nomeSuplente2')?.value;
+            window.dadosAluno.emailSuplente2 = document.getElementById('emailSuplente2')?.value;
+            window.dadosAluno.vinculoSuplente2 = document.getElementById('vinculoSuplente2')?.value;
+            // TERCEIRO SUPLENTE
+            window.dadosAluno.nomeSuplente3 = document.getElementById('nomeSuplente3')?.value;
+            window.dadosAluno.emailSuplente3 = document.getElementById('emailSuplente3')?.value;
+            window.dadosAluno.vinculoSuplente3 = document.getElementById('vinculoSuplente3')?.value;
+            // QUARTO SUPLENTE
+            window.dadosAluno.nomeSuplente4 = document.getElementById('nomeSuplente4')?.value;
+            window.dadosAluno.emailSuplente4 = document.getElementById('emailSuplente4')?.value;
+            window.dadosAluno.vinculoSuplente4 = document.getElementById('vinculoSuplente4')?.value;
+            // QUINTO SUPLENTE
+            window.dadosAluno.nomeSuplente5 = document.getElementById('nomeSuplente5')?.value;
+            window.dadosAluno.emailSuplente5 = document.getElementById('emailSuplente5')?.value;
+            window.dadosAluno.vinculoSuplente5 = document.getElementById('vinculoSuplente5')?.value;
+        } 
+        else if (etapa === 4) {
+            const inputArquivo = document.getElementById('arquivoPDF');
+            console.log("🔍 Tentando capturar arquivo do input:", inputArquivo);
+            
+            // Verifica se existe um arquivo selecionado na lista de arquivos do input
+            if (inputArquivo && inputArquivo.files && inputArquivo.files.length > 0) {
+                // Pegamos o nome do primeiro arquivo da lista
+                window.dadosAluno.arquivoPDF = inputArquivo.files[0].name;
+            } else {
+                window.dadosAluno.arquivoPDF = "Não selecionado";
+            }
+        }
+        
+        console.log('📊 Estado atual do objeto:', window.dadosAluno);
     }
-    
-    console.log('📊 Estado atual do objeto:', window.dadosAluno);
-}
 
 /** =======================================
      Dentro da lógica que abre o seu Modal
@@ -648,38 +665,116 @@ function salvarDadosEtapa(etapa) {
         // ... e assim por diante para todos os campos
     }
 
+/** =======================
+     RENDERIZANDO O MODAL
+    ======================= */
+    function renderizarResumoNoModal() {
+        const d = window.dadosAluno || {};
+        const container = document.getElementById('corpoResumoGeral');
 
-function renderizarResumoNoModal() {
-    const d = window.dadosAluno || {};
-    const container = document.getElementById('corpoResumoGeral');
+        container.innerHTML = `
+                <div class="alert alert-info py-2 small">
+                    <i class="fas fa-info-circle me-2"></i> Verifique se todas as informações abaixo estão corretas antes de finalizar.
+                </div>
+                
+                <h6 class="fw-bold border-bottom pb-1 text-primary">1. IDENTIFICAÇÃO</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td width="30%" class="text-muted">Nome:</td><td class="fw-bold">${d.nome || '-'}</td></tr>
+                    <tr><td class="text-muted">Nº USP:</td><td class="fw-bold">${d.nrUsp || '-'}</td></tr>
+                    <tr><td width="30%" class="text-muted">E-mail:</td><td class="fw-bold">${d.emailUSP || '-'}</td></tr>
+                </table>
 
-    container.innerHTML = `
-        <div class="alert alert-info py-2 small">
-            <i class="fas fa-info-circle me-2"></i> Verifique se todas as informações abaixo estão corretas antes de finalizar.
-        </div>
-        
-        <h6 class="fw-bold border-bottom pb-1 text-primary">1. IDENTIFICAÇÃO</h6>
-        <table class="table table-sm table-borderless mb-3">
-            <tr><td width="30%" class="text-muted">Nome:</td><td class="fw-bold">${d.nome || '-'}</td></tr>
-            <tr><td class="text-muted">Nº USP:</td><td class="fw-bold">${d.nrUsp || '-'}</td></tr>
-        </table>
+                <h6 class="fw-bold border-bottom pb-1 text-primary">2. DADOS ACADÊMICOS</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td class="text-muted">Título:</td><td class="fw-bold">${d.tituloTese || '-'}</td></tr>
+                </table>
 
-        <h6 class="fw-bold border-bottom pb-1 text-primary">2. DADOS ACADÊMICOS</h6>
-        <table class="table table-sm table-borderless mb-3">
-            <tr><td width="30%" class="text-muted">E-mail:</td><td class="fw-bold">${d.emailUSP || '-'}</td></tr>
-            <tr><td class="text-muted">Título:</td><td class="fw-bold">${d.tituloTese || '-'}</td></tr>
-        </table>
+                <h6 class="fw-bold border-bottom pb-1 text-primary">3. AGENDAMENTO</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td width="30%" class="text-muted">Data Defesa:</td><td class="fw-bold">${d.dataDeposito || '-'}</td></tr>
+                    <tr><td class="text-muted">Hora:</td><td class="fw-bold">${d.horaDeposito || '-'}</td></tr>
+                </table>
 
-        <h6 class="fw-bold border-bottom pb-1 text-primary">3. AGENDAMENTO</h6>
-        <table class="table table-sm table-borderless mb-0">
-            <tr><td width="30%" class="text-muted">Data Sugerida:</td><td class="fw-bold">${d.dataSugerida || '-'}</td></tr>
-            <tr><td class="text-muted">Obs:</td><td class="fw-bold">${d.observacoes || 'Nenhuma'}</td></tr>
-        </table>
-    `;
+                <h6 class="fw-bold border-bottom pb-1 text-primary">4. MEMBROS TITULARES</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td width="30%" class="text-muted">Área de Concentração:</td><td class="fw-bold">${d.areaConcentracao || '-'}</td></tr>
+                    <tr><td width="30%" class="text-muted">Orientador:</td><td class="fw-bold">${d.orientador || '-'}</td></tr>
+                </table>
 
-    // Abre o modal após renderizar
-    new bootstrap.Modal(document.getElementById('modalConferencia')).show();
-}
+                <h6 class="fw-bold border-bottom pb-1 text-primary-emphasis small">SEGUNDO TITULAR</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td width="30%" class="text-muted small">Nome:</td><td class="fw-bold">${d.nomeTitular2 || '-'}</td></tr>
+                    <tr><td class="text-muted small">E-mail:</td><td class="fw-bold">${d.emailTitular2 || '-'}</td></tr>
+                    <tr><td class="text-muted small">Vínculo:</td><td class="fw-bold">${d.vinculoTitular2 || '-'}</td></tr>
+                </table>
+
+                <h6 class="fw-bold border-bottom pb-1 text-primary-emphasis small">TERCEIRO TITULAR</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td width="30%" class="text-muted small">Nome:</td><td class="fw-bold">${d.nomeTitular3 || '-'}</td></tr>
+                    <tr><td class="text-muted small">E-mail:</td><td class="fw-bold">${d.emailTitular3 || '-'}</td></tr>
+                    <tr><td class="text-muted small">Vínculo:</td><td class="fw-bold">${d.vinculoTitular3 || '-'}</td></tr>
+                </table>
+
+                <h6 class="fw-bold border-bottom pb-1 text-primary-emphasis small">QUARTO TITULAR</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td width="30%" class="text-muted small">Nome:</td><td class="fw-bold">${d.nomeTitular4 || '-'}</td></tr>
+                    <tr><td class="text-muted small">E-mail:</td><td class="fw-bold">${d.emailTitular4 || '-'}</td></tr>
+                    <tr><td class="text-muted small">Vínculo:</td><td class="fw-bold">${d.vinculoTitular4 || '-'}</td></tr>
+                </table>
+
+                <h6 class="fw-bold border-bottom pb-1 text-primary-emphasis small">QUINTO TITULAR</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td width="30%" class="text-muted small">Nome:</td><td class="fw-bold">${d.nomeTitular5 || '-'}</td></tr>
+                    <tr><td class="text-muted small">E-mail:</td><td class="fw-bold">${d.emailTitular5 || '-'}</td></tr>
+                    <tr><td class="text-muted small">Vínculo:</td><td class="fw-bold">${d.vinculoTitular5 || '-'}</td></tr>
+                </table>
+
+                <h6 class="fw-bold border-bottom pb-1 text-primary">5. MEMBROS SUPLENTES</h6>
+                
+                <h6 class="fw-bold border-bottom pb-1 text-primary-emphasisy small mt-2">PRIMEIRO SUPLENTE</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td width="30%" class="text-muted small">Nome:</td><td class="fw-bold">${d.nomeSuplente1 || '-'}</td></tr>
+                    <tr><td class="text-muted small">E-mail:</td><td class="fw-bold">${d.emailSuplente1 || '-'}</td></tr>
+                    <tr><td class="text-muted small">Vínculo:</td><td class="fw-bold">${d.vinculoSuplente1 || '-'}</td></tr>
+                </table>
+
+                <h6 class="fw-bold border-bottom pb-1 text-primary-emphasis small">SEGUNDO SUPLENTE</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td width="30%" class="text-muted small">Nome:</td><td class="fw-bold">${d.nomeSuplente2 || '-'}</td></tr>
+                    <tr><td class="text-muted small">E-mail:</td><td class="fw-bold">${d.emailSuplente2 || '-'}</td></tr>
+                    <tr><td class="text-muted small">Vínculo:</td><td class="fw-bold">${d.vinculoSuplente2 || '-'}</td></tr>
+                </table>
+
+                <h6 class="fw-bold border-bottom pb-1 text-primary-emphasis small">TERCEIRO SUPLENTE</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td width="30%" class="text-muted small">Nome:</td><td class="fw-bold">${d.nomeSuplente3 || '-'}</td></tr>
+                    <tr><td class="text-muted small">E-mail:</td><td class="fw-bold">${d.emailSuplente3 || '-'}</td></tr>
+                    <tr><td class="text-muted small">Vínculo:</td><td class="fw-bold">${d.vinculoSuplente3 || '-'}</td></tr>
+                </table>
+
+                <h6 class="fw-bold border-bottom pb-1 text-primary-emphasis small">QUARTO SUPLENTE</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td width="30%" class="text-muted small">Nome:</td><td class="fw-bold">${d.nomeSuplente4 || '-'}</td></tr>
+                    <tr><td class="text-muted small">E-mail:</td><td class="fw-bold">${d.emailSuplente4 || '-'}</td></tr>
+                    <tr><td class="text-muted small">Vínculo:</td><td class="fw-bold">${d.vinculoSuplente4 || '-'}</td></tr>
+                </table>
+
+                <h6 class="fw-bold border-bottom pb-1 text-primary-emphasis small">QUINTO SUPLENTE</h6>
+                <table class="table table-sm table-borderless mb-3">
+                    <tr><td width="30%" class="text-muted small">Nome:</td><td class="fw-bold">${d.nomeSuplente5 || '-'}</td></tr>
+                    <tr><td class="text-muted small">E-mail:</td><td class="fw-bold">${d.emailSuplente5 || '-'}</td></tr>
+                    <tr><td class="text-muted small">Vínculo:</td><td class="fw-bold">${d.vinculoSuplente5 || '-'}</td></tr>
+                </table>
+
+                <h6 class="fw-bold border-bottom pb-1 text-primary">6. ARQUIVO TESE/DISSERTAÇÃO</h6>
+                <table class="table table-sm table-borderless mb-0">
+                    <tr><td width="30%" class="text-muted">Arquivo:</td><td class="fw-bold">${d.arquivoPDF || 'Não selecionado'}</td></tr>
+                </table>
+            `;
+
+        // Abre o modal após renderizar
+        new bootstrap.Modal(document.getElementById('modalConferencia')).show();
+    }
 
 /** ===========================================
     GERENCIADOR DE NAVEGAÇÃO GLOBAL (ROBUSTO)
@@ -714,6 +809,18 @@ function renderizarResumoNoModal() {
         else if (id === 'btn-voltar-etapa4') {
             console.log("⬅️ Voltando para Etapa 3");
             mostrarEtapa(3);
+        }
+    });
+
+/** ===================================================
+    Ativa/Desativa o botão conforme o checkbox da LGPD
+======================================================= */
+    document.addEventListener('change', function(e) {
+        if (e.target && e.target.id === 'checkLGPD') {
+            const btnConfirmar = document.getElementById('confirmarNoModal');
+            if (btnConfirmar) {
+                btnConfirmar.disabled = !e.target.checked;
+            }
         }
     });
 

@@ -55,7 +55,7 @@
                                         <input type="text" class="form-control custom-input" id="tituloTese" name="tituloTese" placeholder="Digite o título da sua tese">
                                     </div>
 
-                                    <!-- Data e Horário do Depósito -->
+                                    <!-- Data e Horário do Agendamento -->
                                     <div class="col-md-6">
                                         <label for="dataDeposito" class="form-label fw-semibold">Data do Depósito</label>
                                         <input type="date" class="form-control custom-input" id="dataDeposito" name="dataDeposito" required>
@@ -390,8 +390,8 @@
 
                                 <!-- Botões de Navegação -->
                                 <div class="d-flex justify-content-between mt-4">
-                                    <button type="button" id="btn-voltar-etapa2" class="btn btn-outline-secondary px-4">
-                                        <i class="bi bi-arrow-left me-1"></i> Voltar
+                                    <button type="button" id="btn-voltar-etapa2" class="btn btn-voltar-custom text-uppercase fw-bold px-4">
+                                        <i class="fas bi bi-arrow-left me-1"></i> Voltar
                                     </button>
                                     <button type="button" id="btn-proximo-etapa2" class="btn btn-primary px-5">
                                         Próximo <i class="bi bi-arrow-right ms-1"></i>
@@ -515,8 +515,8 @@
 
                                 <!-- BOTOES NAVEGACAO -->
                                 <div class="d-flex justify-content-between mt-4 gap-2">
-                                    <button type="button" id="btn-voltar-etapa3" class="btn btn-outline-secondary px-4">
-                                        <i class="bi bi-arrow-left me-1"></i> Voltar
+                                    <button type="button" id="btn-voltar-etapa3" class="btn btn-voltar-custom text-uppercase fw-bold px-4">
+                                        <i class="fas bi bi-arrow-left me-1"></i> Voltar
                                     </button>
                                     <button type="button" id="btn-proximo-etapa3" class="btn btn-primary px-5">
                                         Próximo <i class="bi bi-arrow-right ms-1"></i>
@@ -563,8 +563,11 @@
                                     <!-- Anexar tese -->
                                     <div class="mb-3">
                                         <label for="arquivoPDF" class="form-label fw-bold text-preto small">ANEXAR TESE/DISSERTAÇÃO (PDF)</label>
+                                        <div class="text-danger small fw-bold mb-1">
+                                            <i class="fas fa-exclamation-triangle me-1"></i> Atenção: Apenas PDFs desprotegidos serão aceitos.
+                                        </div>
                                         <div class="input-group">
-                                            <input type="file" class="form-control" id="arquivoPDF" accept=".pdf">
+                                            <input type="file" class="form-control" id="arquivoPDF" accept=".pdf" required>
                                             <span class="input-group-text bg-white"><i class="fas fa-file-pdf text-danger"></i></span>
                                         </div>
                                         <div id="fileHelp" class="form-text text-muted italic">O sistema aceita apenas arquivos no formato .pdf</div>
@@ -573,8 +576,8 @@
 
                                 <!-- BOTOES NAVEGACAO -->
                                 <div class="d-flex justify-content-between mt-4">
-                                    <button type="button"  id="btn-voltar-etapa4" class="btn btn-secondary px-4 text-uppercase fw-bold">
-                                        <i class="fas fa-chevron-left me-2"></i> Voltar
+                                    <button type="button"  id="btn-voltar-etapa4" class="btn btn-voltar-custom text-uppercase fw-bold px-4">
+                                        <i class="fas bi bi-arrow-left me-2"></i> Voltar
                                     </button>
                                     
                                     <div>
@@ -582,7 +585,7 @@
                                             <i class="fas fa-eye me-2"></i> Conferir Dados
                                         </button>
                                         
-                                        <button type="button" class="btn btn-success px-4 text-uppercase fw-bold disabled" id="btnGravarFinal" onclick="processarEnvioFinal()" disabled>
+                                         <button type="button" class="btn btn-success px-4 text-uppercase fw-bold disabled" id="btnGravarFinal" onclick="processarEnvioFinal()" disabled>
                                             <i class="fas fa-save me-2"></i> Gravar Dados
                                         </button>
                                     </div>
