@@ -6,9 +6,9 @@ function forcarAutorizacaoCalendar() {
   Logger.log("✅ Autorização concedida! Agora pode usar o calendário normalmente.");
 }
 
-/** ====================================================
-     Configurações Globais
-    ==================================================== */
+/** ========================
+     Configurações Globais  
+    ======================== */
 const ID_TIPO_PLANILHA = 'DOU'; // 1=QUALI, 2=ME, 3=DOU
 const ID_AGENDA_DEPOSITOS = 'c_f0c47043a5564c65f0ac0835c28e3b3fa13c3bf80618daa471d01679bc7a281d@group.calendar.google.com'
 const ID_PLANILHA = '1yXdWwSiTsSbour4dQ-WhSl2r3LVzf_acxk3-EY2nV8E';
