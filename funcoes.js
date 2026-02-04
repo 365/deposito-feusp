@@ -125,7 +125,7 @@ function processarAgendamento(dados) {
     const planilha = ss.getSheetByName(NOME_ABA);
 
     // 1. Criar o Evento no Calendário
-    const inicio = new Date(dados.dataDeposito + 'T' + dados.horaDeposito);
+    const inicio = new Date(dados.dataAgenda + 'T' + dados.horaAgenda);
     const fim = new Date(inicio.getTime() + (60 * 60 * 1000));
 
     agenda.createEvent(
@@ -142,6 +142,8 @@ function processarAgendamento(dados) {
     const headers = planilha.getRange(1, 1, 1, planilha.getLastColumn()).getValues()[0];
     const novaLinha = headers.map(header => {
       const headerTrimmed = header.toString().trim();
+      // REGRA NOVA: Se a coluna for a que criamos na Planilha, gera a data/hora agora
+      if (headerTrimmed === 'Data do Deposito') return new Date();
       if (headerTrimmed === 'tipo') return ID_TIPO_PLANILHA;
       if (headerTrimmed === 'tipoDefesa') return dados.tipoDefesa || '';
       return dados[headerTrimmed] || '';
@@ -152,8 +154,8 @@ function processarAgendamento(dados) {
     return {
       sucesso: true, 
       nome: dados.nome, 
-      data: dados.dataDeposito,
-      hora: dados.horaDeposito,
+      data: dados.dataAgenda,
+      hora: dados.horaAgenda,
       titulo: dados.tituloTese
     };
   } catch (e) {
@@ -199,15 +201,45 @@ function listarOrientadores() {
 /** =====================================================
      Teste de Acesso ao Calendário
     ===================================================== */
-function testarAcessoCalendar() {
-  try {
-    const agenda = CalendarApp.getCalendarById(ID_AGENDA_DEPOSITOS);
-    if (!agenda) return "ERRO: Calendário não encontrado";
-    const hoje = new Date();
-    const amanha = new Date(hoje.getTime() + 24 * 60 * 60 * 1000);
-    const eventos = agenda.getEvents(hoje, amanha);
-    return "Teste OK! Eventos encontrados: " + eventos.length;
-  } catch (e) {
-    return "ERRO: " + e.message;
+  function testarAcessoCalendar() {
+    try {
+      const agenda = CalendarApp.getCalendarById(ID_AGENDA_DEPOSITOS);
+      if (!agenda) return "ERRO: Calendário não encontrado";
+      const hoje = new Date();
+      const amanha = new Date(hoje.getTime() + 24 * 60 * 60 * 1000);
+      const eventos = agenda.getEvents(hoje, amanha);
+      return "Teste OK! Eventos encontrados: " + eventos.length;
+    } catch (e) {
+      return "ERRO: " + e.message;
+    }
   }
-}
+
+/** =====================================================
+     Teste de Acesso ao Calendário
+    ===================================================== */
+  function salvarDadosNaPlanilha(dados) {
+    try {
+      const ss = SpreadsheetApp.getActiveSpreadsheet();
+      const planilha = ss.getSheetByName(NOME_ABA); 
+      
+      // 1. Pega os cabeçalhos da planilha
+      const headers = planilha.getRange(1, 1, 1, planilha.getLastColumn()).getValues()[0];
+
+      // 2. Mapeia os dados SEM as regras antigas, apenas o de-para puro
+      const novaLinha = headers.map(header => {
+        const h = header.toString().trim();
+        
+        // Se o cabeçalho for 'tipoDefesa', ele pega o cálculo que fizemos no Step 2
+        // Para todos os outros (nome, orientador, suplentes, etc), ele busca no objeto
+        return dados[h] || ""; 
+      });
+
+      // 3. Grava a linha completa
+      planilha.appendRow(novaLinha);
+      
+      return { sucesso: true };
+      
+    } catch (erro) {
+      throw new Error("Erro ao salvar: " + erro.toString());
+    }
+  }

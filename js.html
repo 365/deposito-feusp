@@ -30,8 +30,8 @@
      1. CONSULTA DE DISPONIBILIDADE (ATUALIZADO)
     ============================================= */
     document.getElementById('btn-consultar').addEventListener('click', function () {
-        const dataVal = document.getElementById('dataDeposito').value;
-        const horaVal = document.getElementById('horaDeposito').value;
+        const dataVal = document.getElementById('dataAgenda').value;
+        const horaVal = document.getElementById('horaAgenda').value;
 
         if (!dataVal || !horaVal) {
             criarNotificacaoAdvertencia("Por favor, preencha Data e Horário.", "Dados Incompletos");
@@ -137,10 +137,10 @@
         // Gravando direto no objeto que está lá no topo do seu script
             dadosAluno.nome         = document.getElementById('nome').value;
             dadosAluno.nrUsp        = document.getElementById('nrUsp').value;
-            dadosAluno.emailUSP     = document.getElementById('emailUSP').value;
+            dadosAluno.emailAluno   = document.getElementById('emailAluno').value;
             dadosAluno.tituloTese   = document.getElementById('tituloTese').value;
-            dadosAluno.dataDeposito = document.getElementById('dataDeposito').value;
-            dadosAluno.horaDeposito = document.getElementById('horaDeposito').value;
+            dadosAluno.dataAgenda   = document.getElementById('dataAgenda').value;
+            dadosAluno.horaAgenda   = document.getElementById('horaAgenda').value;
 
             console.log('✅ Dados salvos no objeto global:', dadosAluno);
 
@@ -167,7 +167,7 @@
 
                         // Trava campos
                         document.getElementById('btn-consultar').disabled = true;
-                        const campos = ['nome', 'nrUsp', 'emailUSP', 'tituloTese', 'dataDeposito', 'horaDeposito'];
+                        const campos = ['nome', 'nrUsp', 'emailAluno', 'tituloTese', 'dataAgenda', 'horaAgenda'];
                         campos.forEach(id => {
                             const el = document.getElementById(id);
                             if (el) el.readOnly = true;
@@ -226,8 +226,8 @@
 /** =============================
      3. NAVEGAÇÃO E AUXILIARES
     ============================= */
-    document.getElementById('dataDeposito').addEventListener('change', () => btnProximo.disabled = true);
-    document.getElementById('horaDeposito').addEventListener('change', () => btnProximo.disabled = true);
+    document.getElementById('dataAgenda').addEventListener('change', () => btnProximo.disabled = true);
+    document.getElementById('horaAgenda').addEventListener('change', () => btnProximo.disabled = true);
 
     document.getElementById('btn-proximo-etapa1').addEventListener('click', function () {
         //document.getElementById('step-1').classList.add('d-none');
@@ -235,10 +235,10 @@
         // SALVA STEP-1 AQUI 👇
         window.dadosAluno.nome = document.getElementById('nome').value;
         window.dadosAluno.nrUsp = document.getElementById('nrUsp').value;
-        window.dadosAluno.emailUSP = document.getElementById('emailUSP').value;
+        window.dadosAluno.emailAluno = document.getElementById('emailAluno').value;
         window.dadosAluno.tituloTese = document.getElementById('tituloTese').value;
-        window.dadosAluno.dataDeposito = document.getElementById('dataDeposito').value;
-        window.dadosAluno.horaDeposito = document.getElementById('horaDeposito').value;
+        window.dadosAluno.dataAgenda = document.getElementById('dataAgenda').value;
+        window.dadosAluno.horaAgenda = document.getElementById('horaAgenda').value;
         console.log('✅ STEP-1 SALVO:', window.dadosAluno.nome);
 
         //document.getElementById('step-2').classList.remove('d-none');
@@ -281,6 +281,7 @@
         //document.getElementById('progress-bar').style.width = '50%';
         salvarDadosEtapa(2);
         mostrarEtapa(3);
+
         progressBar.style.width = '50%'; // <-- Mude aqui (está 66%)
 
         // ← Scroll da pagina para iniciar no topo (cópia da etapa1)
@@ -414,6 +415,41 @@
         }, 100);
     });
 
+/** ==================================================
+ *  CALCULA FORMATO DEFESA DE TESE (APENAS TITULARES)
+ * =================================================== */
+    function calcularFormatoTese() {
+        let presencialCount = 0;
+        let distanciaCount = 0;
+        let totalMarcados = 0;
+
+        // Percorre apenas os 5 membros Titulares
+        for (let i = 1; i <= 5; i++) {
+            const rPresencial = document.getElementById(`part${i}Presencial`);
+            const rDistancia = document.getElementById(`part${i}Distancia`);
+
+            if (rPresencial && rPresencial.checked) {
+                presencialCount++;
+                totalMarcados++;
+            } else if (rDistancia && rDistancia.checked) {
+                distanciaCount++;
+                totalMarcados++;
+            }
+        }
+
+        // Se ninguém foi marcado, retorna vazio para não sujar a planilha
+        if (totalMarcados === 0) return '';
+
+        // Regra 1: TODOS Presenciais
+        if (presencialCount === totalMarcados) return 'Presencial';
+
+        // Regra 3: TODOS Distância
+        if (distanciaCount === totalMarcados) return 'Distância';
+
+        // Regra 2: Se houver mistura (pelo menos um distância + um presencial)
+        return 'Híbrido';
+    }
+
 /** ===============================
         ATUALIZANDO RESUMO FINAL
     =============================== */
@@ -427,7 +463,7 @@
         const campos = [
             ['resumoNome', dados.nome],
             ['resumoNrUsp', dados.nrUsp],
-            ['resumoEmail', dados.emailUSP],
+            ['resumoEmail', dados.emailAluno],
             ['resumoTitulo', dados.tituloTese]
         ];
 
@@ -464,7 +500,7 @@
             const obrigatorios = {
                 nome: "Nome Completo",
                 nrUsp: "Nº USP",
-                emailUSP: "E-mail",
+                emailAluno: "E-mail",
                 tituloTese: "Título da Tese"
             };
 
@@ -560,34 +596,6 @@
         document.getElementById('campoUpload' + id).classList.add('d-none');
     }
 
-/** ==================================
-     CALCULA FORMATO TESE (coluna I)
-    ================================== */
-    function calcularFormatoTese() {
-        const radios = [];  // Pega 10 radios (5 tit + 5 supl)
-        for (let i = 1; i <= 5; i++) {
-            radios.push(`part${i}Presencial`, `part${i}Distancia`);
-        }
-        
-        let presencialCount = 0;
-        let totalMarcados = 0;
-        
-        radios.forEach(id => {
-            const radio = document.getElementById(id);
-            if (radio && radio.checked) {
-                totalMarcados++;
-                if (radio.value === 'Presencial') presencialCount++;
-            }
-        });
-        
-        if (totalMarcados === 0) return '';  // Nenhum marcado
-        
-        if (presencialCount === totalMarcados) return 'Presencial';
-        if (presencialCount === 0) return 'Virtual';
-        return 'Híbrido';  // Mistura
-    }
-
-
 /**
  * Função para capturar dados de uma etapa específica
  * @param {number} etapa - O número da etapa que o usuário está saindo
@@ -614,6 +622,11 @@
             window.dadosAluno.nomeTitular5 = document.getElementById('nomeTitular5')?.value;
             window.dadosAluno.emailTitular5 = document.getElementById('emailTitular5')?.value;
             window.dadosAluno.vinculoTitular5 = document.getElementById('vinculoTitular5')?.value;
+
+            // QUAL É TIPO FORMATO DA DEFESA
+            window.dadosAluno.tipoDefesa = calcularFormatoTese();
+            
+            console.log(`✅ Formato definido como: ${window.dadosAluno.tipoDefesa}`);
         } 
         else if (etapa === 3) {
             // PRIMEIRO SUPLENTE
@@ -661,7 +674,7 @@
         
         // Injetando no HTML do seu novo arquivo modalResumoGeral.html
         document.getElementById('modal-nome').textContent = d.nome || 'Não informado';
-        document.getElementById('modal-email').textContent = d.emailUSP || 'Não informado';
+        document.getElementById('modal-email').textContent = d.emailAluno || 'Não informado';
         // ... e assim por diante para todos os campos
     }
 
@@ -681,7 +694,7 @@
                 <table class="table table-sm table-borderless mb-3">
                     <tr><td width="30%" class="text-muted">Nome:</td><td class="fw-bold">${d.nome || '-'}</td></tr>
                     <tr><td class="text-muted">Nº USP:</td><td class="fw-bold">${d.nrUsp || '-'}</td></tr>
-                    <tr><td width="30%" class="text-muted">E-mail:</td><td class="fw-bold">${d.emailUSP || '-'}</td></tr>
+                    <tr><td width="30%" class="text-muted">E-mail:</td><td class="fw-bold">${d.emailAluno || '-'}</td></tr>
                 </table>
 
                 <h6 class="fw-bold border-bottom pb-1 text-primary">2. DADOS ACADÊMICOS</h6>
@@ -691,8 +704,8 @@
 
                 <h6 class="fw-bold border-bottom pb-1 text-primary">3. AGENDAMENTO</h6>
                 <table class="table table-sm table-borderless mb-3">
-                    <tr><td width="30%" class="text-muted">Data Defesa:</td><td class="fw-bold">${d.dataDeposito || '-'}</td></tr>
-                    <tr><td class="text-muted">Hora:</td><td class="fw-bold">${d.horaDeposito || '-'}</td></tr>
+                    <tr><td width="30%" class="text-muted">Data Defesa:</td><td class="fw-bold">${d.dataAgenda || '-'}</td></tr>
+                    <tr><td class="text-muted">Hora:</td><td class="fw-bold">${d.horaAgenda || '-'}</td></tr>
                 </table>
 
                 <h6 class="fw-bold border-bottom pb-1 text-primary">4. MEMBROS TITULARES</h6>
@@ -823,5 +836,71 @@
             }
         }
     });
+
+/** ===================================================
+    VALIDAR E CONFIRMAR
+======================================================= */
+function validarEConfirmar() {
+    // 1. Primeiro checa se a LGPD está marcada
+    const lgpdAceite = document.getElementById('checkLGPD').checked; 
+    
+    if (!lgpdAceite) {
+        Swal.fire('Ops!', 'Você precisa aceitar os termos da LGPD para continuar.', 'error');
+        return;
+    }
+
+    // 2. Se a LGPD tá ok, abre o modal instrutivo que criamos
+    confirmarEnvioFinal(); 
+}
+
+function confirmarEnvioFinal() {
+    Swal.fire({
+        title: '⚠️ OBSERVAÇÃO IMPORTANTE',
+        html: `
+            <div style="text-align: left; font-size: 0.95rem; line-height: 1.5;">
+                <p>Este formulário será enviado automaticamente para o e-mail do(a) <b>orientador(a)</b> cadastrado.</p>
+                <p><b>Atenção aos próximos passos:</b></p>
+                <ol>
+                    <li>O(A) orientador(a) deverá, obrigatoriamente, realizar a <b>assinatura digital (GOV.BR)</b> no documento.</li>
+                    <li>Após assinar, o(a) orientador(a) deve encaminhá-lo para <b>posfe@usp.br</b>.</li>
+                </ol>
+                <div style="background-color: #fff3cd; padding: 12px; border-radius: 5px; border-left: 5px solid #ffc107; margin-top: 15px;">
+                    <b>Lembre-se:</b> A validação do depósito só ocorrerá após o recebimento do formulário assinado enviado pelo(a) orientador(a).
+                </div>
+            </div>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745', // Verde de "prosseguir"
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Estou ciente, enviar agora!',
+        cancelButtonText: 'Revisar dados'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // SÓ AQUI ele realmente dispara os dados para a planilha e e-mail
+            executarEnvioParaGoogle(); 
+        }
+    });
+}
+
+/** ===================================================
+    Empacotando dados e para envio ao Google Sheets
+======================================================= */
+    function executarEnvioParaGoogle() {
+    // 1. Pega o objeto que estamos montando
+    const dadosParaEnviar = window.dadosAluno;
+
+    // 2. Chama o script do Google
+    google.script.run
+      .withSuccessHandler(function(resposta) {
+          // SÓ CHEGA AQUI SE GRAVOU NA PLANILHA
+          console.log("Sucesso na planilha! Agora vou disparar o e-mail...");
+          dispararEmail(dadosParaEnviar); 
+      })
+      .withFailureHandler(function(erro) {
+          alert("Erro ao salvar dados: " + erro);
+      })
+      .salvarDadosNaPlanilha(dadosParaEnviar);
+}
 
 </script>
