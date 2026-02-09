@@ -1,0 +1,54 @@
+<main class="flex-grow-1">
+  <div class="container-xl py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8 text-center">
+        
+        <div class="mb-4 mt-2">
+          <i class="bi bi-check-circle-fill text-success" style="font-size: 3.5rem;"></i>
+          <h5 class="display-7 fw-bold mt-3">Depósito Enviado</h5>
+        </div>
+
+        <p class="lead mb-2">
+          Seu depósito foi registrado com sucesso no <strong>Sistema de Depósito Digital – FEUSP</strong>.
+        </p>
+
+        <p class="mb-3">
+          Uma confirmação detalhada foi enviada para o seu e-mail institucional.
+        </p>
+
+        <div class="card shadow-sm border-0 bg-light mb-5">
+          <div class="card-body p-4 text-start">
+            <h5 class="small fw-bold border-bottom pb-3 mb-3">
+              <i class="bi bi-calendar-check me-2"></i>Confirmação do Agendamento
+            </h5>
+            <div class="row g-3">
+              <div class="col-12">
+                <strong>👤 Nome:</strong> <?= nome ?>
+              </div>
+              <div class="col-md-6">
+                <strong>📅 Data:</strong> <?= data ?>
+              </div>
+              <div class="col-md-6">
+                <strong>⏰ Horário:</strong> <?= hora ?>
+              </div>
+              <div class="col-12">
+                <strong>📖 Título:</strong> <?= titulo ?>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-warning d-inline-block border-0 shadow-sm" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <strong>Atenção:</strong> Caso não localize o e-mail na caixa de entrada, verifique a pasta de <strong>Spam</strong>.
+        </div>
+
+        <div class="mt-5 pt-4 border-top text-muted">
+          <p class="mb-0 fw-bold text-dark">Secretaria de Pós-Graduação – FEUSP</p>
+          <p class="small">Sistema de Depósito Digital</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>

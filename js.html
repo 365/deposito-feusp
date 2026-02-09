@@ -886,19 +886,58 @@ function confirmarEnvioFinal() {
 /** ===================================================
     Empacotando dados e para envio ao Google Sheets
 ======================================================= */
-    function executarEnvioParaGoogle() {
-    // 1. Pega o objeto que estamos montando
+function executarEnvioParaGoogle() {
     const dadosParaEnviar = window.dadosAluno;
 
-    // 2. Chama o script do Google
+    // 1. Mostra o loading (importante para o usuário não clicar de novo)
+    Swal.fire({
+        title: 'Processando Depósito',
+        text: 'Gravando dados e enviando e-mail...',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
+
+    // 2. Chama a gravação na planilha
     google.script.run
       .withSuccessHandler(function(resposta) {
-          // SÓ CHEGA AQUI SE GRAVOU NA PLANILHA
           console.log("Sucesso na planilha! Agora vou disparar o e-mail...");
-          dispararEmail(dadosParaEnviar); 
+
+            // 3. Chamamos o e-mail (também no servidor)
+            google.script.run
+            .withSuccessHandler(function() {
+                console.log("E-mail enviado! Agora carregando página de sucesso...");
+
+                // 4. MÁGICA FINAL: Busca o HTML da página de sucesso para exibir
+                google.script.run
+                    .withSuccessHandler(function(htmlFinal) {
+                        Swal.close();
+                        
+    // ✅ FORÇA SCROLL E BARRA ANTES de recarregar
+    window.scrollTo(0, 0);
+    document.body.style.overflowY = 'scroll !important';
+    document.documentElement.style.overflowY = 'scroll !important';
+    document.body.style.minHeight = '101vh';
+                        // --- AJUSTES AQUI ---
+                        // 1. Usamos innerHTML no body para evitar o erro de Syntax/Identifier
+                        document.body.innerHTML = htmlFinal;
+
+      window.scrollTo(0, 0);
+      document.body.style.overflowY = 'scroll';
+                        // 2. O Scroll que você pediu para não aparecer cortado
+/*                         window.scrollTo(0, 0); */
+                        // --------------------
+/* // 2. Garante que a página inicie no topo (Scroll Top)
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth' // Rola suavemente para o topo
+    }); */
+                    })
+                    .carregarPaginaSucesso(dadosParaEnviar);
+            })
+            .enviarEmailConfirmacao(dadosParaEnviar); // Nome da função de e-mail no .gs
       })
       .withFailureHandler(function(erro) {
-          alert("Erro ao salvar dados: " + erro);
+          Swal.fire("Erro Crítico", erro.toString(), "error");
       })
       .salvarDadosNaPlanilha(dadosParaEnviar);
 }

@@ -18,3 +18,64 @@
         // Atualiza a barra de progresso (se você estiver usando uma)
         //updateProgressBar(100); 
     }
+
+
+    /** =====================================================
+     Teste de Acesso ao Calendário
+    ===================================================== */
+  function salvarDadosNaPlanilha(dados) {
+  try {
+    // Usamos as constantes que você já tem no topo do seu arquivo
+    const ss = SpreadsheetApp.openById(ID_PLANILHA); 
+    const planilha = ss.getSheetByName(NOME_ABA);
+
+    if (!planilha) {
+      throw new Error("A aba '" + NOME_ABA + "' não foi encontrada!");
+    }
+
+    // 1. Pega os cabeçalhos (Linha 1)
+    const headers = planilha.getRange(1, 1, 1, planilha.getLastColumn()).getValues()[0];
+
+    // 2. Cria a linha baseada no objeto 'dados' (window.dadosAluno)
+    const novaLinha = headers.map(header => {
+      const h = header.toString().trim();
+      
+      // Se o cabeçalho for um desses, garantimos o valor correto
+      if (h === 'tipo') return ID_TIPO_PLANILHA;
+      if (h === 'Data do Depósito') return new Date(); // Caso queira registrar o momento exato agora
+      
+      // Busca o valor no objeto enviado pelo navegador
+      return dados[h] || ""; 
+    });
+
+    // 3. Grava a linha
+    planilha.appendRow(novaLinha);
+    
+    return { sucesso: true };
+
+  } catch (erro) {
+    // Esse erro aparecerá no seu alerta do navegador
+    throw new Error("Erro ao salvar: " + erro.toString());
+  }
+}
+
+
+/** ===================================================
+    Empacotando dados e para envio ao Google Sheets
+======================================================= */
+    function executarEnvioParaGoogle() {
+    // 1. Pega o objeto que estamos montando
+    const dadosParaEnviar = window.dadosAluno;
+
+    // 2. Chama o script do Google
+    google.script.run
+      .withSuccessHandler(function(resposta) {
+          // SÓ CHEGA AQUI SE GRAVOU NA PLANILHA
+          console.log("Sucesso na planilha! Agora vou disparar o e-mail...");
+          dispararEmailDeposito(dadosParaEnviar); 
+      })
+      .withFailureHandler(function(erro) {
+          alert("Erro ao salvar dados: " + erro);
+      })
+      .salvarDadosNaPlanilha(dadosParaEnviar);
+}

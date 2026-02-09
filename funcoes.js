@@ -132,15 +132,15 @@ function processarAgendamento(dados) {
       `Depósito: ${dados.nome}`,
       inicio,
       fim,
-      { description: `Título: ${dados.tituloTese}\nNº USP: ${dados.nrUsp}\nE-mail: ${dados.emailUSP}` }
+      { description: `Título: ${dados.tituloTese}\nNº USP: ${dados.nrUsp}\nE-mail: ${dados.emailAluno}` }
     );
 
     // 2. Lógica Coluna I (tipoDefesa) baseada nas marcações do frontend
     dados.tipoDefesa = calcularTipoDefesa(dados.listaMarcacoes);
 
     // 3. Gravar Planilha DINÂMICA
-    const headers = planilha.getRange(1, 1, 1, planilha.getLastColumn()).getValues()[0];
-    const novaLinha = headers.map(header => {
+      const headers = planilha.getRange(1, 1, 1, planilha.getLastColumn()).getValues()[0];
+      const novaLinha = headers.map(header => {
       const headerTrimmed = header.toString().trim();
       // REGRA NOVA: Se a coluna for a que criamos na Planilha, gera a data/hora agora
       if (headerTrimmed === 'Data do Deposito') return new Date();
@@ -217,29 +217,133 @@ function listarOrientadores() {
 /** =====================================================
      Teste de Acesso ao Calendário
     ===================================================== */
-  function salvarDadosNaPlanilha(dados) {
-    try {
-      const ss = SpreadsheetApp.getActiveSpreadsheet();
-      const planilha = ss.getSheetByName(NOME_ABA); 
+function salvarDadosNaPlanilha(dados) {
+  try {
+    const ss = SpreadsheetApp.openById(ID_PLANILHA); 
+    const planilha = ss.getSheetByName(NOME_ABA);
+    if (!planilha) throw new Error("Aba '" + NOME_ABA + "' não encontrada!");
+
+    // 1. Captura tudo de uma vez para ganhar performance
+    const rangeTotal = planilha.getDataRange();
+    const valoresPlanilha = rangeTotal.getValues();
+    const headers = valoresPlanilha[0].map(h => h.toString().trim());
+    
+    // 2. Localiza as colunas cruciais
+    const idxNrUsp = headers.indexOf('nrUsp');
+    const idxData = headers.indexOf('Data do Depósito');
+    
+    if (idxNrUsp === -1) throw new Error("Coluna 'nrUsp' não encontrada!");
+
+    // 3. Procura a linha do aluno pelo nrUsp
+    // Começamos de 1 para pular o header. findIndex retorna o índice do array (0-based)
+    const rowIndex = valoresPlanilha.findIndex((linha, i) => i > 0 && linha[idxNrUsp] == dados.nrUsp);
+
+    // 4. Constrói a linha de dados de forma inteligente
+    const novaLinha = headers.map((h, colIdx) => {
+      // Regra 1: Se for a coluna de data e já existir um valor lá (em caso de atualização)
+      if (colIdx === idxData && rowIndex !== -1) {
+        return valoresPlanilha[rowIndex][idxData]; // Mantém a data original
+      }
       
-      // 1. Pega os cabeçalhos da planilha
-      const headers = planilha.getRange(1, 1, 1, planilha.getLastColumn()).getValues()[0];
+      // Regra 2: Se for a coluna de data e for linha NOVA
+      if (colIdx === idxData && rowIndex === -1) {
+        return new Date(); // Grava a data agora apenas se for a primeira vez
+      }
 
-      // 2. Mapeia os dados SEM as regras antigas, apenas o de-para puro
-      const novaLinha = headers.map(header => {
-        const h = header.toString().trim();
-        
-        // Se o cabeçalho for 'tipoDefesa', ele pega o cálculo que fizemos no Step 2
-        // Para todos os outros (nome, orientador, suplentes, etc), ele busca no objeto
-        return dados[h] || ""; 
-      });
+      // Regra 3: Tipo fixo
+      if (h === 'tipo') return ID_TIPO_PLANILHA;
 
-      // 3. Grava a linha completa
+      // Regra 4: Mapeamento dinâmico do formulário
+      return dados[h] !== undefined ? dados[h] : (rowIndex !== -1 ? valoresPlanilha[rowIndex][colIdx] : "");
+    });
+
+    // 5. Decide se Atualiza ou Insere
+    if (rowIndex !== -1) {
+      // Atualiza apenas a linha específica (rowIndex + 1 porque a planilha começa em 1)
+      planilha.getRange(rowIndex + 1, 1, 1, novaLinha.length).setValues([novaLinha]);
+      console.log(`✅ Sincronizado: nrUsp ${dados.nrUsp} atualizado na linha ${rowIndex + 1}`);
+    } else {
+      // Insere no final
       planilha.appendRow(novaLinha);
-      
-      return { sucesso: true };
-      
-    } catch (erro) {
-      throw new Error("Erro ao salvar: " + erro.toString());
+      console.log(`✅ Criado: Novo registro para nrUsp ${dados.nrUsp}`);
     }
+    
+    // 6. Dispara o e-mail de confirmação para o Aluno
+    enviarEmailConfirmacao(dados);
+
+    // 7. Retorna o HTML da página de sucesso para o navegador exibir
+    return carregarPaginaSucesso(dados);
+
+  } catch (erro) {
+    console.error("Erro no salvamento: " + erro);
+    throw new Error("Erro ao salvar: " + erro.message);
   }
+}
+
+/**
+ * Função que envia o e-mail (Cole logo abaixo da salvarDadosNaPlanilha)
+ */
+function enviarEmailConfirmacao(dados) {
+  const assunto = "Depósito Enviado - Sistema de Depósito Digital FEUSP";
+  
+  // Aqui usamos os nomes das chaves que estão no seu objeto window.dadosAluno
+  const corpo = `
+    Depósito Enviado com Sucesso!
+
+    Seu depósito foi registrado no Sistema de Depósito Digital - FEUSP.
+
+    Confirmação do Agendamento:
+    --------------------------------------
+    Nome: ${dados.nome}
+    Data: ${dados.dataAgenda}
+    Horário: ${dados.horaAgenda}
+    Título: ${dados.tituloTese}
+    --------------------------------------
+
+    Verifique sua caixa de entrada e, caso não localize este e-mail, verifique também a pasta de Spams.
+
+    Secretaria de Pós-Graduação – FEUSP
+    Sistema de Depósito Digital
+      `;
+  
+  // Envia para o e-mail do aluno (assumindo que a chave é dados.email)
+  if (dados.email) {
+    MailApp.sendEmail(dados.email, assunto, corpo);
+  }
+}
+
+
+/* function carregarPaginaSucesso(dados) {
+  // Cria o template a partir do arquivo sucesso.html
+  var template = HtmlService.createTemplateFromFile('sucesso');
+  
+  // Injeta as variáveis que o mainSucesso.html vai usar
+  template.nome = dados.nome;
+  template.data = dados.dataAgenda;
+  template.hora = dados.horaAgenda;
+  template.titulo = dados.tituloTese;
+  
+  // Retorna o HTML final renderizado
+  return template.evaluate().getContent();
+} */
+
+function carregarPaginaSucesso(dados) {
+  // 1. Processa o conteúdo interno primeiro
+  var templateMain = HtmlService.createTemplateFromFile('mainSucesso');
+  templateMain.nome = dados.nome;
+  templateMain.data = dados.dataAgenda;
+  templateMain.hora = dados.horaAgenda;
+  templateMain.titulo = dados.tituloTese;
+  var mainProcessado = templateMain.evaluate().getContent();
+
+  // 2. Cria a página principal (sucesso.html)
+  var layout = HtmlService.createTemplateFromFile('sucesso');
+  
+  // 3. Precisamos de uma forma de passar o mainProcessado para o sucesso.html
+  // No seu sucesso.html, no lugar de obterDadosHtml('mainSucesso'), 
+  // você usaria: <?!= conteudoPrincipal ?>
+  layout.conteudoPrincipal = mainProcessado;
+
+  return layout.evaluate().getContent();
+}
+
