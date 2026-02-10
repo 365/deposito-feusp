@@ -6,6 +6,25 @@ function forcarAutorizacaoCalendar() {
   Logger.log("✅ Autorização concedida! Agora pode usar o calendário normalmente.");
 }
 
+/**
+ * Função para forçar o Apps Script a pedir permissões de envio de E-mail
+ */
+function forcarAutorizacaoEmail() {
+  try {
+    // Substitua pelo seu email real
+    MailApp.sendEmail(
+      "apmbraga@usp.br",  // ← COLOQUE SEU EMAIL AQUI
+      "Teste de Autorização - Apps Script",
+      "Este é um email de teste para autorizar o script a usar o MailApp."
+    );
+    
+    Logger.log("Autorização concedida e email enviado com sucesso!");
+    
+  } catch (erro) {
+    Logger.log("Erro: " + erro.toString());
+  }
+}
+
 /** ========================
      Configurações Globais  
     ======================== */
@@ -284,48 +303,87 @@ function salvarDadosNaPlanilha(dados) {
  * Função que envia o e-mail (Cole logo abaixo da salvarDadosNaPlanilha)
  */
 function enviarEmailConfirmacao(dados) {
+  const destinatario = dados.emailAluno;
   const assunto = "Depósito Enviado - Sistema de Depósito Digital FEUSP";
   
-  // Aqui usamos os nomes das chaves que estão no seu objeto window.dadosAluno
-  const corpo = `
-    Depósito Enviado com Sucesso!
+  // Versão oficial para fundo claro (Texto escuro)
+  const logoFeusp = "https://www4.fe.usp.br/wp-content/themes/fe_v2/images/imagem_logo_texto.png";
 
-    Seu depósito foi registrado no Sistema de Depósito Digital - FEUSP.
+    const htmlBody = `
+    <div style="background-color: #f8f9fa; padding: 40px 10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333;">
+      <div style="max-width: 600px; margin: 0 auto;">
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+          <img src="${logoFeusp}" alt="FEUSP" style="max-height: 60px; filter: brightness(0); -webkit-filter: brightness(0);">
+        </div>
 
-    Confirmação do Agendamento:
-    --------------------------------------
-    Nome: ${dados.nome}
-    Data: ${dados.dataAgenda}
-    Horário: ${dados.horaAgenda}
-    Título: ${dados.tituloTese}
-    --------------------------------------
+        <div style="background-color: #ffffff; padding: 40px; border-radius: 8px; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img src="${logoFeusp}" alt="FEUSP" style="max-height: 60px; filter: brightness(0); -webkit-filter: brightness(0);">
+          </div>
+          
+          <h2 style="color: #084d6e; margin-top: 0;">Depósito Enviado com Sucesso!</h2>
+          <hr style="border: 0; border-top: 2px solid #F5C03F; margin: 20px 0;">
+          
+          <p>Olá, <strong>${dados.nome}</strong>,</p>
+          
+          <p>Seu depósito foi registrado no <strong>Sistema de Depósito Digital – FEUSP</strong>.<br>Confira abaixo os detalhes do seu agendamento:</p>
+          
+          <div style="background-color: #f1f3f4; padding: 20px; border-radius: 5px; margin: 25px 0; border-left: 5px solid #084d6e;">
+            <p style="margin: 5px 0;"><strong>👤 Nome:</strong> ${dados.nome}</p>
+            <p style="margin: 5px 0;"><strong>📅 Data:</strong> ${dados.dataAgenda}</p>
+            <p style="margin: 5px 0;"><strong>⏰ Horário:</strong> ${dados.horaAgenda}</p>
+            <p style="margin: 5px 0;"><strong>📖 Título:</strong> ${dados.tituloTese}</p>
+          </div>
 
-    Verifique sua caixa de entrada e, caso não localize este e-mail, verifique também a pasta de Spams.
+          <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; border: 1px solid #ffeeba; margin-bottom: 25px;">
+            <h3 style="color: #000000; margin-top: 0; font-size: 1.1rem; text-align: center;">
+              ⚠️ OBSERVAÇÃO IMPORTANTE
+            </h3>
+            <div style="font-size: 0.95rem; line-height: 1.5; color: #747474;">
+                <p>Este formulário será enviado automaticamente para o e-mail do(a) <b>orientador(a)</b> cadastrado.</p>
+                <p><b>Atenção aos próximos passos:</b></p>
+                <ol style="padding-left: 20px;">
+                    <li>O(A) orientador(a) deverá, obrigatoriamente, realizar a <b>assinatura digital (GOV.BR)</b> no documento.</li>
+                    <li>Após assinar, o(a) orientador(a) deve encaminhá-lo para <b>posfe@usp.br</b>.</li>
+                </ol>
+                <p style="margin-top: 15px; font-weight: bold; border-top: 1px dashed #decba1; pt-10px">
+                    Lembre-se: A validação do depósito só ocorrerá após o recebimento do formulário assinado enviado pelo(a) orientador(a).
+                </p>
+            </div>
+          </div>
 
-    Secretaria de Pós-Graduação – FEUSP
-    Sistema de Depósito Digital
-      `;
-  
-  // Envia para o e-mail do aluno (assumindo que a chave é dados.email)
-  if (dados.email) {
-    MailApp.sendEmail(dados.email, assunto, corpo);
+          <p style="font-size: 0.9em; color: #666;">
+            Você está recebendo e-mail de notificação do Sistema de Depósito Digital.
+          </p>
+          
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+          
+          <div style="font-size: 0.85em; color: #777; line-height: 1.5;">
+            <strong>Secretaria de Pós-Graduação – FEUSP</strong><br>
+            Faculdade de Educação da USP<br>
+            Sistema de Depósito Digital<br>
+            <a href="https://www.fe.usp.br" style="color: #0056b3; text-decoration: none;">www.fe.usp.br</a>
+          </div>
+
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px; font-size: 0.75em; color: #999;">
+          Este é um e-mail automático, por favor não responda.
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (destinatario) {
+    MailApp.sendEmail({
+      to: destinatario,
+      subject: assunto,
+      htmlBody: htmlBody // Aqui é onde a mágica do HTML acontece
+    });
+    Logger.log("✅ E-mail formatado enviado para: " + destinatario);
   }
 }
-
-
-/* function carregarPaginaSucesso(dados) {
-  // Cria o template a partir do arquivo sucesso.html
-  var template = HtmlService.createTemplateFromFile('sucesso');
-  
-  // Injeta as variáveis que o mainSucesso.html vai usar
-  template.nome = dados.nome;
-  template.data = dados.dataAgenda;
-  template.hora = dados.horaAgenda;
-  template.titulo = dados.tituloTese;
-  
-  // Retorna o HTML final renderizado
-  return template.evaluate().getContent();
-} */
 
 function carregarPaginaSucesso(dados) {
   // 1. Processa o conteúdo interno primeiro

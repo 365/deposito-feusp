@@ -15,6 +15,7 @@
     /* ============================================================== */
     :root {
         --azul-institucional: #00567f;
+        --azul-titulo-email: #084d6e;
         --verde-sucesso: #6fb973;
         --verde-hover: #5a9e5e;
         --vermelho-feusp: #a01e20;
@@ -42,6 +43,27 @@
         display: flex;
         flex-direction: column;
     }
+
+  /* Remove o recuo forçado que o SweetAlert deixa no Body */
+  body {
+    padding-right: 0 !important;
+    overflow-x: hidden !important;
+    width: 100vw !important;
+    margin: 0 !important;
+  }
+
+  /* Garante que o container do Bootstrap não tente compensar margens negativas */
+  .container-xl {
+    max-width: 1140px; /* Ou a largura que preferir */
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+
+  /* Ajuste específico para o erro que vimos no F12 */
+  body.swal2-shown {
+    padding-right: 0 !important;
+  }
+
 
     /* ================================================ */
     /* Página de sucesso sempre com scroll   */

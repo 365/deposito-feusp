@@ -855,8 +855,13 @@ function validarEConfirmar() {
 
 function confirmarEnvioFinal() {
     Swal.fire({
-        title: '⚠️ OBSERVAÇÃO IMPORTANTE',
+        title: '',
         html: `
+            <div style="background-color: #fff3cd; margin: -20px -1.6em 20px -1.6em; padding: 20px; border-bottom: 1px solid #ffeeba; border-radius: 5px 5px 0 0;">
+                <h3 style="color: #856404; margin: 0; font-weight: bold;">
+                    ⚠️ OBSERVAÇÃO IMPORTANTE
+                </h3>
+            </div>
             <div style="text-align: left; font-size: 0.95rem; line-height: 1.5;">
                 <p>Este formulário será enviado automaticamente para o e-mail do(a) <b>orientador(a)</b> cadastrado.</p>
                 <p><b>Atenção aos próximos passos:</b></p>
@@ -912,25 +917,18 @@ function executarEnvioParaGoogle() {
                     .withSuccessHandler(function(htmlFinal) {
                         Swal.close();
                         
-    // ✅ FORÇA SCROLL E BARRA ANTES de recarregar
-    window.scrollTo(0, 0);
-    document.body.style.overflowY = 'scroll !important';
-    document.documentElement.style.overflowY = 'scroll !important';
-    document.body.style.minHeight = '101vh';
+                    // ✅ FORÇA SCROLL E BARRA ANTES de recarregar
+                    window.scrollTo(0, 0);
+                    document.body.style.overflowY = 'scroll !important';
+                    document.documentElement.style.overflowY = 'scroll !important';
+                    document.body.style.minHeight = '101vh';
                         // --- AJUSTES AQUI ---
                         // 1. Usamos innerHTML no body para evitar o erro de Syntax/Identifier
                         document.body.innerHTML = htmlFinal;
 
-      window.scrollTo(0, 0);
-      document.body.style.overflowY = 'scroll';
-                        // 2. O Scroll que você pediu para não aparecer cortado
-/*                         window.scrollTo(0, 0); */
-                        // --------------------
-/* // 2. Garante que a página inicie no topo (Scroll Top)
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth' // Rola suavemente para o topo
-    }); */
+                        window.scrollTo(0, 0);
+                        document.body.style.overflowY = 'scroll';
+
                     })
                     .carregarPaginaSucesso(dadosParaEnviar);
             })
