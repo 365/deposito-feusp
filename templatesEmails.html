@@ -1,0 +1,212 @@
+<div style="background-color: #f8f9fa; padding: 20px 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; max-width: 100%; margin: 0;">
+    <div style="max-width: 600px; margin: 0 auto; width: 100%; box-sizing: border-box;">
+                <!-- HEAD -->
+        <div style="background-color: #ffffff; padding: 25px 20px; border-radius: 8px; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin: 0 10px; width: calc(100% - 20px); box-sizing: border-box;">
+          
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="background-image: url('<?= logoFeusp ?>'); background-size: contain; background-repeat: no-repeat; background-position: center; height: 60px; width: 200px; margin: 0 auto; filter: brightness(0);"></div>
+            </div>
+            <!-- ======================================================= -->
+            <!--                        ALUNO                            -->
+            <!-- ======================================================= -->
+            <? if (tipo === 'ALUNO') { ?>
+                <!-- CORPO -->
+                <h2 style="color: #084d6e; margin: 0 0 15px 0; font-size: 1.4rem;">Depósito Enviado com Sucesso!</h2>
+                <hr style="border: 0; border-top: 2px solid #F5C03F; margin: 15px 0;">
+
+                <p style="margin: 0 0 10px 0;">Olá,  <strong><?= dados.nome ?></strong>,</p>
+                <p style="margin: 0 0 20px 0;">Seu depósito foi registrado no <strong>Sistema de Depósito Digital – FEUSP</strong>.<br>Confira abaixo os detalhes do seu agendamento:</p>
+
+                <!-- DADOS -->
+                <div style="background-color: #f1f3f4; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 5px solid #084d6e;">
+                    <p style="margin: 5px 0;"><strong>👤 Nome:</strong> <?= dados.nome ?></p>
+                    <p style="margin: 5px 0;"><strong>📅 Data:</strong> <?= dados.dataAgenda ?></p>
+                    <p style="margin: 5px 0;"><strong>⏰ Horário:</strong> <?= dados.horaAgenda ?></p>
+                    <p style="margin: 5px 0;"><strong>📖 Título:</strong> <?= dados.tituloTese ?></p>
+                </div>
+
+                <!-- OBSERVAÇÃO -->
+                <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; border: 1px solid #ffeeba; margin-bottom: 20px;">
+                    <h3 style="color: #000000; margin: 0 0 15px 0; font-size: 1.1rem; text-align: center;">
+                    ⚠️ OBSERVAÇÃO IMPORTANTE
+                    </h3>
+                    <div style="font-size: 0.95rem; line-height: 1.5; color: #747474;">
+                        <p>Este formulário será enviado automaticamente para o e-mail do(a) <b>orientador(a)</b> cadastrado.</p>
+                        <p><b>Atenção aos próximos passos:</b></p>
+                        <ol style="padding-left: 20px;">
+                            <li>O(A) orientador(a) deverá, obrigatoriamente, realizar a <b>assinatura digital (GOV.BR)</b> no documento.</li>
+                            <li>Após assinar, o(a) orientador(a) deve encaminhá-lo para <b>posfe@usp.br</b>.</li>
+                        </ol>
+                        <p style="margin-top: 15px; font-weight: bold; border-top: 1px dashed #decba1; padding-top: 10px">
+                            Lembre-se: A validação do seu depósito só ocorrerá após o recebimento do formulário assinado enviado pelo(a) orientador(a).
+                        </p>
+                    </div>
+                </div>
+
+            <!-- ======================================================= -->
+            <!--                        SECRETARIA                       -->
+            <!-- ======================================================= -->
+            <? } else if (tipo === 'SECRETARIA') { ?>
+                <!-- CORPO -->
+                <h2 style="color: #084d6e; margin: 0 0 15px 0; font-size: 1.4rem;">Resumo de Depósito - Secretaria</h2>
+                <hr style="border: 0; border-top: 2px solid #F5C03F; margin: 15px 0;">
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">Verifique os detalhes completos abaixo:</p>
+
+                <!-- IDENTIDICACAO -->
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #084d6e; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">1. IDENTIFICAÇÃO</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px;">
+                    <tr><td style="width: 30%; color: #777; padding: 2px 0;">Nome:</td><td style="font-weight: bold;"><?= dados.nome ?></td></tr>
+                    <tr><td style="color: #777; padding: 2px 0;">Nº USP:</td><td style="font-weight: bold;"><?= dados.nrUsp ?></td></tr>
+                    <tr><td style="color: #777; padding: 2px 0;">E-mail:</td><td style="font-weight: bold;"><?= dados.emailAluno ?></td></tr>
+                </table>
+
+                <!-- DADOS ACADEMICOS -->
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #084d6e; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">2. DADOS ACADÊMICOS</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px;">
+                    <tr><td style="width: 30%; color: #777; padding: 2px 0;">Título:</td><td style="font-weight: bold;"><?= dados.tituloTese ?></td></tr>
+                </table>
+
+                <!-- AGENDAMENTO -->
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #084d6e; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">3. AGENDAMENTO</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px;">
+                    <tr><td style="width: 30%; color: #777; padding: 2px 0;">Data da Defesa:</td><td style="font-weight: bold;"><?= dados.dataAgenda ?></td></tr>
+                    <tr><td style="color: #777; padding: 2px 0;">Horário:</td><td style="font-weight: bold;"><?= dados.horaAgenda ?></td></tr>
+                </table>
+
+                <!-- TITULARES -->
+<h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #084d6e; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">4. MEMBROS TITULARES</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Área de Concentração:</td><td style="font-weight: bold;"><?= dados.areaConcentracao ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Orientador(a):</td><td style="font-weight: bold;"><?= dados.orientador ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email orientador(a):</td><td style="font-weight: bold;"><?= dados.emailOrientador ?></td></tr>
+                </table>
+
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">SEGUNDO TITULAR</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome titular 2:</td><td style="font-weight: bold;"><?= dados.nomeTitular2 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email titular 2:</td><td style="font-weight: bold;"><?= dados.emailTitular2 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo titular 2:</td><td style="font-weight: bold;"><?= dados.vinculoTitular2 ?></td></tr>
+                </table>
+
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">TERCEIRO TITULAR</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome titular 3:</td><td style="font-weight: bold;"><?= dados.nomeTitular3 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email titular 3:</td><td style="font-weight: bold;"><?= dados.emailTitular3 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo titular 3:</td><td style="font-weight: bold;"><?= dados.vinculoTitular3 ?></td></tr>
+                </table>
+
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">QUARTO TITULAR</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome titular 4:</td><td style="font-weight: bold;"><?= dados.nomeTitular4 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email titular 4:</td><td style="font-weight: bold;"><?= dados.emailTitular4 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo titular 4:</td><td style="font-weight: bold;"><?= dados.vinculoTitular4 ?></td></tr>
+                </table>
+
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">QUINTO TITULAR</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome titular 5:</td><td style="font-weight: bold;"><?= dados.nomeTitular5 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email titular 5:</td><td style="font-weight: bold;"><?= dados.emailTitular5 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo titular 5:</td><td style="font-weight: bold;"><?= dados.vinculoTitular5 ?></td></tr>
+                </table>
+
+                <!-- SUPLENTES -->
+<h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #084d6e; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">5. MEMBROS SUPLENTES</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome suplente 1:</td><td style="font-weight: bold;"><?= dados.nomeSuplente1 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email suplente 1:</td><td style="font-weight: bold;"><?= dados.emailSuplente1 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo suplente 1:</td><td style="font-weight: bold;"><?= dados.vinculoSuplente1 ?></td></tr>
+                </table>
+
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">SEGUNDO SUPLENTE</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome suplente 2:</td><td style="font-weight: bold;"><?= dados.nomeSuplente2 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email suplente 2:</td><td style="font-weight: bold;"><?= dados.emailSuplente2 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo suplente 2:</td><td style="font-weight: bold;"><?= dados.vinculoSuplente2 ?></td></tr>
+                </table>
+
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">TERCEIRO SUPLENTE</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome suplente 3:</td><td style="font-weight: bold;"><?= dados.nomeSuplente3 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email suplente 3:</td><td style="font-weight: bold;"><?= dados.emailSuplente3 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo suplente 3:</td><td style="font-weight: bold;"><?= dados.vinculoSuplente3 ?></td></tr>
+                </table>
+
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">QUARTO SUPLENTE</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome suplente 4:</td><td style="font-weight: bold;"><?= dados.nomeSuplente4 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email suplente 4:</td><td style="font-weight: bold;"><?= dados.emailSuplente4 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo suplente 4:</td><td style="font-weight: bold;"><?= dados.vinculoSuplente4 ?></td></tr>
+                </table>
+
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">QUINTO SUPLENTE</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome suplente 5:</td><td style="font-weight: bold;"><?= dados.nomeSuplente5 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email suplente 5:</td><td style="font-weight: bold;"><?= dados.emailSuplente5 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo suplente 5:</td><td style="font-weight: bold;"><?= dados.vinculoSuplente5 ?></td></tr>
+                </table>
+
+                <!-- ARQUIVO TESE -->
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #084d6e; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">6. ARQUIVO TESE/DISSERTAÇÃO</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr>
+                        <td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome Arquivo:</td>
+                        <td style="font-weight: bold;"><?= dados.arquivoPDF ?></td>
+                    </tr>
+                </table>
+
+                <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #084d6e; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">7. LGPD</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr>
+                        <td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0; vertical-align: top;">Li e concordo com os termos de processamento de dados (LGPD):</td>
+                        <td style="font-weight: bold; vertical-align: top;"><?= dados.lgpd ?></td>
+                    </tr>
+                </table>
+
+                <div style="background-color: #e9ecef; padding: 10px; border-radius: 5px; font-size: 0.85rem; margin-top: 15px;">
+                    <strong>📎 Anexos:</strong> Os arquivos originais estão em anexo a este e-mail.
+                </div>
+
+            <!-- ======================================================= -->
+            <!--                        ORIENTADOR                       -->
+            <!-- ======================================================= -->
+            <? } else if (tipo === 'ORIENTADOR') { ?>
+                <!-- CORPO -->
+                <h2 style="color: #084d6e; margin: 0 0 15px 0; font-size: 1.4rem;">Assinatura Necessária: Depósito Digital</h2>
+                <hr style="border: 0; border-top: 2px solid #F5C03F; margin: 15px 0;">
+
+                <p style="margin: 0 0 10px 0;">Prezado(a) <strong>Prof(a). <?= dados.orientador ?></strong>,</p>
+                <p style="margin: 0 0 20px 0;">Informamos que o(a) aluno(a) <strong><?= dados.nome ?></strong> realizou o depósito digital de sua tese/dissertação no sistema da FEUSP.</p>
+
+                <div style="background-color: #f1f3f4; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 5px solid #084d6e; font-size: 0.95rem;">
+                    <p style="margin: 5px 0;"><strong>👤 Nome Aluno(a):</strong> <?= dados.nome ?></p>
+                    <p style="margin: 5px 0;"><strong>📖 Título:</strong> <?= dados.tituloTese ?></p>
+                    <p style="margin: 5px 0;"><strong>📅 Defesa:</strong> <?= dados.dataAgenda ?> às <?= dados.horaAgenda ?></p>
+                </div>
+
+                <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; border: 1px solid #ffeeba; margin-bottom: 20px;">
+                    <h3 style="color: #000000; margin: 0 0 15px 0; font-size: 1.1rem; text-align: center;">📝 PRÓXIMOS PASSOS</h3>
+                    <div style="font-size: 0.95rem; line-height: 1.5; color: #333;">
+                        <p>Para prosseguir com o processo, solicitamos a sua assinatura digital:</p>
+                        <ol style="padding-left: 20px;">
+                            <li>Confira os dados no <b>formulário PDF em anexo</b>.</li>
+                            <li>Realize a assinatura eletrônica através do portal <b>GOV.BR</b>.</li>
+                            <li>Após assinar, por favor, encaminhe o documento para: <strong>posfe@usp.br</strong>.</li>
+                        </ol>
+                    </div>
+                </div>
+            <? } ?>
+
+            <!-- FOOTER -->
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+            <div style="font-size: 0.85em; color: #777; line-height: 1.5; margin: 0;">
+                <strong>Secretaria de Pós-Graduação – FEUSP</strong><br>
+                Faculdade de Educação da USP<br>
+                <a href="https://www.fe.usp.br" style="color: #0056b3; text-decoration: none;">www.fe.usp.br</a>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 15px; font-size: 0.75em; color: #999; padding: 0 10px;">
+            Este é um e-mail automático do Sistema de Depósito Digital.
+        </div>
+    </div>
+</div>

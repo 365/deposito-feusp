@@ -23,16 +23,16 @@
             </h5>
             <div class="row g-3">
               <div class="col-12">
-                <strong>👤 Nome:</strong> <?= nome ?>
+                <strong>👤 Nome:</strong> <?= dados.nome ?>
               </div>
               <div class="col-md-6">
-                <strong>📅 Data:</strong> <?= data ?>
+                <strong>📅 Data:</strong> <?= dados.dataAgenda ?>
               </div>
               <div class="col-md-6">
-                <strong>⏰ Horário:</strong> <?= hora ?>
+                <strong>⏰ Horário:</strong> <?= dados.horaAgenda ?>
               </div>
               <div class="col-12">
-                <strong>📖 Título:</strong> <?= titulo ?>
+                <strong>📖 Título:</strong> <?= dados.tituloTese ?>
               </div>
             </div>
           </div>
@@ -41,6 +41,13 @@
         <div class="alert alert-warning d-inline-block border-0 shadow-sm" role="alert">
           <i class="bi bi-exclamation-triangle-fill me-2"></i>
           <strong>Atenção:</strong> Caso não localize o e-mail na caixa de entrada, verifique a pasta de <strong>Spam</strong>.
+        </div>
+
+        <div class="alert alert-warning border-warning shadow-sm">
+            <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> O que acontece agora?</h5>
+            <hr>
+            <p class="mb-0">Um e-mail de confirmação foi enviado para <strong><?= dados.emailAluno ?></strong>.</p>
+            <p class="mt-2"><strong>Importante:</strong> O seu orientador recebeu as instruções para assinatura digital. O processo só será validado pela Secretaria após o recebimento do documento assinado via GOV.BR.</p>
         </div>
 
         <div class="mt-5 pt-4 border-top text-muted">

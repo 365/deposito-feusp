@@ -5,14 +5,11 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
-    /* ========================================== */
-    /* 1. IMPORTS DE FONTES - Início do documento */
-    /* ========================================== */
+    /* ============================================================== */
+    /* 2. CONFIGURAÇÕES DE FONTES E VARIÁVEIS GLOBAIS                 */
+    /* ============================================================== */
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
-    /* ============================================================== */
-    /* 2. VARIÁVEIS CSS GLOBAIS - Definição das cores institucionais  */
-    /* ============================================================== */
     :root {
         --azul-institucional: #00567f;
         --azul-titulo-email: #084d6e;
@@ -24,59 +21,62 @@
         --transicao: all 0.3s ease;
     }
 
-    /* ======================================================= */
-    /* 3. RESET E CONFIGURAÇÕES GLOBAIS - Limpeza e setup base */
-    /* ======================================================= */
+    /* ============================================================== */
+    /* 3. RESET E CONFIGURAÇÕES DE BODY/HTML                          */
+    /* ============================================================== */
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
 
+    html, body {
+        overflow-y: scroll !important;
+        min-height: 100vh;
+    }
+
     body {
-        /* font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; */
-        /*font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;*/
         background-color: #f0f2f5;
         color: #444;
         -webkit-font-smoothing: antialiased;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        padding-right: 0 !important;
+        overflow-x: hidden !important;
+        width: 100vw !important;
+        margin: 0 !important;
     }
 
-  /* Remove o recuo forçado que o SweetAlert deixa no Body */
-  body {
-    padding-right: 0 !important;
-    overflow-x: hidden !important;
-    width: 100vw !important;
-    margin: 0 !important;
-  }
-
-  /* Garante que o container do Bootstrap não tente compensar margens negativas */
-  .container-xl {
-    max-width: 1140px; /* Ou a largura que preferir */
-    margin-right: auto !important;
-    margin-left: auto !important;
-  }
-
-  /* Ajuste específico para o erro que vimos no F12 */
-  body.swal2-shown {
-    padding-right: 0 !important;
-  }
-
-
-    /* ================================================ */
-    /* Página de sucesso sempre com scroll   */
-    /* ================================================ */
-    html, body 
-    {
-        overflow-y: scroll !important;
-        min-height: 100vh;
+    /* Ajustes para Scroll e Modais (Evitar saltos na tela) */
+    body.swal2-shown {
+        padding-right: 0 !important;
     }
 
-    /* ================================================ */
-    /* 4. HEADER - Barra superior fixa com logo FEUSP   */
-    /* ================================================ */
+    body.modal-open {
+        overflow: hidden;
+        padding-right: 0 !important;
+    }
+
+    .modal-open {
+        overflow: hidden;
+        padding-right: 0 !important;
+    }
+
+    .modal {
+        overflow-y: auto;
+    }
+
+    /* Ajuste do Container Bootstrap */
+    .container-xl {
+        max-width: 1140px;
+        margin-right: auto !important;
+        margin-left: auto !important;
+    }
+
+    /* ============================================================== */
+    /* 4. HEADER (Barra Superior e Títulos)                           */
+    /* ============================================================== */
     .sticky-top {
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
         z-index: 1020;
@@ -110,9 +110,9 @@
         text-align: center;
     }
 
-    /* ===================================================== */
-    /* 5. CONTAINER PRINCIPAL DO FORMULÁRIO - Card principal */
-    /* ===================================================== */
+    /* ============================================================== */
+    /* 5. ESTRUTURA DO FORMULÁRIO E SESSÕES                           */
+    /* ============================================================== */
     #form-container {
         border-radius: 12px;
         overflow: hidden;
@@ -121,17 +121,12 @@
         background-color: #ffffff;
     }
 
-    /* ============= */
-    /* 6. SESSÕES    */
-    /* ============= */
     .step-section {
         width: 100%;
         transition: opacity 0.3s ease-in-out;
     }
 
-    /* ======================================================== */
-    /* 7. ESTILOS DE INPUTS - Campos de formulário customizados */
-    /* ======================================================== */
+    /* Estilos de Inputs e Campos */
     .custom-input {
         border: 1px solid #dee2e6;
         border-radius: 8px;
@@ -151,9 +146,6 @@
         cursor: not-allowed;
     }
 
-    /* ======================================================== */
-    /* 8. ESTILOS DE BACKGROUND E CHECKBOX - Cores customizadas */
-    /* ======================================================== */
     .bg-light {
         background-color: #f8f9fa !important;
         transition: var(--transicao);
@@ -164,22 +156,16 @@
         border-color: var(--azul-institucional);
     }
 
-    /* ======================================================== */
-    /* 9. CONTAINER DA BANCA - Fundo gradiente para seção banca */
-    /* =================================================== */
+    /* ============================================================== */
+    /* 6. COMPONENTES DA BANCA EXAMINADORA                            */
+    /* ============================================================== */
     .banca-container {
-        /* background-color: #f4f6f8; */
-        /* background: linear-gradient(135deg, #f8fbff 0%, #e8f4ff 50%, #f0f8ff 100%); */
-        /* background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%); */
         background: linear-gradient(135deg, #fafbfc 0%, #f0f2f5 40%, #dee2e6 100%);
         border-radius: 12px;
         padding: 20px;
         border: 1px solid #e9ecef;
     }
 
-    /* ============================================================== */
-    /* 10. CARDS DOS MEMBROS - Cards individuais dos membros da banca */
-    /* ============================================================== */
     .membro-card {
         background-color: #ffffff;
         border-radius: 10px;
@@ -188,31 +174,18 @@
         margin-top: 15px;
     }
 
-    /* ================================================ */
-    /* 11. UTILITÁRIOS - Classes utilitárias diversas   */
-    /* ================================================ */
-    .text-preto { color: #000000 !important; }
-
-    /* Ajuste para Radio Buttons de Passagem */
-    .btn-check:checked + .btn-outline-primary {
-        background-color: var(--azul-institucional);
-        color: white;
-    }
-
-    /* Divisor fino para separar seções internas dos cards */
     .divisor-interno {
         border-top: 1px solid #dee2e6;
         margin: 15px 0;
         opacity: 0.6;
     }
 
-    /* ================================================= */
-    /* 12. BOTÕES - Estilo uniforme para todos os botões */
-    /* ================================================= */
+    /* ============================================================== */
+    /* 7. BOTÕES E INTERATIVIDADE                                     */
+    /* ============================================================== */
     .btn, .btn-custom, #btn-consultar, #btn-proximo-etapa1 {
-        /* font-family: 'Segoe UI', Roboto, sans-serif !important; */
         font-family: 'Roboto', Segoe UI, sans-serif !important;
-        font-weight: 500 !important;  /*Peso ajustado conforme pedido */
+        font-weight: 500 !important;
         border-radius: 8px !important;
         padding: 10px 24px;
         transition: var(--transicao);
@@ -226,12 +199,12 @@
 
     .btn-outline-secondary { border: 2px solid #6c757d; color: #6c757d; }
 
-    /* Estilo customizado para seguir a imagem enviada */
+    /* Botão Voltar Customizado */
     .btn-voltar-custom {
-        background-color: #6c757d !important; /* Cinza chumbo sólido */
+        background-color: #6c757d !important;
         color: #ffffff !important;
         border: none !important;
-        border-radius: 10px !important; /* Arredondamento da imagem */
+        border-radius: 10px !important;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -244,16 +217,21 @@
         color: #5a6268 !important;
     }
 
-    /* Garante que o ícone de seta fique bem posicionado */
     .btn-voltar-custom i {
         font-size: 0.9rem;
     }
 
-    /* ==================================== */
-    /* 13. MODAL - Janela modal customizada */
-    /* ==================================== */
+    /* Radio Buttons Estilizados */
+    .btn-check:checked + .btn-outline-primary {
+        background-color: var(--azul-institucional);
+        color: white;
+    }
+
+    /* ============================================================== */
+    /* 8. MODAIS E COMPONENTES DE OVERLAY                             */
+    /* ============================================================== */
     .modal-content {
-        border-radius: 10px !important; /* Arredondamento ajustado conforme pedido */
+        border-radius: 10px !important;
         border: none !important;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
         overflow: hidden;
@@ -267,13 +245,17 @@
 
     .modal-title { font-weight: 500 !important; }
 
+    /* Cores de contexto para Modais */
     .bg-sucesso-modal { background-color: var(--verde-sucesso) !important; }
     .bg-erro-modal { background-color: var(--vermelho-feusp) !important; }
     .bg-info-modal { background-color: var(--azul-institucional) !important; }
 
-    /* ============================================================ */
-    /* 14. TOAST E LOADING - Notificações e overlay de carregamento */
-    /* ============================================================ */
+    /* Loading e Toast */
+    #loadingOverlay {
+        background: rgba(255,255,255,0.9);
+        z-index: 9999;
+    }
+
     .toast {
         min-width: 300px;
         border-radius: 10px;
@@ -281,22 +263,22 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    #loadingOverlay {
-        background: rgba(255,255,255,0.9);
-        z-index: 9999;
-    }
+    /* ============================================================== */
+    /* 9. UTILITÁRIOS E AJUSTES FINAIS                                */
+    /* ============================================================== */
+    .text-preto { color: #000000 !important; }
 
-    /* ========================================== */
-    /* 15. FOOTER - Rodapé fixo na parte inferior */
-    /* ========================================== */
+    /* ============================================================== */
+    /* 10. FOOTER                                                     */
+    /* ============================================================== */
     footer { padding: 1.5rem 1rem !important; margin-top: auto; }
     #footerEsquerda, #footerDireita { height: 28px; opacity: 0.8; transition: var(--transicao); }
     #footerDireita { filter: invert(1); }
     #footerEsquerda:hover, #footerDireita:hover { opacity: 1; }
 
-    /* ===================================================== */
-    /* 16. RESPONSIVIDADE - Ajustes para dispositivos móveis */
-    /* ===================================================== */
+    /* ============================================================== */
+    /* 11. RESPONSIVIDADE                                             */
+    /* ============================================================== */
     @media (max-width: 768px) {
         #tituloFormulario { font-size: 1.3rem; }
         .btn { font-size: 0.85rem; padding: 8px 16px; }

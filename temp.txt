@@ -1,0 +1,134 @@
+function enviarEmailConfirmacao(dados) {
+  const destinatario = dados.emailAluno;
+  const assunto = "Depósito Enviado - Sistema de Depósito Digital FEUSP";
+  
+  // Versão oficial para fundo claro (Texto escuro)
+  const logoFeusp = "https://www4.fe.usp.br/wp-content/themes/fe_v2/images/imagem_logo_texto.png";
+
+  const htmlBody = `
+    <div style="background-color: #f8f9fa; padding: 20px 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; max-width: 100%; margin: 0;">
+      <div style="max-width: 600px; margin: 0 auto; width: 100%; box-sizing: border-box;">
+
+        <div style="background-color: #ffffff; 
+                    padding: 25px 20px; 
+                    border-radius: 8px; 
+                    border: 1px solid #e0e0e0; 
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                    margin: 0 10px; 
+                    width: calc(100% - 20px); 
+                    box-sizing: border-box;">
+          
+          <!-- LOGO CENTRALIZADO -->
+          <div style="text-align: center; margin-bottom: 20px;">
+            <div style="background-image: url('${logoFeusp}'); 
+                        background-size: contain; 
+                        background-repeat: no-repeat; 
+                        background-position: center; 
+                        height: 60px; 
+                        width: 200px; 
+                        margin: 0 auto; 
+                        filter: brightness(0);">
+            </div>
+          </div>
+
+          <h2 style="color: #084d6e; margin: 0 0 15px 0; font-size: 1.4rem;">Depósito Enviado com Sucesso!</h2>
+          <hr style="border: 0; border-top: 2px solid #F5C03F; margin: 15px 0;">
+
+          <p style="margin: 0 0 10px 0;">Olá, <strong>${dados.nome}</strong>,</p>
+
+          <p style="margin: 0 0 20px 0;">Seu depósito foi registrado no <strong>Sistema de Depósito Digital – FEUSP</strong>.<br>Confira abaixo os detalhes do seu agendamento:</p>
+
+          <!-- DADOS -->
+          <div style="background-color: #f1f3f4; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 5px solid #084d6e;">
+            <p style="margin: 5px 0;"><strong>👤 Nome:</strong> ${dados.nome}</p>
+            <p style="margin: 5px 0;"><strong>📅 Data:</strong> ${dados.dataAgenda}</p>
+            <p style="margin: 5px 0;"><strong>⏰ Horário:</strong> ${dados.horaAgenda}</p>
+            <p style="margin: 5px 0;"><strong>📖 Título:</strong> ${dados.tituloTese}</p>
+          </div>
+
+          <!-- OBSERVAÇÃO -->
+          <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; border: 1px solid #ffeeba; margin-bottom: 20px;">
+            <h3 style="color: #000000; margin: 0 0 15px 0; font-size: 1.1rem; text-align: center;">
+              ⚠️ OBSERVAÇÃO IMPORTANTE
+            </h3>
+              <div style="font-size: 0.95rem; line-height: 1.5; color: #747474;">
+                <p>Este formulário será enviado automaticamente para o e-mail do(a) <b>orientador(a)</b> cadastrado.</p>
+                <p><b>Atenção aos próximos passos:</b></p>
+                  <ol style="padding-left: 20px;">
+                    <li>O(A) orientador(a) deverá, obrigatoriamente, realizar a <b>assinatura digital (GOV.BR)</b> no documento.</li>
+                    <li>Após assinar, o(a) orientador(a) deve encaminhá-lo para <b>posfe@usp.br</b>.</li>
+                  </ol>
+                  <p style="margin-top: 15px; font-weight: bold; border-top: 1px dashed #decba1; padding-top: 10px">
+                    Lembre-se: A validação do depósito só ocorrerá após o recebimento do formulário assinado enviado pelo(a) orientador(a).
+                  </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FOOTER (resto igual, só reduza margins) -->
+          <p style="font-size: 0.9em; color: #666; margin: 0 0 20px 0;">
+            Você está recebendo e-mail de notificação do Sistema de Depósito Digital.
+          </p>
+
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+          
+          <div style="font-size: 0.85em; color: #777; line-height: 1.5; margin: 0;">
+            <strong>Secretaria de Pós-Graduação – FEUSP</strong><br>
+            Faculdade de Educação da USP<br>
+            Sistema de Depósito Digital<br>
+            <a href="https://www.fe.usp.br" style="color: #0056b3; text-decoration: none;">www.fe.usp.br</a>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 15px; font-size: 0.75em; color: #999; padding: 0 10px;">
+          Este é um e-mail automático, por favor não responda.
+        </div>
+      </div>
+    </div>
+    `;
+
+  if (destinatario) {
+    MailApp.sendEmail({
+      to: destinatario,
+      subject: assunto,
+      htmlBody: htmlBody // Aqui é onde a mágica do HTML acontece
+    });
+    Logger.log("✅ E-mail formatado enviado para: " + destinatario);
+  }
+}
+
+Li e concordo com os termos de processamento de dados (LGPD).
+
+
+function carregarPaginaSucesso_OLD(dados) {
+  // 1. Processa o conteúdo interno primeiro
+  var templateMain = HtmlService.createTemplateFromFile('mainSucesso');
+  templateMain.nome = dados.nome;
+  templateMain.data = dados.dataAgenda;
+  templateMain.hora = dados.horaAgenda;
+  templateMain.titulo = dados.tituloTese;
+  var mainProcessado = templateMain.evaluate().getContent();
+
+  // 2. Cria a página principal (sucesso.html)
+  var layout = HtmlService.createTemplateFromFile('sucesso');
+  
+  // 3. Precisamos de uma forma de passar o mainProcessado para o sucesso.html
+  // No seu sucesso.html, no lugar de obterDadosHtml('mainSucesso'), 
+  // você usaria: <?!= conteudoPrincipal ?>
+  layout.conteudoPrincipal = mainProcessado;
+
+  return layout.evaluate().getContent();
+}
+
+function carregarPaginaSucesso_OLDOLD(dados) {
+  // 1. Gera o conteúdo específico do aluno
+  const templateMain = HtmlService.createTemplateFromFile('mainSucesso');
+  templateMain.dados = dados; // Passa o objeto inteiro de uma vez, mais limpo!
+  const mainProcessado = templateMain.evaluate().getContent();
+
+  // 2. Injeta esse conteúdo na moldura (sucesso.html)
+  const layout = HtmlService.createTemplateFromFile('sucesso');
+  layout.conteudoPrincipal = mainProcessado;
+
+  return layout.evaluate().getContent();
+}

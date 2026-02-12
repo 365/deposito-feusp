@@ -1,14 +1,14 @@
-/**
- * Função DUMMY apenas para forçar o Apps Script a pedir permissões do Calendar
- */
+/** ==============================================================================
+     Função DUMMY apenas para forçar o Apps Script a pedir permissões do Calendar  
+    ============================================================================== */
 function forcarAutorizacaoCalendar() {
   CalendarApp.getCalendarById('primary').getName();
   Logger.log("✅ Autorização concedida! Agora pode usar o calendário normalmente.");
 }
 
-/**
- * Função para forçar o Apps Script a pedir permissões de envio de E-mail
- */
+/** ========================================================================
+     Função para forçar o Apps Script a pedir permissões de envio de E-mail  
+    ======================================================================== */
 function forcarAutorizacaoEmail() {
   try {
     // Substitua pelo seu email real
@@ -25,13 +25,47 @@ function forcarAutorizacaoEmail() {
   }
 }
 
+/** ====================================
+     Testar a visualização dos e-mails   
+    =================================== */
+function testarVisualizacao() {
+  const template = HtmlService.createTemplateFromFile('templatesEmails');
+  
+  // Criamos dados fictícios para o teste
+  template.dados = {
+    nome:       "Fulano de Tal",
+    dataAgenda: "15/05/2026",
+    horaAgenda: "14:00",
+    tituloTese: "A Educação no Século XXI",
+    nrUsp:      "1234567",
+    emailAluno: "aluno@usp.br",
+    orientador: "Prof. Dr. Orientador Exemplo"
+  };
+  
+  template.logoFeusp = "SUA_URL_DO_LOGO_AQUI"; // Coloque o link da imagem
+  
+  // ESCOLHA O QUE QUER VER: 'ALUNO', 'SECRETARIA' ou 'ORIENTADOR'
+  template.tipo = 'ALUNO'; 
+  
+  const htmlFinal = template.evaluate().getContent();
+  Logger.log(htmlFinal); // Isso joga o código limpo no console
+  
+  // Isso abre uma janela no Google Apps Script para você ver
+  const htmlOutput = HtmlService.createHtmlOutput(htmlFinal)
+      .setWidth(650)
+      .setHeight(800);
+  SpreadsheetApp.getUi().showModalDialog(htmlOutput, "Teste de Visualização");
+}
+
 /** ========================
      Configurações Globais  
     ======================== */
-const ID_TIPO_PLANILHA = 'DOU'; // 1=QUALI, 2=ME, 3=DOU
-const ID_AGENDA_DEPOSITOS = 'c_f0c47043a5564c65f0ac0835c28e3b3fa13c3bf80618daa471d01679bc7a281d@group.calendar.google.com'
+const ID_TIPO_PLANILHA = 'QUALI'; // 1=QUALI, 2=ME, 3=DOU
+const ID_AGENDA_DEPOSITOS = 'c_f0c47043a5564c65f0ac0835c28e3b3fa13c3bf80618daa471d01679bc7a281d@group.calendar.google.com';
 const ID_PLANILHA = '1yXdWwSiTsSbour4dQ-WhSl2r3LVzf_acxk3-EY2nV8E';
-const NOME_ABA = 'Cadastro';
+const NOME_ABA_CADASTRO = 'Cadastro';
+const NOME_ABA_ORIENTADORES = 'Orientadores';
+const NOME_ABA_DOCENTES = 'Docentes';
 
 function doGet() {
   return HtmlService.createTemplateFromFile('web').evaluate().setTitle('Formulário de Depósito');
@@ -141,7 +175,7 @@ function processarAgendamento(dados) {
   try {
     const agenda = CalendarApp.getCalendarById(ID_AGENDA_DEPOSITOS);
     const ss = SpreadsheetApp.openById(ID_PLANILHA);
-    const planilha = ss.getSheetByName(NOME_ABA);
+    const planilha = ss.getSheetByName(NOME_ABA_CADASTRO);
 
     // 1. Criar o Evento no Calendário
     const inicio = new Date(dados.dataAgenda + 'T' + dados.horaAgenda);
@@ -183,11 +217,9 @@ function processarAgendamento(dados) {
   }
 }
 
-
-/**
- * Lógica da Coluna I
- * Retorna vazio se não houver marcações enviadas
- */
+/** ====================================================================
+     LOGICA DA COLUNA I RETORNA VAZIO SE NAO HOUVER MARCACOES ENVIADAS
+    ==================================================================== */
 function calcularTipoDefesa(marcacoes) {
   // Se não houver marcações ou o array estiver vazio, retorna vazio para a planilha
   if (!marcacoes || marcacoes.length === 0) return ""; 
@@ -201,12 +233,12 @@ function calcularTipoDefesa(marcacoes) {
 }
 
 /** =====================================================
-     Busca a lista de orientadores na aba 'Orientadores'
+     BUSCA A LISTA DE ORIENTADORES NA ABA ORIENTADORES
     ===================================================== */
 function listarOrientadores() {
   try {
     const ss = SpreadsheetApp.openById(ID_PLANILHA);
-    const aba = ss.getSheetByName("Orientadores");
+    const aba = ss.getSheetByName(NOME_ABA_ORIENTADORES);
     if (!aba) return [];
     const valores = aba.getRange(2, 1, aba.getLastRow() - 1, 1).getValues();
     const listaSimples = valores.map(linha => linha[0]).filter(nome => nome !== "");
@@ -218,7 +250,25 @@ function listarOrientadores() {
 }
 
 /** =====================================================
-     Teste de Acesso ao Calendário
+     LISTA DOCENTES DA ABA DOCENTES
+    ===================================================== */
+function listarDocentes() {
+  try {
+    const ss = SpreadsheetApp.openById(ID_PLANILHA);
+    const aba = ss.getSheetByName(NOME_ABA_DOCENTES);  // Nova aba
+    if (!aba) return [];
+    
+    const valores = aba.getRange(2, 1, aba.getLastRow() - 1, 1).getValues();
+    const listaSimples = valores.map(linha => linha[0]).filter(nome => nome !== "");
+    return listaSimples.sort();
+  } catch (e) {
+    console.error("Erro ao listar docentes: " + e.message);
+    return [];
+  }
+}
+
+/** =====================================================
+     TESTE DE ACESSO AO CALENDARIO
     ===================================================== */
   function testarAcessoCalendar() {
     try {
@@ -233,14 +283,14 @@ function listarOrientadores() {
     }
   }
 
-/** =====================================================
-     Teste de Acesso ao Calendário
-    ===================================================== */
+/** ============================
+     SALVAR DADOS NA PLANILHA
+    ============================ */
 function salvarDadosNaPlanilha(dados) {
   try {
     const ss = SpreadsheetApp.openById(ID_PLANILHA); 
-    const planilha = ss.getSheetByName(NOME_ABA);
-    if (!planilha) throw new Error("Aba '" + NOME_ABA + "' não encontrada!");
+    const planilha = ss.getSheetByName(NOME_ABA_CADASTRO);
+    if (!planilha) throw new Error("Aba '" + NOME_ABA_CADASTRO + "' não encontrada!");
 
     // 1. Captura tudo de uma vez para ganhar performance
     const rangeTotal = planilha.getDataRange();
@@ -288,7 +338,7 @@ function salvarDadosNaPlanilha(dados) {
     }
     
     // 6. Dispara o e-mail de confirmação para o Aluno
-    enviarEmailConfirmacao(dados);
+    //enviarEmailConfirmacao(dados);
 
     // 7. Retorna o HTML da página de sucesso para o navegador exibir
     return carregarPaginaSucesso(dados);
@@ -299,109 +349,132 @@ function salvarDadosNaPlanilha(dados) {
   }
 }
 
-/**
- * Função que envia o e-mail (Cole logo abaixo da salvarDadosNaPlanilha)
- */
+/** ===============================
+     ENVIAR E-MAIL DE CONFIRMAÇÃO
+    =============================== */
 function enviarEmailConfirmacao(dados) {
-  const destinatario = dados.emailAluno;
-  const assunto = "Depósito Enviado - Sistema de Depósito Digital FEUSP";
+  const template = HtmlService.createTemplateFromFile('templatesEmails');
   
-  // Versão oficial para fundo claro (Texto escuro)
-  const logoFeusp = "https://www4.fe.usp.br/wp-content/themes/fe_v2/images/imagem_logo_texto.png";
+  // Passa os dados recebidos do front para o template
+  template.dados = dados;
+  template.logoFeusp = "https://www4.fe.usp.br/wp-content/themes/fe_v2/images/imagem_logo_texto-2.png";
+  
+  // Envio para o ALUNO
+  template.tipo = 'ALUNO';
+  const corpoAluno = template.evaluate().getContent();
+  MailApp.sendEmail({
+    to: dados.emailAluno,
+    subject: "Confirmação de Depósito - FEUSP",
+    htmlBody: corpoAluno
+  });
 
-    const htmlBody = `
-    <div style="background-color: #f8f9fa; padding: 40px 10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333;">
-      <div style="max-width: 600px; margin: 0 auto;">
-        
-        <div style="text-align: center; margin-bottom: 20px;">
-          <img src="${logoFeusp}" alt="FEUSP" style="max-height: 60px; filter: brightness(0); -webkit-filter: brightness(0);">
-        </div>
+  // Envio para o ORIENTADOR
+  template.tipo = 'ORIENTADOR';
+  const corpoOrientador = template.evaluate().getContent();
+  MailApp.sendEmail({
+    to: '365studiobr@gmail.com', // TESTE: seu e-mail fixo por enquanto
+    subject: "Assinatura Necessária - Depósito de " + dados.nome,
+    htmlBody: corpoOrientador
+  });
 
-        <div style="background-color: #ffffff; padding: 40px; border-radius: 8px; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <img src="${logoFeusp}" alt="FEUSP" style="max-height: 60px; filter: brightness(0); -webkit-filter: brightness(0);">
-          </div>
-          
-          <h2 style="color: #084d6e; margin-top: 0;">Depósito Enviado com Sucesso!</h2>
-          <hr style="border: 0; border-top: 2px solid #F5C03F; margin: 20px 0;">
-          
-          <p>Olá, <strong>${dados.nome}</strong>,</p>
-          
-          <p>Seu depósito foi registrado no <strong>Sistema de Depósito Digital – FEUSP</strong>.<br>Confira abaixo os detalhes do seu agendamento:</p>
-          
-          <div style="background-color: #f1f3f4; padding: 20px; border-radius: 5px; margin: 25px 0; border-left: 5px solid #084d6e;">
-            <p style="margin: 5px 0;"><strong>👤 Nome:</strong> ${dados.nome}</p>
-            <p style="margin: 5px 0;"><strong>📅 Data:</strong> ${dados.dataAgenda}</p>
-            <p style="margin: 5px 0;"><strong>⏰ Horário:</strong> ${dados.horaAgenda}</p>
-            <p style="margin: 5px 0;"><strong>📖 Título:</strong> ${dados.tituloTese}</p>
-          </div>
+  // Envio para a SECRETARIA
+  template.tipo = 'SECRETARIA';
+  const corpoSecretaria = template.evaluate().getContent();
+  MailApp.sendEmail({
+    to: "apmbraga@gmail.com",
+    subject: "Novo Depósito Digital: " + dados.nome,
+    htmlBody: corpoSecretaria
+  });
 
-          <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; border: 1px solid #ffeeba; margin-bottom: 25px;">
-            <h3 style="color: #000000; margin-top: 0; font-size: 1.1rem; text-align: center;">
-              ⚠️ OBSERVAÇÃO IMPORTANTE
-            </h3>
-            <div style="font-size: 0.95rem; line-height: 1.5; color: #747474;">
-                <p>Este formulário será enviado automaticamente para o e-mail do(a) <b>orientador(a)</b> cadastrado.</p>
-                <p><b>Atenção aos próximos passos:</b></p>
-                <ol style="padding-left: 20px;">
-                    <li>O(A) orientador(a) deverá, obrigatoriamente, realizar a <b>assinatura digital (GOV.BR)</b> no documento.</li>
-                    <li>Após assinar, o(a) orientador(a) deve encaminhá-lo para <b>posfe@usp.br</b>.</li>
-                </ol>
-                <p style="margin-top: 15px; font-weight: bold; border-top: 1px dashed #decba1; pt-10px">
-                    Lembre-se: A validação do depósito só ocorrerá após o recebimento do formulário assinado enviado pelo(a) orientador(a).
-                </p>
-            </div>
-          </div>
+  return true; // Importante para o .withSuccessHandler do front saber que acabou
+}
 
-          <p style="font-size: 0.9em; color: #666;">
-            Você está recebendo e-mail de notificação do Sistema de Depósito Digital.
-          </p>
-          
-          <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
-          
-          <div style="font-size: 0.85em; color: #777; line-height: 1.5;">
-            <strong>Secretaria de Pós-Graduação – FEUSP</strong><br>
-            Faculdade de Educação da USP<br>
-            Sistema de Depósito Digital<br>
-            <a href="https://www.fe.usp.br" style="color: #0056b3; text-decoration: none;">www.fe.usp.br</a>
-          </div>
+/** ===============================
+     DISPARAR FLUXO DE E-MAILS PARA ALUNO E ORIENTADOR
+     (TESTE MANUAL PARA VER SE O HTML CHEGA CORRETO)
+    =============================== */
+function dispararFluxoEmails(dadosFormulario) {
+  const template = HtmlService.createTemplateFromFile('templatesEmails');
+  
+  // FORÇANDO O E-MAIL PARA TESTE (O pulo do gato)
+  dadosFormulario.emailOrientador = 'alexandre.de.paul@gmail.com'; 
+  // Se quiser testar o do aluno também no seu e-mail:
+  // dadosFormulario.emailAluno = '365studiobr@gmail.com';
 
-        </div>
-        
-        <div style="text-align: center; margin-top: 20px; font-size: 0.75em; color: #999;">
-          Este é um e-mail automático, por favor não responda.
-        </div>
-      </div>
-    </div>
-  `;
+  template.dados = dadosFormulario;
+  template.logoFeusp = "https://www4.fe.usp.br/wp-content/themes/fe_v2/images/imagem_logo_texto-2.png";
 
-  if (destinatario) {
-    MailApp.sendEmail({
-      to: destinatario,
-      subject: assunto,
-      htmlBody: htmlBody // Aqui é onde a mágica do HTML acontece
-    });
-    Logger.log("✅ E-mail formatado enviado para: " + destinatario);
+  // --- 1. ENVIO ALUNO ---
+  template.tipo = 'ALUNO';
+  const corpoAluno = template.evaluate().getContent();
+  MailApp.sendEmail({
+    to: dadosFormulario.emailAluno,
+    subject: "Confirmação de Depósito - FEUSP",
+    htmlBody: corpoAluno
+  });
+
+  // --- 2. ENVIO ORIENTADOR ---
+  template.tipo = 'ORIENTADOR';
+  const corpoOrientador = template.evaluate().getContent();
+  MailApp.sendEmail({
+    to: dadosFormulario.emailOrientador, // Vai enviar para o 365studiobr
+    subject: "Assinatura Necessária: Depósito de " + dadosFormulario.nome,
+    htmlBody: corpoOrientador
+  });
+
+  Logger.log("Testes disparados para " + dadosFormulario.emailOrientador);
+}
+
+/** ==================================================================
+     TESTE MANUAL DE FLUXO PARA VER SE O HTML CHEGA CORRETO NO E-MAIL
+     (DISPARA PARA O SEU E-MAIL, VERIFICAR SE O HTML ESTÁ CORRETO)
+    ================================================================== */
+function testeManualDeFluxo() {
+  // Criamos um objeto igual ao que o seu formulário cria
+  const dadosFake = {
+    nome: "Fulano de Tal",
+    emailAluno: "365studiobr@gmail.com", // Mande para você mesmo
+    emailOrientador: "365studiobr@gmail.com", // Mande para você mesmo
+    dataAgenda: "15/05/2026",
+    horaAgenda: "14:00",
+    tituloTese: "A importância do design nos sistemas acadêmicos",
+    nrUsp: "1234567",
+    orientador: "Prof. Dr. Exemplo",
+    areaConcentracao: "Educação e Tecnologia",
+    arquivoPDF: "tese_final_v1.pdf"
+  };
+
+  // Chamamos a função principal que você montou
+  dispararFluxoEmails(dadosFake);
+}
+
+/** ================================================
+    CARREGAR PÁGINA DE SUCESSO COM DADOS DINÂMICOS
+    ================================================ */
+function carregarPaginaSucesso(dados) {
+  // LOG DE RASTREIO
+  console.log("LOG: Entrei na função carregarPaginaSucesso");
+  console.log("LOG: Dados recebidos:", JSON.stringify(dados));
+
+  try {
+    // 1. Processa o conteúdo interno
+    console.log("LOG: Tentando abrir mainSucesso...");
+    var templateMain = HtmlService.createTemplateFromFile('mainSucesso');
+    templateMain.dados = dados;
+    var mainProcessado = templateMain.evaluate().getContent();
+
+    // 2. Cria a página principal
+    console.log("LOG: Tentando abrir moldura sucesso...");
+    var layout = HtmlService.createTemplateFromFile('sucesso');
+    
+    layout.conteudoPrincipal = mainProcessado;
+    
+    console.log("LOG: Tudo certo! Retornando HTML final.");
+    return layout.evaluate().getContent();
+
+  } catch (erro) {
+    // SE O ERRO APARECER AQUI, O LOG VAI DIZER EXATAMENTE QUAL ARQUIVO FALTOU
+    console.error("ERRO DENTRO DA FUNÇÃO:", erro.toString());
+    throw new Error("Erro ao montar página: " + erro.toString());
   }
 }
-
-function carregarPaginaSucesso(dados) {
-  // 1. Processa o conteúdo interno primeiro
-  var templateMain = HtmlService.createTemplateFromFile('mainSucesso');
-  templateMain.nome = dados.nome;
-  templateMain.data = dados.dataAgenda;
-  templateMain.hora = dados.horaAgenda;
-  templateMain.titulo = dados.tituloTese;
-  var mainProcessado = templateMain.evaluate().getContent();
-
-  // 2. Cria a página principal (sucesso.html)
-  var layout = HtmlService.createTemplateFromFile('sucesso');
-  
-  // 3. Precisamos de uma forma de passar o mainProcessado para o sucesso.html
-  // No seu sucesso.html, no lugar de obterDadosHtml('mainSucesso'), 
-  // você usaria: <?!= conteudoPrincipal ?>
-  layout.conteudoPrincipal = mainProcessado;
-
-  return layout.evaluate().getContent();
-}
-

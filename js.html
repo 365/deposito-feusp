@@ -87,8 +87,8 @@
     }
 
 /** ===================================
-     2. FUNÇÃO DO MODAL (CORRIGIDA)
-    =================================== */
+         2. FUNÇÃO DO MODAL (ESTRUTURA COMPLETA)
+        =================================== */
     function mostrarModalDecisao(mensagem, titulo, tipo) {
         const modalElement = document.getElementById('modalResultado');
         const header = document.getElementById('modalHeaderCor');
@@ -98,16 +98,14 @@
         const btnAgendar = document.getElementById('btnModalAgendar');
         const btnVoltar = document.getElementById('btnModalVoltar');
         const pergunta = document.getElementById('perguntaAgendamento');
-        const detalhesFinal = document.getElementById('detalhesAgendamentoFinal'); // ADICIONADO ESTA LINHA QUE FALTAVA
+        const detalhesFinal = document.getElementById('detalhesAgendamentoFinal');
 
-        // Reset inicial dos elementos
+        // Reset inicial
         pergunta.style.display = 'none';
         btnAgendar.style.display = 'none';
-        detalhesFinal.classList.add('d-none'); // Agora não vai mais dar erro aqui
+        detalhesFinal.classList.add('d-none');
         btnVoltar.textContent = "Voltar";
         btnVoltar.style.display = 'inline-block';
-
-        // Reset de cores do Header
         header.classList.remove('bg-success', 'bg-danger', 'bg-sucesso-modal', 'bg-erro-modal');
 
         if (tipo === 'sucesso') {
@@ -122,35 +120,26 @@
             icone.className = 'bi bi-calendar-x-fill me-2';
             txtTitulo.textContent = "Data Indisponível";
             txtMensagem.innerHTML = `<span class="fw-bold text-danger">Atenção!</span><br>${mensagem}<br><br>`;
-            btnAgendar.style.display = 'none';
-            btnVoltar.textContent = "Entendido";
         }
 
-        // Criar e mostrar a instância do modal
         const instanciaModal = new bootstrap.Modal(modalElement);
 
-    /** ===================================
-         EVENTO DE CLIQUE NO BOTÃO AGENDAR
-        =================================== */
+        // EVENTO DE CLIQUE (Dentro da função para herdar as variáveis acima)
         btnAgendar.onclick = function () {
+            window.dadosAluno.nome         = document.getElementById('nome').value;
+            window.dadosAluno.nrUsp        = document.getElementById('nrUsp').value;
+            window.dadosAluno.emailAluno   = document.getElementById('emailAluno').value;
+            window.dadosAluno.tituloTese   = document.getElementById('tituloTese').value;
+            window.dadosAluno.dataAgenda   = document.getElementById('dataAgenda').value;
+            window.dadosAluno.horaAgenda   = document.getElementById('horaAgenda').value;
 
-        // Gravando direto no objeto que está lá no topo do seu script
-            dadosAluno.nome         = document.getElementById('nome').value;
-            dadosAluno.nrUsp        = document.getElementById('nrUsp').value;
-            dadosAluno.emailAluno   = document.getElementById('emailAluno').value;
-            dadosAluno.tituloTese   = document.getElementById('tituloTese').value;
-            dadosAluno.dataAgenda   = document.getElementById('dataAgenda').value;
-            dadosAluno.horaAgenda   = document.getElementById('horaAgenda').value;
-
-            console.log('✅ Dados salvos no objeto global:', dadosAluno);
-
-            if (!dadosAluno.nome || !dadosAluno.tituloTese) {
+            if (!window.dadosAluno.nome || !window.dadosAluno.tituloTese) {
                 instanciaModal.hide();
-                criarNotificacaoAdvertencia("Preencha Nome e Título da Tese antes de agendar.", "Campos Faltando");
+                criarNotificacaoAdvertencia("Preencha Nome e Título antes de agendar.", "Campos Faltando");
                 return;
             }
 
-            txtMensagem.innerHTML = `Aguarde, agendando para <strong>${dadosAluno.nome}</strong>...`;
+            txtMensagem.innerHTML = `Aguarde, agendando para <strong>${window.dadosAluno.nome}</strong>...`;
             pergunta.style.display = 'none';
             btnAgendar.style.display = 'none';
             btnVoltar.style.display = 'none';
@@ -165,10 +154,8 @@
                         txtTitulo.textContent = "Agendamento Confirmado!";
                         txtMensagem.innerHTML = `<strong>${res.nome}</strong>, agendamento realizado com sucesso!`;
 
-                        // Trava campos
                         document.getElementById('btn-consultar').disabled = true;
-                        const campos = ['nome', 'nrUsp', 'emailAluno', 'tituloTese', 'dataAgenda', 'horaAgenda'];
-                        campos.forEach(id => {
+                        ['nome', 'nrUsp', 'emailAluno', 'tituloTese', 'dataAgenda', 'horaAgenda'].forEach(id => {
                             const el = document.getElementById(id);
                             if (el) el.readOnly = true;
                         });
@@ -176,8 +163,7 @@
                         detalhesFinal.innerHTML = `
                             <p class="mb-1 small">📅 <strong>Data:</strong> ${res.data}</p>
                             <p class="mb-1 small">⏰ <strong>Horário:</strong> ${res.hora}</p>
-                            <p class="mb-0 small">📖 <strong>Título:</strong> ${res.titulo}</p>
-                        `;
+                            <p class="mb-0 small">📖 <strong>Título:</strong> ${res.titulo}</p>`;
                         detalhesFinal.classList.remove('d-none');
 
                         btnVoltar.textContent = "Fechar e Prosseguir";
@@ -185,7 +171,7 @@
                         btnProximo.disabled = false;
                     }
                 })
-                .processarAgendamento(dadosAluno);
+                .processarAgendamento(window.dadosAluno);
         };
 
         instanciaModal.show();
@@ -222,6 +208,41 @@
 
     // Chamar ao carregar a página
     window.addEventListener('load', carregarOrientadores);
+
+/** ================================================
+     Função para carregar os docentes no select
+    ================================================ */
+function carregarDocentes() {
+        const idsDocentes = ['nomeTitular2', 'nomeTitular3', 'nomeTitular4', 'nomeTitular5'];
+        
+        google.script.run
+            .withSuccessHandler(function(lista) {
+                idsDocentes.forEach(id => {
+                    const select = document.getElementById(id);
+                    if (!select) return;
+
+                    const valorSalvo = window[`docente_${id}`] || '';
+                    select.innerHTML = '<option value="" selected disabled>Selecione o Titular...</option>';
+                    
+                    if (lista && lista.length > 0) {
+                        lista.forEach(nome => {
+                            let opt = document.createElement('option');
+                            opt.value = nome;
+                            opt.textContent = nome;
+                            select.appendChild(opt);
+                        });
+                    }
+                    if (valorSalvo) select.value = valorSalvo;
+                });
+            })
+            .listarDocentes(); // Uma única chamada para preencher os 4 campos!
+    }
+
+    // Unificando o carregamento inicial
+    window.addEventListener('load', () => {
+        carregarOrientadores();
+        carregarDocentes();
+    });
 
 /** =============================
      3. NAVEGAÇÃO E AUXILIARES
@@ -298,59 +319,54 @@
         }, 100);
     });
 
-/** =============================
-     ETAPA 3 → ETAPA 2 (CORRETO)
-    ============================= */
-    document.getElementById('btn-voltar-etapa3').addEventListener('click', function () {
-        //document.getElementById('step-3').classList.add('d-none');
-        //document.getElementById('step-2').classList.remove('d-none');
-        const btnVoltar3 = document.getElementById('btn-voltar-etapa3');
+/** =============================================
+         ETAPA 3 → ETAPA 2 (VERSÃO LIMPA E SEM DUPLICIDADE)
+        ============================================= */
+    const btnVoltar3 = document.getElementById('btn-voltar-etapa3');
 
-        
-        salvarDadosEtapa(3);
-        mostrarEtapa(2);
-        progressBar.style.width = '50%';
-
-
-        if (btnVoltar3) {
-            console.log("🔍 DEBUG: Botão Voltar-Etapa3 encontrado no HTML!");
-
-            btnVoltar3.addEventListener('click', function (e) {
-                console.log("🚀 DEBUG: Você CLICOU no botão Voltar!");
-                
-                try {
-                    mostrarEtapa(2);
-                    console.log("✅ DEBUG: Função mostrarEtapa(2) executada.");
-                    
-                    if (document.getElementById('progress-bar')) {
-                        document.getElementById('progress-bar').style.width = '50%';
-                    }
-
-                    // Scroll
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                } catch (erro) {
-                    console.error("❌ DEBUG: Erro ao tentar voltar:", erro);
+    if (btnVoltar3) {
+        btnVoltar3.addEventListener('click', function (e) {
+            console.log("🚀 DEBUG: Você CLICOU no botão Voltar-Etapa3!");
+            
+            try {
+                // 1. Salva o que foi feito na etapa 3 (ex: nome do arquivo selecionado)
+                if (typeof salvarDadosEtapa === "function") {
+                    salvarDadosEtapa(3);
                 }
-            });
-        } else {
-            console.error("⚠️ DEBUG: O botão 'btn-voltar-etapa3' NÃO existe no HTML desta página.");
-        }
 
+                // 2. Navegação
+                mostrarEtapa(2);
+                
+                // 3. UI (Barra de progresso volta para o meio)
+                if (progressBar) {
+                    progressBar.style.width = '50%';
+                }
 
-        // ← Scroll da pagina para iniciar no topo (cópia da etapa1)
-        setTimeout(() => {
-            const container = document.getElementById('form-container');
-            const headerHeight = document.querySelector('.sticky-top').offsetHeight;
-            const offset = headerHeight + 20;
-            const elementPosition = container.getBoundingClientRect().top + window.pageYOffset;
-            const offsetPosition = elementPosition - offset;
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
-        }, 100);
-    });
+                // 4. Scroll Otimizado
+                setTimeout(() => {
+                    const container = document.getElementById('form-container');
+                    const stickyHeader = document.querySelector('.sticky-top');
+                    const headerHeight = stickyHeader ? stickyHeader.offsetHeight : 0;
+                    const offset = headerHeight + 20;
+
+                    const elementPosition = container.getBoundingClientRect().top + window.pageYOffset;
+                    const offsetPosition = elementPosition - offset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }, 100);
+
+                console.log("✅ DEBUG: Retorno para Etapa 2 concluído.");
+
+            } catch (erro) {
+                console.error("❌ DEBUG: Erro ao tentar voltar:", erro);
+            }
+        });
+    } else {
+        console.warn("⚠️ DEBUG: O botão 'btn-voltar-etapa3' não foi localizado no DOM.");
+    }
 
 /** =============================
      ETAPA 3 → ETAPA 4 (FINAL)
@@ -549,6 +565,9 @@
         overlay.classList.toggle('d-flex', show);
     }
 
+/** ========================
+ CRIAR NOTIFICAÇÃO TOAST
+============================ */
     function criarNotificacao(mensagem, titulo) {
         document.getElementById('mensagemNotificacao').textContent = mensagem;
         document.getElementById('tituloNotificacao').textContent = titulo;
@@ -590,16 +609,24 @@
         }
     }
 
+/** ==================================================
+     Reseta os campos de logística (Diária/Passagem)
+    ================================================== */
     function resetCamposLogistica(id) {
         document.getElementById('diaria' + id + 'Sim').checked = false;
         document.getElementById('diaria' + id + 'Nao').checked = false;
+        
+        // Limpa o arquivo selecionado (se houver)
+        const inputFile = document.querySelector(`#campoUpload${id} input[type="file"]`);
+        if (inputFile) inputFile.value = ""; 
+
         document.getElementById('campoUpload' + id).classList.add('d-none');
     }
 
-/**
- * Função para capturar dados de uma etapa específica
- * @param {number} etapa - O número da etapa que o usuário está saindo
- */
+/** ======================================================================
+    * Função para capturar dados de uma etapa específica
+    * @param {number} etapa - O número da etapa que o usuário está saindo
+    ====================================================================== */
     function salvarDadosEtapa(etapa) {
         console.log(`💾 Salvando dados da Etapa ${etapa}...`);
         
@@ -661,6 +688,10 @@
             } else {
                 window.dadosAluno.arquivoPDF = "Não selecionado";
             }
+
+            // Captura se o checkbox LGPD está marcado (true/false)
+            const checkLGPD = document.getElementById('checkLGPD');
+            window.dadosAluno.aceiteLGPD = checkLGPD ? checkLGPD.checked : false;
         }
         
         console.log('📊 Estado atual do objeto:', window.dadosAluno);
@@ -711,10 +742,10 @@
                 <h6 class="fw-bold border-bottom pb-1 text-primary">4. MEMBROS TITULARES</h6>
                 <table class="table table-sm table-borderless mb-3">
                     <tr><td width="30%" class="text-muted">Área de Concentração:</td><td class="fw-bold">${d.areaConcentracao || '-'}</td></tr>
-                    <tr><td width="30%" class="text-muted">Orientador:</td><td class="fw-bold">${d.orientador || '-'}</td></tr>
+                    <tr><td width="30%" class="text-muted">Orientador(a):</td><td class="fw-bold">${d.orientador || '-'}</td></tr>
                 </table>
 
-                <h6 class="fw-bold border-bottom pb-1 text-primary-emphasis small">SEGUNDO TITULAR</h6>
+                <h6 class="fw-bold border-bottom border-top pb-1 text-primary-emphasis small">SEGUNDO TITULAR</h6>
                 <table class="table table-sm table-borderless mb-3">
                     <tr><td width="30%" class="text-muted small">Nome:</td><td class="fw-bold">${d.nomeTitular2 || '-'}</td></tr>
                     <tr><td class="text-muted small">E-mail:</td><td class="fw-bold">${d.emailTitular2 || '-'}</td></tr>
@@ -827,12 +858,26 @@
 
 /** ===================================================
     Ativa/Desativa o botão conforme o checkbox da LGPD
-======================================================= */
+   ==================================================== */
     document.addEventListener('change', function(e) {
         if (e.target && e.target.id === 'checkLGPD') {
             const btnConfirmar = document.getElementById('confirmarNoModal');
+            const isChecked = e.target.checked;
+
             if (btnConfirmar) {
-                btnConfirmar.disabled = !e.target.checked;
+                btnConfirmar.disabled = !isChecked;
+            }
+
+            // GRAVAÇÃO NO OBJETO:
+            window.dadosAluno.aceiteLGPD = isChecked;
+            
+            // Opcional: Grava a data/hora do "clique" de aceite
+            if (isChecked) {
+                window.dadosAluno.dataHoraAceite = new Date().toLocaleString('pt-BR');
+                console.log("⚖️ LGPD Aceita em:", window.dadosAluno.dataHoraAceite);
+            } else {
+                window.dadosAluno.dataHoraAceite = null;
+                console.log("⚠️ LGPD Desmarcada");
             }
         }
     });
@@ -853,6 +898,9 @@ function validarEConfirmar() {
     confirmarEnvioFinal(); 
 }
 
+/** ==========================
+    Confirmando o envio final
+============================== */
 function confirmarEnvioFinal() {
     Swal.fire({
         title: '',
