@@ -132,3 +132,12 @@ function carregarPaginaSucesso_OLDOLD(dados) {
 
   return layout.evaluate().getContent();
 }
+
+
+
+<h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">QUINTO SUPLENTE</h6>
+                <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome suplente 5:</td><td style="font-weight: bold;"><?= dados.nomeSuplente5 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email suplente 5:</td><td style="font-weight: bold;"><?= dados.emailSuplente5 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo suplente 5:</td><td style="font-weight: bold;"><?= dados.vinculoSuplente5 ?></td></tr>
+                </table>

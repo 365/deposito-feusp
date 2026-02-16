@@ -680,6 +680,23 @@ function carregarDocentes() {
         else if (etapa === 4) {
             const inputArquivo = document.getElementById('arquivoPDF');
             console.log("🔍 Tentando capturar arquivo do input:", inputArquivo);
+
+            inputArquivo.addEventListener('change', function(e) {
+            const arquivo = e.target.files[0];
+            if (!arquivo) return;
+            
+            console.log('📁 Arquivo selecionado:');
+            console.log('Nome:', arquivo.name);
+            console.log('Tamanho:', arquivo.size);
+
+            // Envia pro servidor testar Blob
+            google.script.run
+                .withSuccessHandler(result => {
+                console.log('SERVIDOR:', result);
+                alert(result.mensagem);
+                })
+                .testarBlobAppsScript(arquivo);
+            });
             
             // Verifica se existe um arquivo selecionado na lista de arquivos do input
             if (inputArquivo && inputArquivo.files && inputArquivo.files.length > 0) {
