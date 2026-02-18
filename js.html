@@ -957,52 +957,85 @@ function confirmarEnvioFinal() {
     Empacotando dados e para envio ao Google Sheets
 ======================================================= */
 function executarEnvioParaGoogle() {
-    const dadosParaEnviar = window.dadosAluno;
+    const inputArquivoPdfTese = document.getElementById('arquivoPDF');
+    const arquivo = inputArquivoPdfTese.files[0];
 
-    // 1. Mostra o loading (importante para o usuário não clicar de novo)
-    Swal.fire({
-        title: 'Processando Depósito',
-        text: 'Gravando dados e enviando e-mail...',
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); }
-    });
+    // Verifica se o arquivo existe (já que é obrigatório no seu fluxo)
+    if (arquivo) {
+        const reader = new FileReader();
+        
+        // Inicia a leitura do arquivo PDF
+        reader.onload = function(e) {
+            
+            // --- 1. CAPTURA DO ARQUIVO ---
+            // Criamos um objeto com o conteúdo do arquivo em Base64 para o Apps Script processar
+            window.dadosAluno.pdfBlobTese = {
+                conteudo: e.target.result.split(',')[1], // Apenas a parte da string Base64
+                nome: arquivo.name,
+                mimeType: arquivo.type
+            };
 
-    // 2. Chama a gravação na planilha
-    google.script.run
-      .withSuccessHandler(function(resposta) {
-          console.log("Sucesso na planilha! Agora vou disparar o e-mail...");
+            // Definimos a constante com os dados atualizados (incluindo o PDF)
+            const dadosParaEnviar = window.dadosAluno;
 
-            // 3. Chamamos o e-mail (também no servidor)
+            // --- 2. INTERFACE COM O USUÁRIO ---
+            // Mostra o loading (importante para o usuário não clicar de novo)
+            Swal.fire({
+                title: 'Processando Depósito',
+                text: 'Gravando dados e enviando e-mail...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            // --- 3. GRAVAÇÃO NA PLANILHA ---
+            // Primeiro passo: Salvar os dados no Google Sheets
             google.script.run
-            .withSuccessHandler(function() {
-                console.log("E-mail enviado! Agora carregando página de sucesso...");
-
-                // 4. MÁGICA FINAL: Busca o HTML da página de sucesso para exibir
-                google.script.run
-                    .withSuccessHandler(function(htmlFinal) {
-                        Swal.close();
-                        
-                    // ✅ FORÇA SCROLL E BARRA ANTES de recarregar
-                    window.scrollTo(0, 0);
-                    document.body.style.overflowY = 'scroll !important';
-                    document.documentElement.style.overflowY = 'scroll !important';
-                    document.body.style.minHeight = '101vh';
-                        // --- AJUSTES AQUI ---
-                        // 1. Usamos innerHTML no body para evitar o erro de Syntax/Identifier
-                        document.body.innerHTML = htmlFinal;
-
-                        window.scrollTo(0, 0);
-                        document.body.style.overflowY = 'scroll';
-
-                    })
-                    .carregarPaginaSucesso(dadosParaEnviar);
+            .withFailureHandler(function(erro) {
+                // Caso ocorra erro na gravação da planilha
+                Swal.fire("Erro Crítico", "Erro ao salvar dados: " + erro.toString(), "error");
             })
-            .enviarEmailConfirmacao(dadosParaEnviar); // Nome da função de e-mail no .gs
-      })
-      .withFailureHandler(function(erro) {
-          Swal.fire("Erro Crítico", erro.toString(), "error");
-      })
-      .salvarDadosNaPlanilha(dadosParaEnviar);
+            .withSuccessHandler(function(resposta) {
+                console.log("Sucesso na planilha! Agora vou disparar o e-mail...");
+
+                // --- 4. DISPARO DE E-MAILS ---
+                // Segundo passo: Enviar os e-mails (Aluno, Orientador e Secretaria com anexo)
+                google.script.run
+                .withFailureHandler(function(erro) {
+                    // Caso os dados tenham sido salvos, mas o e-mail falhou
+                    Swal.fire("Erro no E-mail", "Os dados foram salvos, mas houve um erro no envio dos e-mails: " + erro.toString(), "warning");
+                })
+                .withSuccessHandler(function() {
+                    console.log("E-mail enviado! Agora carregando página de sucesso...");
+
+                    // --- 5. PÁGINA DE SUCESSO ---
+                    // Terceiro passo: Busca o HTML da página de sucesso para exibir
+                    google.script.run
+                        .withSuccessHandler(function(htmlFinal) {
+                            Swal.close();
+                            
+                            // ✅ FORÇA SCROLL E BARRA ANTES de recarregar
+                            window.scrollTo(0, 0);
+                            document.body.style.overflowY = 'scroll !important';
+                            document.documentElement.style.overflowY = 'scroll !important';
+                            document.body.style.minHeight = '101vh';
+
+                            // --- SUBSTITUIÇÃO DO CONTEÚDO ---
+                            // Usamos innerHTML no body para evitar o erro de Syntax/Identifier
+                            document.body.innerHTML = htmlFinal;
+
+                            window.scrollTo(0, 0);
+                            document.body.style.overflowY = 'scroll';
+                        })
+                        .carregarPaginaSucesso(dadosParaEnviar);
+                })
+                .enviarEmailConfirmacao(dadosParaEnviar); // Chama a função no funcoes.js
+            })
+            .salvarDadosNaPlanilha(dadosParaEnviar); // Chama a função no funcoes.js
+        };
+        
+        // Lê o arquivo como uma URL de dados (Base64)
+        reader.readAsDataURL(arquivo);
+    }
 }
 
 </script>

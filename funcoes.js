@@ -42,7 +42,7 @@ function testarVisualizacao() {
     orientador: "Prof. Dr. Orientador Exemplo"
   };
   
-  template.logoFeusp = "SUA_URL_DO_LOGO_AQUI"; // Coloque o link da imagem
+  template.logoFeusp = "https://www4.fe.usp.br/wp-content/themes/fe_v2/images/imagem_logo_texto-2.png"; // Coloque o link da imagem
   
   // ESCOLHA O QUE QUER VER: 'ALUNO', 'SECRETARIA' ou 'ORIENTADOR'
   template.tipo = 'ALUNO'; 
@@ -358,6 +358,17 @@ function enviarEmailConfirmacao(dados) {
   // Passa os dados recebidos do front para o template
   template.dados = dados;
   template.logoFeusp = "https://www4.fe.usp.br/wp-content/themes/fe_v2/images/imagem_logo_texto-2.png";
+
+// 1. Preparamos o anexo se ele existir
+  var anexos = [];
+  if (dados.pdfBlobTese) {
+    var blob = Utilities.newBlob(
+      Utilities.base64Decode(dados.pdfBlobTese.conteudo), 
+      dados.pdfBlobTese.mimeType, 
+      dados.pdfBlobTese.nome
+    );
+    anexos.push(blob);
+  }
   
   // Envio para o ALUNO
   template.tipo = 'ALUNO';
@@ -383,7 +394,8 @@ function enviarEmailConfirmacao(dados) {
   MailApp.sendEmail({
     to: "apmbraga@gmail.com",
     subject: "Novo Depósito Digital: " + dados.nome,
-    htmlBody: corpoSecretaria
+    htmlBody: corpoSecretaria,
+    attachments: anexos // <--- O PDF entra aqui
   });
 
   return true; // Importante para o .withSuccessHandler do front saber que acabou
