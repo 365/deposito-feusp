@@ -42,7 +42,7 @@ function testarVisualizacao() {
     orientador: "Prof. Dr. Orientador Exemplo"
   };
   
-  template.logoFeusp = "https://www4.fe.usp.br/wp-content/themes/fe_v2/images/imagem_logo_texto-2.png"; // Coloque o link da imagem
+  template.logoFeusp = "SUA_URL_DO_LOGO_AQUI"; // Coloque o link da imagem
   
   // ESCOLHA O QUE QUER VER: 'ALUNO', 'SECRETARIA' ou 'ORIENTADOR'
   template.tipo = 'ALUNO'; 
