@@ -42,7 +42,7 @@ function testarVisualizacao() {
     orientador: "Prof. Dr. Orientador Exemplo"
   };
   
-  template.logoFeusp = "SUA_URL_DO_LOGO_AQUI"; // Coloque o link da imagem
+  template.logoFeusp = LOGO_FEUSP_BK_COMP; // Coloque o link da imagem
   
   // ESCOLHA O QUE QUER VER: 'ALUNO', 'SECRETARIA' ou 'ORIENTADOR'
   template.tipo = 'ALUNO'; 
@@ -60,19 +60,52 @@ function testarVisualizacao() {
 /** ========================
      Configurações Globais  
     ======================== */
-const ID_TIPO_PLANILHA = 'QUALI'; // 1=QUALI, 2=ME, 3=DOU
+const ID_TIPO_POS = 'ME'; // 1=QUALI, 2=ME, 3=DOU
 const ID_AGENDA_DEPOSITOS = 'c_f0c47043a5564c65f0ac0835c28e3b3fa13c3bf80618daa471d01679bc7a281d@group.calendar.google.com';
 const ID_PLANILHA = '1yXdWwSiTsSbour4dQ-WhSl2r3LVzf_acxk3-EY2nV8E';
+const ID_MODELO_DOC = '164xGKfmthOr0MKWqSDJ3iguIo7o8b7-qvQ0E2zysbf4';
+const ID_PASTA_PDFS = '1vExAeBv5NSvgtoRnXdoah6wX-uRQluEy';
 const NOME_ABA_CADASTRO = 'Cadastro';
 const NOME_ABA_ORIENTADORES = 'Orientadores';
 const NOME_ABA_DOCENTES = 'Docentes';
+const LOGO_FEUSP_BK_COMP = "https://365studio.com.br/wp-content/uploads/2026/02/Logo-FEUSP-Preto-comprido-RGB.png";
+const LOGO_FEUSP_BK_RETANG = "https://365studio.com.br/wp-content/uploads/2026/02/Logo-FEUSP-Preto-retangular-RGB.png";
 
 function doGet() {
-  return HtmlService.createTemplateFromFile('web').evaluate().setTitle('Formulário de Depósito');
+  //return HtmlService.createTemplateFromFile('web').evaluate().setTitle('Formulário de Depósito');
+
+  // 1. Cria o template a partir do arquivo principal (ex: index.html)
+  const template = HtmlService.createTemplateFromFile('web');
+  
+  // 2. INJETA AS CONSTANTES GLOBAIS AQUI (Isso resolve o erro 404)
+  template.LOGO_FEUSP_BK_COMP = LOGO_FEUSP_BK_COMP;
+  template.LOGO_FEUSP_BK_RETANG = LOGO_FEUSP_BK_RETANG;
+  template.ID_TIPO_POS = ID_TIPO_POS; // <--- ADICIONE ESTA LINHA
+  
+  // 3. Renderiza e define configurações de visualização
+  return template.evaluate()
+      .setTitle('Depósito Digital - FEUSP')
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function obterDadosHtml(nome) {
-  return HtmlService.createHtmlOutputFromFile(nome).getContent();
+  const template = HtmlService.createTemplateFromFile(nome);
+  
+  // 1. Injeta os logos (Globais)
+  template.LOGO_FEUSP_BK_COMP = LOGO_FEUSP_BK_COMP;
+  template.LOGO_FEUSP_BK_RETANG = LOGO_FEUSP_BK_RETANG;
+  
+  // 2. Cria um objeto vazio para 'dados' caso o arquivo chame essa variável
+  // Isso evita o erro "ReferenceError: dados is not defined"
+  template.dados = {}; 
+
+  try {
+    return template.evaluate().getContent();
+  } catch (e) {
+    // Se ainda der erro, ele nos avisa qual arquivo está com problema
+    return "";
+  }
 }
 
 function onOpen() {
@@ -197,17 +230,20 @@ function processarAgendamento(dados) {
       const headerTrimmed = header.toString().trim();
       // REGRA NOVA: Se a coluna for a que criamos na Planilha, gera a data/hora agora
       if (headerTrimmed === 'Data do Deposito') return new Date();
-      if (headerTrimmed === 'tipo') return ID_TIPO_PLANILHA;
+      if (headerTrimmed === 'tipo') return ID_TIPO_POS;
       if (headerTrimmed === 'tipoDefesa') return dados.tipoDefesa || '';
       return dados[headerTrimmed] || '';
     });
 
     planilha.appendRow(novaLinha);
 
+    // Criamos a data formatada para exibição
+    const dataExibicao = dados.dataAgenda.split('-').reverse().join('/');
+
     return {
       sucesso: true, 
       nome: dados.nome, 
-      data: dados.dataAgenda,
+      data: dataExibicao,
       hora: dados.horaAgenda,
       titulo: dados.tituloTese
     };
@@ -320,7 +356,7 @@ function salvarDadosNaPlanilha(dados) {
       }
 
       // Regra 3: Tipo fixo
-      if (h === 'tipo') return ID_TIPO_PLANILHA;
+      if (h === 'tipo') return ID_TIPO_POS;
 
       // Regra 4: Mapeamento dinâmico do formulário
       return dados[h] !== undefined ? dados[h] : (rowIndex !== -1 ? valoresPlanilha[rowIndex][colIdx] : "");
@@ -353,21 +389,38 @@ function salvarDadosNaPlanilha(dados) {
      ENVIAR E-MAIL DE CONFIRMAÇÃO
     =============================== */
 function enviarEmailConfirmacao(dados) {
+  // --- PASSO 1: TRADUÇÃO (Lógica no Servidor) ---
+  // Aqui o servidor já conhece a sua const global ID_TIPO_POS
+  const tradutor = {
+    'QUALI': 'QUALIFICAÇÃO',
+    'ME':    'MESTRADO',
+    'DOU':   'DOUTORADO'
+  };
+
+  // Alimentamos o objeto 'dados' com o nome por extenso
+  dados.cursoExtensao = tradutor[ID_TIPO_POS];
+
+  // --- PASSO A: GERA O PDF ANTES DE TUDO ---
+  const pdfOficial = gerarPdfPeloDoc(dados);
+
   const template = HtmlService.createTemplateFromFile('templatesEmails');
   
   // Passa os dados recebidos do front para o template
   template.dados = dados;
-  template.logoFeusp = "https://www4.fe.usp.br/wp-content/themes/fe_v2/images/imagem_logo_texto-2.png";
+  template.logoFeusp = LOGO_FEUSP_BK_RETANG;
 
-// 1. Preparamos o anexo se ele existir
-  var anexos = [];
+  // --- PASSO B: ORGANIZA OS ANEXOS ---
+  let anexosSecretaria = [pdfOficial]; // Começa com o PDF que acabamos de criar
+
+  // 1. Preparamos o anexo se ele existir
+  var anexoTese = [];
   if (dados.pdfBlobTese) {
     var blob = Utilities.newBlob(
       Utilities.base64Decode(dados.pdfBlobTese.conteudo), 
       dados.pdfBlobTese.mimeType, 
       dados.pdfBlobTese.nome
     );
-    anexos.push(blob);
+    anexoTese.push(blob);
   }
   
   // Envio para o ALUNO
@@ -385,7 +438,8 @@ function enviarEmailConfirmacao(dados) {
   MailApp.sendEmail({
     to: '365studiobr@gmail.com', // TESTE: seu e-mail fixo por enquanto
     subject: "Assinatura Necessária - Depósito de " + dados.nome,
-    htmlBody: corpoOrientador
+    htmlBody: corpoOrientador,
+    attachments: [pdfOficial] // <--- Ele vê o PDF gerado do Word
   });
 
   // Envio para a SECRETARIA
@@ -395,7 +449,7 @@ function enviarEmailConfirmacao(dados) {
     to: "apmbraga@gmail.com",
     subject: "Novo Depósito Digital: " + dados.nome,
     htmlBody: corpoSecretaria,
-    attachments: anexos // <--- O PDF entra aqui
+    attachments: anexoTese // <--- O PDF entra aqui
   });
 
   return true; // Importante para o .withSuccessHandler do front saber que acabou
@@ -414,7 +468,7 @@ function dispararFluxoEmails(dadosFormulario) {
   // dadosFormulario.emailAluno = '365studiobr@gmail.com';
 
   template.dados = dadosFormulario;
-  template.logoFeusp = "https://www4.fe.usp.br/wp-content/themes/fe_v2/images/imagem_logo_texto-2.png";
+  template.logoFeusp = LOGO_FEUSP_BK_RETANG;
 
   // --- 1. ENVIO ALUNO ---
   template.tipo = 'ALUNO';
@@ -488,5 +542,122 @@ function carregarPaginaSucesso(dados) {
     // SE O ERRO APARECER AQUI, O LOG VAI DIZER EXATAMENTE QUAL ARQUIVO FALTOU
     console.error("ERRO DENTRO DA FUNÇÃO:", erro.toString());
     throw new Error("Erro ao montar página: " + erro.toString());
+  }
+}
+
+/** ================================================
+    GERANDO PDF DINAMICAMENTE PELO DOC (TESTE DUMMY PARA VER SE FUNCIONA)
+    ================================================ */
+function gerarPdfPeloDoc(dados) {
+  // --- A CORREÇÃO ESTÁ AQUI ---
+  // Se o cursoExtensao não veio preenchido, nós traduzimos agora!
+  if (!dados.cursoExtensao) {
+    const tradutor = { 'QUALI': 'QUALIFICAÇÃO', 'ME': 'MESTRADO', 'DOU': 'DOUTORADO' };
+    dados.cursoExtensao = tradutor[ID_TIPO_POS] || "Não Definido";
+  }
+
+  console.log("DEBUG Replace - Curso (Após correção):", dados.cursoExtensao);
+
+
+  console.log("=== INICIO DA GERAÇÃO DO PDF ===");
+  console.log("Dados recebidos:", JSON.stringify(dados)); // Inspeciona o objeto completo
+
+  const modeloId = ID_MODELO_DOC; 
+  const pastaId = ID_PASTA_PDFS; 
+  const nomeArquivo = "Deposito - " + (dados.nrUsp) + " - " + (dados.nome);
+
+  try {
+    const modeloArquivo = DriveApp.getFileById(modeloId);
+    const pastaDestino = DriveApp.getFolderById(pastaId);
+    const agora = new Date(); // Captura o momento exato uma única vez
+    
+    // DECLARAÇÃO ÚNICA:
+    const copia = modeloArquivo.makeCopy(nomeArquivo, pastaDestino); 
+    
+    const doc = DocumentApp.openById(copia.getId());
+    const body = doc.getBody();
+
+    // Logs individuais para monitorar o que vai entrar no replace
+    console.log("DEBUG Replace - Nome:", dados.nome);
+    console.log("DEBUG Replace - Titulo:", dados.tituloTese);
+    console.log("DEBUG Replace - Curso:", dados.cursoExtensao);
+
+    // Tratamento da Data da Defesa (YYYY-MM-DD para DD/MM/YYYY)
+    let dataDefesaFormatada = dados.dataAgenda || "";
+    if (dataDefesaFormatada.includes("-")) {
+      dataDefesaFormatada = dataDefesaFormatada.split('-').reverse().join('/');
+    }    
+
+    // Substituições
+    //=== identificação =========================================
+    body.replaceText("{{NOME_ALUNO}}", dados.nome);
+    body.replaceText("{{EMAIL_ALUNO}}", dados.emailAluno);
+    body.replaceText("{{NR_USP}}", dados.nrUsp);
+    //=== dados academicos ======================================
+    body.replaceText("{{AREA_CONCENTRACAO}}", dados.areaConcentracao);
+    body.replaceText("{{TITULO_TESE}}", dados.tituloTese);
+    //=== agendamento ===========================================
+    body.replaceText("{{DATA_DEFESA}}", dataDefesaFormatada);
+    body.replaceText("{{HORA_DEFESA}}", dados.horaAgenda);
+
+    //=== membros titulares =====================================
+    body.replaceText("{{NOME_ORIENTADOR}}", dados.orientador);
+    body.replaceText("{{EMAIL_ORIENTADOR}}", dados.emailOrientador);
+    body.replaceText("{{VINCULO_ORIENTADOR}}", dados.vinculoOrientador);
+    //=== segundo titular =======================================
+    body.replaceText("{{NOME_TITULAR_2}}", dados.nomeTitular2);
+    body.replaceText("{{EMAIL_TITULAR_2}}", dados.emailTitular2);
+    body.replaceText("{{VINCULO_TITULAR_2}}", dados.vinculoTitular2);
+    //=== terceiro titular ======================================
+    body.replaceText("{{NOME_TITULAR_3}}", dados.nomeTitular3);
+    body.replaceText("{{EMAIL_TITULAR_3}}", dados.emailTitular3);
+    body.replaceText("{{VINCULO_TITULAR_3}}", dados.vinculoTitular3);
+    //=== quarto titular ======================================
+    body.replaceText("{{NOME_TITULAR_4}}", dados.nomeTitular4);
+    body.replaceText("{{EMAIL_TITULAR_4}}", dados.emailTitular4);
+    body.replaceText("{{VINCULO_TITULAR_4}}", dados.vinculoTitular4);
+    //=== quinto titular ======================================
+    body.replaceText("{{NOME_TITULAR_5}}", dados.nomeTitular5);
+    body.replaceText("{{EMAIL_TITULAR_5}}", dados.emailTitular5);
+    body.replaceText("{{VINCULO_TITULAR_5}}", dados.vinculoTitular5);
+    
+    //=== primeiro suplente ===================================
+    body.replaceText("{{NOME_SUPLENTE_1}}", dados.nomeSuplente1);
+    body.replaceText("{{EMAIL_SUPLENTE_1}}", dados.emailSuplente1);
+    body.replaceText("{{VINCULO_SUPLENTE_1}}", dados.vinculoSuplente1);
+    //=== segundo suplente ===================================
+    body.replaceText("{{NOME_SUPLENTE_2}}", dados.nomeSuplente2);
+    body.replaceText("{{EMAIL_SUPLENTE_2}}", dados.emailSuplente2);
+    body.replaceText("{{VINCULO_SUPLENTE_2}}", dados.vinculoSuplente2);
+    //=== terceiro suplente ===================================
+    body.replaceText("{{NOME_SUPLENTE_3}}", dados.nomeSuplente3);
+    body.replaceText("{{EMAIL_SUPLENTE_3}}", dados.emailSuplente3);
+    body.replaceText("{{VINCULO_SUPLENTE_3}}", dados.vinculoSuplente3);
+    //=== quarto suplente ===================================
+    body.replaceText("{{NOME_SUPLENTE_4}}", dados.nomeSuplente4);
+    body.replaceText("{{EMAIL_SUPLENTE_4}}", dados.emailSuplente4);
+    body.replaceText("{{VINCULO_SUPLENTE_4}}", dados.vinculoSuplente4);
+    //=== quinto suplente ===================================
+    body.replaceText("{{NOME_SUPLENTE_5}}", dados.nomeSuplente5);
+    body.replaceText("{{EMAIL_SUPLENTE_5}}", dados.emailSuplente5);
+    body.replaceText("{{VINCULO_SUPLENTE_5}}", dados.vinculoSuplente5);
+
+    body.replaceText("{{CURSO_EXTENSAO}}", dados.cursoExtensao); 
+    body.replaceText("{{DATA_EMISSAO}}", Utilities.formatDate(agora, "GMT-3", "dd/MM/yyyy"));
+    body.replaceText("{{HORA_EMISSAO}}", Utilities.formatDate(agora, "GMT-3", "HH:mm"));
+
+    doc.saveAndClose();
+
+    const pdfBlob = copia.getAs('application/pdf');
+    pdfBlob.setName(nomeArquivo + ".pdf");
+    
+    pastaDestino.createFile(pdfBlob);
+    copia.setTrashed(true);
+
+    return pdfBlob;
+
+  } catch (e) {
+    console.error("ERRO DETALHADO NO PDF:", e.message);
+    throw e; 
   }
 }

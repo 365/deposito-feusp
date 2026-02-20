@@ -41,7 +41,7 @@
       const h = header.toString().trim();
       
       // Se o cabeçalho for um desses, garantimos o valor correto
-      if (h === 'tipo') return ID_TIPO_PLANILHA;
+      if (h === 'tipo') return ID_TIPO_POS;
       if (h === 'Data do Depósito') return new Date(); // Caso queira registrar o momento exato agora
       
       // Busca o valor no objeto enviado pelo navegador

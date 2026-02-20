@@ -297,15 +297,11 @@ function carregarDocentes() {
      ETAPA 2 → ETAPA 3 (CORRETO)
     ============================= */
     document.getElementById('btn-proximo-etapa2').addEventListener('click', function () {
-        //document.getElementById('step-2').classList.add('d-none');
-        //document.getElementById('step-3').classList.remove('d-none');
-        //document.getElementById('progress-bar').style.width = '50%';
         salvarDadosEtapa(2);
         mostrarEtapa(3);
 
         progressBar.style.width = '50%'; // <-- Mude aqui (está 66%)
 
-        // ← Scroll da pagina para iniciar no topo (cópia da etapa1)
         setTimeout(() => {
             const container = document.getElementById('form-container');
             const headerHeight = document.querySelector('.sticky-top').offsetHeight;
@@ -633,6 +629,8 @@ function carregarDocentes() {
         if (etapa === 2) {
             window.dadosAluno.areaConcentracao = document.getElementById('areaConcentracao')?.value;
             window.dadosAluno.orientador = document.getElementById('orientador')?.value;
+            window.dadosAluno.vinculoOrientador = "USP - Universidade de São Paulo"; // Valor fixo para o orientador
+            window.dadosAluno.emailOrientador = "365studiobr@gmail.com"; // Mande para você mesmo
             // SEGUNDO TITULAR
             window.dadosAluno.nomeTitular2 = document.getElementById('nomeTitular2')?.value;
             window.dadosAluno.emailTitular2 = document.getElementById('emailTitular2')?.value;
@@ -733,6 +731,13 @@ function carregarDocentes() {
         const d = window.dadosAluno || {};
         const container = document.getElementById('corpoResumoGeral');
 
+        // --- TRATAMENTO DA DATA PARA O PADRÃO BRASILEIRO ---
+        let dataFormatada = d.dataAgenda || '-';
+        if (d.dataAgenda && d.dataAgenda !== '-') {
+            // Inverte de YYYY-MM-DD para DD/MM/YYYY
+            dataFormatada = d.dataAgenda.split('-').reverse().join('/');
+        }
+
         container.innerHTML = `
                 <div class="alert alert-info py-2 small">
                     <i class="fas fa-info-circle me-2"></i> Verifique se todas as informações abaixo estão corretas antes de finalizar.
@@ -752,7 +757,7 @@ function carregarDocentes() {
 
                 <h6 class="fw-bold border-bottom pb-1 text-primary">3. AGENDAMENTO</h6>
                 <table class="table table-sm table-borderless mb-3">
-                    <tr><td width="30%" class="text-muted">Data Defesa:</td><td class="fw-bold">${d.dataAgenda || '-'}</td></tr>
+                    <tr><td width="30%" class="text-muted">Data Defesa:</td><td class="fw-bold">${dataFormatada || '-'}</td></tr>
                     <tr><td class="text-muted">Hora:</td><td class="fw-bold">${d.horaAgenda || '-'}</td></tr>
                 </table>
 

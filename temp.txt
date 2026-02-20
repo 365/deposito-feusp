@@ -141,3 +141,78 @@ function carregarPaginaSucesso_OLDOLD(dados) {
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email suplente 5:</td><td style="font-weight: bold;"><?= dados.emailSuplente5 ?></td></tr>
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo suplente 5:</td><td style="font-weight: bold;"><?= dados.vinculoSuplente5 ?></td></tr>
                 </table>
+
+
+
+
+
+/** ================================================
+    GERANDO PDF DINAMICAMENTE PELO DOC (TESTE DUMMY PARA VER SE FUNCIONA)
+    ================================================ */
+function gerarPdfPeloDoc(dados) {
+  // Usando suas constantes globais que você já salvou
+  const modeloId = ID_MODELO_DOC; 
+  const pastaId = ID_PASTA_PDFS; 
+
+  const nomeArquivo = "Depósito - " + dados.nrUsp + " - " + dados.nome;
+
+
+// --- DEBUG: O GRANDE INQUISIDOR ---
+  console.log("=== INSPECIONANDO DADOS RECEBIDOS PARA PDF ===");
+  console.log(JSON.stringify(dados, null, 2)); // Isso imprime o objeto bonito e legível
+  console.log("==============================================");
+
+
+
+  try {
+    const copia = DriveApp.getFileById(modeloId).makeCopy("Teste Debug", DriveApp.getFolderById(pastaId));
+    const doc = DocumentApp.openById(copia.getId());
+    const body = doc.getBody();
+
+    // Verificando individualmente antes de tentar o replace
+    // Se algum destes undefined aparecer no log, achamos o culpado!
+    console.log("Checando tags críticas:");
+    console.log("Nome:", dados.nome);
+    console.log("Título:", dados.tituloTese);
+    console.log("Curso Extenso:", dados.cursoExtensao);
+
+
+
+
+    // 1. Cria a cópia
+    const modeloArquivo = DriveApp.getFileById(modeloId);
+    const pastaDestino = DriveApp.getFolderById(pastaId);
+    const copia = modeloArquivo.makeCopy(nomeArquivo, pastaDestino);
+    
+    // 2. Abre para edição
+    const doc = DocumentApp.openById(copia.getId());
+    const body = doc.getBody();
+
+    // 3. MAPA DE SUBSTITUIÇÃO (Ajuste conforme suas etiquetas no Word)
+    body.replaceText("{{NOME_ALUNO}}", dados.nome);
+    body.replaceText("{{NR_USP}}", dados.nrUsp);
+    body.replaceText("{{TITULO_TESE}}", dados.tituloTese);
+    body.replaceText("{{ORIENTADOR}}", dados.nomeOrientador);
+    body.replaceText("{{CURSO_POS}}", dados.cursoExtensao); // Aquela tradução que fizemos!
+    body.replaceText("{{DATA_EMISSAO}}", Utilities.formatDate(new Date(), "GMT-3", "dd/MM/yyyy"));
+
+    // 4. Conclui edição
+    doc.saveAndClose();
+
+    // 5. Gera o PDF
+    const pdfBlob = copia.getAs('application/pdf');
+    pdfBlob.setName(nomeArquivo + ".pdf");
+    
+    // Salva o PDF na pasta (opcional, mas recomendado para backup)
+    pastaDestino.createFile(pdfBlob);
+
+    // 6. Deleta a cópia do Word (lixeira)
+    copia.setTrashed(true);
+
+    return pdfBlob;
+
+  } catch (e) {
+    Logger.log("Erro ao gerar PDF: " + e.message);
+    throw "Falha na geração do formulário oficial: " + e.message;
+  }
+}
