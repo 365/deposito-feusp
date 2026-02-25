@@ -151,7 +151,7 @@ function carregarPaginaSucesso_OLDOLD(dados) {
     ================================================ */
 function gerarPdfPeloDoc(dados) {
   // Usando suas constantes globais que você já salvou
-  const modeloId = ID_MODELO_DOC; 
+  const modeloId = ID_MODELO_DOC_DOU; 
   const pastaId = ID_PASTA_PDFS; 
 
   const nomeArquivo = "Depósito - " + dados.nrUsp + " - " + dados.nome;

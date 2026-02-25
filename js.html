@@ -126,12 +126,13 @@
 
         // EVENTO DE CLIQUE (Dentro da função para herdar as variáveis acima)
         btnAgendar.onclick = function () {
-            window.dadosAluno.nome         = document.getElementById('nome').value;
-            window.dadosAluno.nrUsp        = document.getElementById('nrUsp').value;
-            window.dadosAluno.emailAluno   = document.getElementById('emailAluno').value;
-            window.dadosAluno.tituloTese   = document.getElementById('tituloTese').value;
-            window.dadosAluno.dataAgenda   = document.getElementById('dataAgenda').value;
-            window.dadosAluno.horaAgenda   = document.getElementById('horaAgenda').value;
+            window.dadosAluno.nome              = document.getElementById('nome').value;
+            window.dadosAluno.nrUsp             = document.getElementById('nrUsp').value;
+            window.dadosAluno.emailAluno        = document.getElementById('emailAluno').value;
+            window.dadosAluno.emailAlternativo  = document.getElementById('emailAlternativo').value;
+            window.dadosAluno.tituloTese        = document.getElementById('tituloTese').value;
+            window.dadosAluno.dataAgenda        = document.getElementById('dataAgenda').value;
+            window.dadosAluno.horaAgenda        = document.getElementById('horaAgenda').value;
 
             if (!window.dadosAluno.nome || !window.dadosAluno.tituloTese) {
                 instanciaModal.hide();
@@ -155,7 +156,7 @@
                         txtMensagem.innerHTML = `<strong>${res.nome}</strong>, agendamento realizado com sucesso!`;
 
                         document.getElementById('btn-consultar').disabled = true;
-                        ['nome', 'nrUsp', 'emailAluno', 'tituloTese', 'dataAgenda', 'horaAgenda'].forEach(id => {
+                        ['nome', 'nrUsp', 'emailAluno','emailAlternativo', 'tituloTese', 'dataAgenda', 'horaAgenda'].forEach(id => {
                             const el = document.getElementById(id);
                             if (el) el.readOnly = true;
                         });
@@ -254,12 +255,13 @@ function carregarDocentes() {
         //document.getElementById('step-1').classList.add('d-none');
 
         // SALVA STEP-1 AQUI 👇
-        window.dadosAluno.nome = document.getElementById('nome').value;
-        window.dadosAluno.nrUsp = document.getElementById('nrUsp').value;
-        window.dadosAluno.emailAluno = document.getElementById('emailAluno').value;
-        window.dadosAluno.tituloTese = document.getElementById('tituloTese').value;
-        window.dadosAluno.dataAgenda = document.getElementById('dataAgenda').value;
-        window.dadosAluno.horaAgenda = document.getElementById('horaAgenda').value;
+        window.dadosAluno.nome              = document.getElementById('nome').value;
+        window.dadosAluno.nrUsp             = document.getElementById('nrUsp').value;
+        window.dadosAluno.emailAluno        = document.getElementById('emailAluno').value;
+        window.dadosAluno.emailAlternativo  = document.getElementById('emailAlternativo').value;
+        window.dadosAluno.tituloTese        = document.getElementById('tituloTese').value;
+        window.dadosAluno.dataAgenda        = document.getElementById('dataAgenda').value;
+        window.dadosAluno.horaAgenda        = document.getElementById('horaAgenda').value;
         console.log('✅ STEP-1 SALVO:', window.dadosAluno.nome);
 
         //document.getElementById('step-2').classList.remove('d-none');
@@ -513,6 +515,7 @@ function carregarDocentes() {
                 nome: "Nome Completo",
                 nrUsp: "Nº USP",
                 emailAluno: "E-mail",
+                emailAlternativo: "E-mail Alternativo",
                 tituloTese: "Título da Tese"
             };
 

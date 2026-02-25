@@ -26,7 +26,7 @@
                 <strong>👤 Nome:</strong> <?= dados.nome ?>
               </div>
               <div class="col-md-6">
-                <strong>📅 Data:</strong> <?= dados.dataAgenda ?>
+                <strong>📅 Data:</strong> <?= dados.dataAgenda.split('-').reverse().join('/') ?>
               </div>
               <div class="col-md-6">
                 <strong>⏰ Horário:</strong> <?= dados.horaAgenda ?>

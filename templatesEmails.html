@@ -20,7 +20,7 @@
                 <!-- DADOS -->
                 <div style="background-color: #f1f3f4; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 5px solid #084d6e;">
                     <p style="margin: 5px 0;"><strong>👤 Nome:</strong> <?= dados.nome ?></p>
-                    <p style="margin: 5px 0;"><strong>📅 Data:</strong> <?= dados.dataAgenda ?></p>
+                    <p style="margin: 5px 0;"><strong>📅 Data:</strong> <?= dados.dataAgenda.split('-').reverse().join('/') ?></p>
                     <p style="margin: 5px 0;"><strong>⏰ Horário:</strong> <?= dados.horaAgenda ?></p>
                     <p style="margin: 5px 0;"><strong>📖 Título:</strong> <?= dados.tituloTese ?></p>
                 </div>
@@ -69,7 +69,7 @@
                 <!-- AGENDAMENTO -->
                 <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #084d6e; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">3. AGENDAMENTO</h6>
                 <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px;">
-                    <tr><td style="width: 30%; color: #777; padding: 2px 0;">Data da Defesa:</td><td style="font-weight: bold;"><?= dados.dataAgenda ?></td></tr>
+                    <tr><td style="width: 30%; color: #777; padding: 2px 0;">Data da Defesa:</td><td style="font-weight: bold;"><?= dados.dataAgenda.split('-').reverse().join('/') ?></td></tr>
                     <tr><td style="color: #777; padding: 2px 0;">Horário:</td><td style="font-weight: bold;"><?= dados.horaAgenda ?></td></tr>
                 </table>
 
@@ -180,7 +180,7 @@
                 <div style="background-color: #f1f3f4; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 5px solid #084d6e; font-size: 0.95rem;">
                     <p style="margin: 5px 0;"><strong>👤 Nome Aluno(a):</strong> <?= dados.nome ?></p>
                     <p style="margin: 5px 0;"><strong>📖 Título:</strong> <?= dados.tituloTese ?></p>
-                    <p style="margin: 5px 0;"><strong>📅 Defesa:</strong> <?= dados.dataAgenda ?> às <?= dados.horaAgenda ?></p>
+                    <p style="margin: 5px 0;"><strong>📅 Defesa:</strong> <?= dados.dataAgenda.split('-').reverse().join('/') ?> às <?= dados.horaAgenda ?></p>
                 </div>
 
                 <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; border: 1px solid #ffeeba; margin-bottom: 20px;">

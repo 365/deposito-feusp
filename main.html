@@ -32,21 +32,27 @@
                                 <div class="row g-3">
                                     
                                     <!-- Nome Completo -->
-                                    <div class="col-12">
+                                    <div class="col-8">
                                         <label for="nome" class="form-label fw-semibold">Nome Completo</label>
                                         <input type="text" class="form-control custom-input" id="nome" name="nome" placeholder="Digite seu nome completo">
                                     </div>
 
                                     <!-- N° USP -->
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="nrUsp" class="form-label fw-semibold">N° USP</label>
                                         <input type="number" class="form-control custom-input" id="nrUsp" name="nrUsp" placeholder="0000000">
                                     </div>
 
-                                    <!-- E-mail USP -->
+                                    <!-- E-mail do Aluno -->
                                     <div class="col-md-6">
-                                        <label for="emailAluno" class="form-label fw-semibold">Seu E-mail</label>
+                                        <label for="emailAluno" class="form-label fw-semibold">Seu e-mail</label>
                                         <input type="email" class="form-control custom-input" id="emailAluno" name="emailAluno" placeholder="coloque seu melhor e-mail" onblur="validarEmail('emailAluno')">
+                                    </div>
+
+                                    <!-- E-mail Alternativo -->
+                                    <div class="col-md-6">
+                                        <label for="emailAlternativo" class="form-label fw-semibold">E-mail Alternativo</label>
+                                        <input type="email" class="form-control custom-input" id="emailAlternativo" name="emailAlternativo" placeholder="Pessoal (Gmail/etc)" onblur="validarEmail('emailAlternativo')">
                                     </div>
 
                                     <!-- Título da Tese -->
@@ -114,6 +120,10 @@
                                         <select class="form-select custom-input" id="orientador">
                                             <option value="">Selecione o Orientador...</option>
                                         </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="emailOrientador" class="form-label fw-semibold">E-mail do Orientador(a)</label>
+                                        <input type="email" class="form-control custom-input" id="emailOrientador" name="emailOrientador" placeholder="Digite o e-mail do seu Orientador(a)" onblur="validarEmail('emailOrientador')" readonly>
                                     </div>
 
                                     <!-- SEGUNDO TITULAR -->

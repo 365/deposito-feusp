@@ -63,7 +63,11 @@ function testarVisualizacao() {
 const ID_TIPO_POS = 'ME'; // 1=QUALI, 2=ME, 3=DOU
 const ID_AGENDA_DEPOSITOS = 'c_f0c47043a5564c65f0ac0835c28e3b3fa13c3bf80618daa471d01679bc7a281d@group.calendar.google.com';
 const ID_PLANILHA = '1yXdWwSiTsSbour4dQ-WhSl2r3LVzf_acxk3-EY2nV8E';
-const ID_MODELO_DOC = '164xGKfmthOr0MKWqSDJ3iguIo7o8b7-qvQ0E2zysbf4';
+
+const ID_MODELO_DOC_QUALI = '1GbWxl8gdalsJae1l-iQL1rm91YGGwuA6LnegJsL19iA';
+const ID_MODELO_DOC_ME = '1e5BP2KptSFB7B-6cQfPUGCCi_ALLEZx_2k9DFeuVgvE';
+const ID_MODELO_DOC_DOU = '164xGKfmthOr0MKWqSDJ3iguIo7o8b7-qvQ0E2zysbf4';
+
 const ID_PASTA_PDFS = '1vExAeBv5NSvgtoRnXdoah6wX-uRQluEy';
 const NOME_ABA_CADASTRO = 'Cadastro';
 const NOME_ABA_ORIENTADORES = 'Orientadores';
@@ -545,9 +549,29 @@ function carregarPaginaSucesso(dados) {
   }
 }
 
-/** ================================================
+/** ====================================================
+    FUNÇÃO TESTE PARA VALIDAR O RECEBIMENTO DE ARQUIVOS
+    ==================================================== */
+function testarBlobAppsScript(dados) {
+  try {
+    // Tenta criar um Blob a partir dos dados recebidos para testar a integridade
+    var blob = Utilities.newBlob(Utilities.base64Decode(dados.conteudo), dados.mimeType, dados.nome);
+    
+    return {
+      status: "Sucesso",
+      mensagem: "Recebido com sucesso! O arquivo '" + dados.nome + "' tem " + blob.getBytes().length + " bytes."
+    };
+  } catch (erro) {
+    return {
+      status: "Erro",
+      mensagem: "Falha ao processar arquivo no servidor: " + erro.toString()
+    };
+  }
+}
+
+/** ======================================================================
     GERANDO PDF DINAMICAMENTE PELO DOC (TESTE DUMMY PARA VER SE FUNCIONA)
-    ================================================ */
+    ====================================================================== */
 function gerarPdfPeloDoc(dados) {
   // --- A CORREÇÃO ESTÁ AQUI ---
   // Se o cursoExtensao não veio preenchido, nós traduzimos agora!
@@ -556,15 +580,18 @@ function gerarPdfPeloDoc(dados) {
     dados.cursoExtensao = tradutor[ID_TIPO_POS] || "Não Definido";
   }
 
+  // --- O QUE VAMOS ADICIONAR LOGO ABAIXO ---
+  // Criamos a const com a primeira letra maiúscula e o resto minúscula
+  const tituloDeposito = dados.cursoExtensao.charAt(0).toUpperCase() + dados.cursoExtensao.slice(1).toLowerCase();
+  
   console.log("DEBUG Replace - Curso (Após correção):", dados.cursoExtensao);
-
-
   console.log("=== INICIO DA GERAÇÃO DO PDF ===");
   console.log("Dados recebidos:", JSON.stringify(dados)); // Inspeciona o objeto completo
 
-  const modeloId = ID_MODELO_DOC; 
+  const modeloId = ID_MODELO_DOC_DOU; 
   const pastaId = ID_PASTA_PDFS; 
-  const nomeArquivo = "Deposito - " + (dados.nrUsp) + " - " + (dados.nome);
+  // Montando o nome do arquivo com o Tipo de Pós, Nº USP e Nome do Aluno para facilitar a identificação
+  const nomeArquivo = "Deposito - " + (ID_TIPO_POS) + " - " + (dados.nrUsp) + " - " + (dados.nome);
 
   try {
     const modeloArquivo = DriveApp.getFileById(modeloId);
@@ -589,6 +616,7 @@ function gerarPdfPeloDoc(dados) {
     }    
 
     // Substituições
+    body.replaceText("{{TITULO_DEPOSITO}}", tituloDeposito);
     //=== identificação =========================================
     body.replaceText("{{NOME_ALUNO}}", dados.nome);
     body.replaceText("{{EMAIL_ALUNO}}", dados.emailAluno);
