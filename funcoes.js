@@ -417,7 +417,7 @@ function enviarEmailConfirmacao(dados) {
   let anexosSecretaria = [pdfOficial]; // Começa com o PDF que acabamos de criar
 
   // 1. Preparamos o anexo se ele existir
-  var anexoTese = [];
+/*   var anexoTese = [];
   if (dados.pdfBlobTese) {
     var blob = Utilities.newBlob(
       Utilities.base64Decode(dados.pdfBlobTese.conteudo), 
@@ -425,6 +425,32 @@ function enviarEmailConfirmacao(dados) {
       dados.pdfBlobTese.nome
     );
     anexoTese.push(blob);
+  } */
+// 1. Criamos uma lista (array) para todos os arquivos que a Secretaria deve receber
+  let arquivosParaSecretaria = [];
+
+  // 2. Adiciona a Tese/PDF do Proponente (se existir)
+  if (dados.pdfBlobTese) {
+    let blobTese = Utilities.newBlob(
+      Utilities.base64Decode(dados.pdfBlobTese.conteudo), 
+      dados.pdfBlobTese.mimeType, 
+      dados.pdfBlobTese.nome
+    );
+    arquivosParaSecretaria.push(blobTese);
+  }
+
+// 3. Adiciona os Cadastros dos Titulares (T2 ao T5) dinamicamente
+  // O loop percorre as propriedades que definimos no front (pdfTitular2, pdfTitular3...)
+  for (let i = 2; i <= 5; i++) {
+    let chave = 'pdfTitular' + i;
+    if (dados[chave]) {
+      let blobTitular = Utilities.newBlob(
+        Utilities.base64Decode(dados[chave].conteudo), 
+        dados[chave].mimeType, 
+        dados[chave].nome
+      );
+      arquivosParaSecretaria.push(blobTitular);
+    }
   }
   
   // Envio para o ALUNO
@@ -453,7 +479,8 @@ function enviarEmailConfirmacao(dados) {
     to: "apmbraga@gmail.com",
     subject: "Novo Depósito Digital: " + dados.nome,
     htmlBody: corpoSecretaria,
-    attachments: anexoTese // <--- O PDF entra aqui
+    //attachments: anexoTese // <--- O PDF entra aqui
+    attachments: arquivosParaSecretaria // <--- Os PDFs dos titulares entram aqui
   });
 
   return true; // Importante para o .withSuccessHandler do front saber que acabou

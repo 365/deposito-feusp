@@ -63,7 +63,10 @@
                 <!-- DADOS ACADEMICOS -->
                 <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #084d6e; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">2. DADOS ACADÊMICOS</h6>
                 <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px;">
+                    <tr><td style="width: 30%; color: #777; padding: 2px 0;">Área de Concentração:</td><td style="font-weight: bold;"><?= dados.areaConcentracao ?></td></tr>
                     <tr><td style="width: 30%; color: #777; padding: 2px 0;">Título:</td><td style="font-weight: bold;"><?= dados.tituloTese ?></td></tr>
+                    <tr style="height: 15px;"><td colspan="2" style="font-size: 1px; line-height: 1px;">&nbsp;</td></tr>
+                    <tr><td style="width: 30%; color: #777; padding: 2px 0;">Tipo de defesa:</td><td style="font-weight: bold;"><?= dados.tipoDefesa ?></td></tr>
                 </table>
 
                 <!-- AGENDAMENTO -->
@@ -81,32 +84,44 @@
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email orientador(a):</td><td style="font-weight: bold;"><?= dados.emailOrientador ?></td></tr>
                 </table>
 
+                <!-- SEGUNDO TITULAR -->
                 <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">SEGUNDO TITULAR</h6>
                 <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px;">
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome titular 2:</td><td style="font-weight: bold;"><?= dados.nomeTitular2 ?></td></tr>
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email titular 2:</td><td style="font-weight: bold;"><?= dados.emailTitular2 ?></td></tr>
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo titular 2:</td><td style="font-weight: bold;"><?= dados.vinculoTitular2 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Diária titular 2:</td><td style="font-weight: bold;"><?= dados.diariaT2 || '-' ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Passagem titular 2:</td><td style="font-weight: bold;"><?= dados.passT2 || '-' ?></td></tr>
                 </table>
 
+                <!-- TERCEIRO TITULAR -->
                 <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">TERCEIRO TITULAR</h6>
                 <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px;">
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome titular 3:</td><td style="font-weight: bold;"><?= dados.nomeTitular3 ?></td></tr>
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email titular 3:</td><td style="font-weight: bold;"><?= dados.emailTitular3 ?></td></tr>
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo titular 3:</td><td style="font-weight: bold;"><?= dados.vinculoTitular3 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Diária titular 3:</td><td style="font-weight: bold;"><?= dados.diariaT3 || '-' ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Passagem titular 3:</td><td style="font-weight: bold;"><?= dados.passT3 || '-' ?></td></tr>
                 </table>
 
+                <!-- QUARTO TITULAR -->
                 <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">QUARTO TITULAR</h6>
                 <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px;">
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome titular 4:</td><td style="font-weight: bold;"><?= dados.nomeTitular4 ?></td></tr>
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email titular 4:</td><td style="font-weight: bold;"><?= dados.emailTitular4 ?></td></tr>
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo titular 4:</td><td style="font-weight: bold;"><?= dados.vinculoTitular4 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Diária titular 4:</td><td style="font-weight: bold;"><?= dados.diariaT4 || '-' ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Passagem titular 4:</td><td style="font-weight: bold;"><?= dados.passT4 || '-' ?></td></tr>
                 </table>
 
+                <!-- QUINTO TITULAR -->
                 <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #868686; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">QUINTO TITULAR</h6>
                 <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px;">
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Nome titular 5:</td><td style="font-weight: bold;"><?= dados.nomeTitular5 ?></td></tr>
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Email titular 5:</td><td style="font-weight: bold;"><?= dados.emailTitular5 ?></td></tr>
                     <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Vínculo titular 5:</td><td style="font-weight: bold;"><?= dados.vinculoTitular5 ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Diária titular 5:</td><td style="font-weight: bold;"><?= dados.diariaT5 || '-' ?></td></tr>
+                    <tr><td style="width: 160px; min-width: 160px; color: #777; padding: 2px 0;">Passagem titular 5:</td><td style="font-weight: bold;"><?= dados.passT5 || '-' ?></td></tr>
                 </table>
 
                 <!-- SUPLENTES -->
@@ -148,7 +163,7 @@
                 <!-- ARQUIVO TESE -->
                 <h6 style="font-weight: bold; border-bottom: 1px solid #084d6e; color: #084d6e; margin: 15px 0 5px 0; text-transform: uppercase; font-size: 0.85rem;">6. ARQUIVO TESE/DISSERTAÇÃO</h6>
                 <table style="width: 100%; font-size: 0.9rem; border-collapse: collapse; margin-bottom: 10px;">
-                    <tr><td style="color: #777; padding: 2px 0;">Nome Arquivo:</td><td style="font-weight: bold;"><?= dados.arquivoPDF ?></td></tr>
+                    <tr><td style="color: #777; padding: 2px 0;">Nome Arquivo:</td><td style="font-weight: bold;"><?= (dados.pdfBlobTese && dados.pdfBlobTese.nome) ? dados.pdfBlobTese.nome : '-' ?></td></tr>
                 </table>
 
                 <!-- LGPD -->

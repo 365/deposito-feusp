@@ -15,6 +15,7 @@
     /* ============================================================== */
     :root {
         --azul-institucional: #00567f;
+        --azul-feusp: #004587; /* Este é o azul oficial aproximado da USP */
         --verde-sucesso: #6fb973;
         --verde-hover: #5a9e5e;
         --vermelho-feusp: #a01e20;
@@ -273,11 +274,55 @@
     #footerDireita { filter: invert(1); }
     #footerEsquerda:hover, #footerDireita:hover { opacity: 1; }
 
+    /* Isso deve estar no seu css.html para o footer funcionar 100% */
+    #footerEsquerda, #footerDireita { 
+        height: 28px; 
+        opacity: 0.8; 
+        transition: 0.3s ease; 
+    }
+    #footerEsquerda:hover, #footerDireita:hover { 
+        opacity: 1; 
+    }
+
     /* ===================================================== */
     /* 16. RESPONSIVIDADE - Ajustes para dispositivos móveis */
     /* ===================================================== */
     @media (max-width: 768px) {
         #tituloFormulario { font-size: 1.3rem; }
         .btn { font-size: 0.85rem; padding: 8px 16px; }
+    }
+
+    /* ============================================================ */
+    /* 16. CONSOLIDAÇÃO DE ESTILOS EXTERNOS (MIGRAÇÃO)             */
+    /* ============================================================ */
+
+    /* Barras de Progresso e Navegação */
+    .progress-container-custom { height: 5px; border-radius: 0; }
+    .step-icon-success { font-size: 3.5rem; }
+
+    /* Utilitários de Texto e Alinhamento */
+    .text-justificado-mobile { line-height: 1.4; text-align: justify; }
+    .label-lgpd { cursor: pointer; font-size: 0.9rem; }
+    .msg-atencao-pequena { font-size: 0.75rem; line-height: 1.4; }
+
+    /* Modais e Overlays */
+    .modal-resumo-corpo { font-size: 0.95rem; }
+    .overlay-loading-content {
+        background: rgba(255,255,255,0.9);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    /* Identidade Visual nos Títulos */
+    .titulo-principal-feusp { 
+        color: var(--azul-institucional);
+        font-weight: bold; 
+    }
+
+    .subtitulo-confirmacao {
+        font-size: 1.1rem;
     }
 </style>
