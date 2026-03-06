@@ -252,3 +252,47 @@ function gerarPdfPeloDoc(dados) {
             });
         }, 100);
     });
+
+                // TOAST EXISTENTE (amarelo)
+            criarNotificacaoAdvertencia(
+                `E-mail inválido: "${label}". Use formato exemplo@dominio.com`,
+                'Formato inválido'
+            );
+
+
+
+        /** =============================================
+                 CAMPO INPUT DO NUMERO USP (APENAS NÚMEROS)
+            ============================================= */
+        document.getElementById('nrUsp').addEventListener('input', function (e) {
+            // Substitui qualquer caractere que não seja número por nada
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+
+        /** ==========================================================================
+                 CAMPOS DE EMAIL ALU E ALTERNATIVO (VALIDAÇÃO DE FORMATO + IGUALDADE)
+            =========================================================================== */
+    document.getElementById('emailAlternativo').addEventListener('blur', function () {
+        document.getElementById('emailAlternativo').addEventListener('blur', function () {
+            const emailPrincipal = document.getElementById('emailAluno').value.trim().toLowerCase();
+            const emailAlternativo = this.value.trim().toLowerCase();
+
+            console.log("🔍 Validando e-mails: Principal =", emailPrincipal, "| Alternativo =", emailAlternativo);
+
+            // Só valida se ambos tiverem algo digitado
+            if (emailPrincipal && emailAlternativo && emailPrincipal === emailAlternativo) {
+
+                // 📢 AGORA SIM: Chamada padronizada do seu sistema
+                criarNotificacaoAdvertencia(
+                    'Por favor, informe um e-mail alternativo diferente do principal.',
+                    'E-mails iguais!'
+                );
+
+                // Limpa o campo para forçar a correção
+                this.value = '';
+
+                // Devolve o foco para o campo para o aluno corrigir na hora
+                setTimeout(() => this.focus(), 100);
+            }
+        });

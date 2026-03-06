@@ -43,8 +43,8 @@
                                     <!-- N° USP -->
                                     <div class="col-md-4">
                                         <label for="nrUsp" class="form-label fw-semibold">N° USP</label>
-                                        <input type="number" class="form-control custom-input" id="nrUsp" name="nrUsp"
-                                            placeholder="0000000">
+                                        <input type="text" class="form-control custom-input" id="nrUsp" name="nrUsp" onblur="verificarDuplicidade()" inputmode="numeric" 
+                                            pattern="[0-9]*" maxlength="11" placeholder="0000000">
                                     </div>
 
                                     <!-- E-mail do Aluno -->
@@ -186,21 +186,18 @@
 
                                         <!-- Logística (Diária/Passagem) -->
                                         <div id="logistica2" class="d-none">
-                                            <div class="divisor-interno"></div>
+    <div class="divisor-interno"></div>
 
                                             <label class="form-label fw-bold">Precisa de diária?</label>
-                                            <div class="form-check form-check-inline ms-2">
-                                                <input class="form-check-input" type="radio" name="diaria2"
-                                                    id="diaria2Sim" value="Sim"
-                                                    onchange="toggleDiariaPassagem(2, true)">
-                                                <label class="form-check-label" for="diaria2Sim">Sim</label>
-                                            </div>
-                                            <div class="form-check form-check-inline ms-3">
-                                                <input class="form-check-input" type="radio" name="diaria2"
-                                                    id="diaria2Nao" value="Nao"
-                                                    onchange="toggleDiariaPassagem(2, false)">
-                                                <label class="form-check-label" for="diaria2Nao">Não</label>
-                                            </div>
+<div class="form-check form-check-inline ms-2">
+    <input class="form-check-input" type="radio" name="diaria2" id="diaria2Sim" value="Sim" onchange="toggleDiariaPassagem(2, true)">
+    <label class="form-check-label" for="diaria2Sim">Sim</label>
+</div>
+<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+    <input class="form-check-input" type="radio" name="diaria2" id="diaria2Nao" value="Nao" onchange="toggleDiariaPassagem(2, false)">
+    <label class="form-check-label ms-1" for="diaria2Nao">Não</label>
+</div>
+
 
                                             <div id="divEscolhaPassagem2" class="d-none mt-3">
                                                 <div class="mb-3">
@@ -277,18 +274,15 @@
                                             <div class="divisor-interno"></div>
 
                                             <label class="form-label fw-bold">Precisa de diária?</label>
-                                            <div class="form-check form-check-inline ms-2">
-                                                <input class="form-check-input" type="radio" name="diaria3"
-                                                    id="diaria3Sim" value="Sim"
-                                                    onchange="toggleDiariaPassagem(3, true)">
-                                                <label class="form-check-label" for="diaria3Sim">Sim</label>
-                                            </div>
-                                            <div class="form-check form-check-inline ms-3">
-                                                <input class="form-check-input" type="radio" name="diaria3"
-                                                    id="diaria3Nao" value="Nao"
-                                                    onchange="toggleDiariaPassagem(3, false)">
-                                                <label class="form-check-label" for="diaria3Nao">Não</label>
-                                            </div>
+<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+    <input class="form-check-input" type="radio" name="diaria3" id="diaria3Sim" value="Sim" onchange="toggleDiariaPassagem(3, true)">
+    <label class="form-check-label ms-1" for="diaria3Sim">Sim</label>
+</div>
+<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+    <input class="form-check-input" type="radio" name="diaria3" id="diaria3Nao" value="Nao" onchange="toggleDiariaPassagem(3, false)">
+    <label class="form-check-label ms-1" for="diaria3Nao">Não</label>
+</div>
+
 
                                             <div id="divEscolhaPassagem3" class="d-none mt-3">
                                                 <div class="mb-3">
@@ -365,18 +359,16 @@
                                             <div class="divisor-interno"></div>
 
                                             <label class="form-label fw-bold">Precisa de diária?</label>
-                                            <div class="form-check form-check-inline ms-2">
-                                                <input class="form-check-input" type="radio" name="diaria4"
-                                                    id="diaria4Sim" value="Sim"
-                                                    onchange="toggleDiariaPassagem(4, true)">
-                                                <label class="form-check-label" for="diaria4Sim">Sim</label>
-                                            </div>
-                                            <div class="form-check form-check-inline ms-3">
-                                                <input class="form-check-input" type="radio" name="diaria4"
-                                                    id="diaria4Nao" value="Nao"
-                                                    onchange="toggleDiariaPassagem(4, false)">
-                                                <label class="form-check-label" for="diaria4Nao">Não</label>
-                                            </div>
+<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+    <input class="form-check-input" type="radio" name="diaria4" id="diaria4Sim" value="Sim" onchange="toggleDiariaPassagem(4, true)">
+    <label class="form-check-label ms-1" for="diaria4Sim">Sim</label>
+</div>
+<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+    <input class="form-check-input" type="radio" name="diaria4" id="diaria4Nao" value="Nao" onchange="toggleDiariaPassagem(4, false)">
+    <label class="form-check-label ms-1" for="diaria4Nao">Não</label>
+</div>
+
+
 
                                             <div id="divEscolhaPassagem4" class="d-none mt-3">
                                                 <div class="mb-3">
@@ -453,18 +445,16 @@
                                             <div class="divisor-interno"></div>
 
                                             <label class="form-label fw-bold">Precisa de diária?</label>
-                                            <div class="form-check form-check-inline ms-2">
-                                                <input class="form-check-input" type="radio" name="diaria5"
-                                                    id="diaria5Sim" value="Sim"
-                                                    onchange="toggleDiariaPassagem(5, true)">
-                                                <label class="form-check-label" for="diaria5Sim">Sim</label>
-                                            </div>
-                                            <div class="form-check form-check-inline ms-3">
-                                                <input class="form-check-input" type="radio" name="diaria5"
-                                                    id="diaria5Nao" value="Nao"
-                                                    onchange="toggleDiariaPassagem(5, false)">
-                                                <label class="form-check-label" for="diaria5Nao">Não</label>
-                                            </div>
+<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+    <input class="form-check-input" type="radio" name="diaria5" id="diaria5Sim" value="Sim" onchange="toggleDiariaPassagem(5, true)">
+    <label class="form-check-label ms-1" for="diaria5Sim">Sim</label>
+</div>
+<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+    <input class="form-check-input" type="radio" name="diaria5" id="diaria5Nao" value="Nao" onchange="toggleDiariaPassagem(5, false)">
+    <label class="form-check-label ms-1" for="diaria5Nao">Não</label>
+</div>
+
+
 
                                             <div id="divEscolhaPassagem5" class="d-none mt-3">
                                                 <div class="mb-3">

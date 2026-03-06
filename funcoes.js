@@ -127,6 +127,53 @@ function mostrarFormulario() {
   DocumentApp.getUi().showModalDialog(html, "Formulário personalizado com Google Apps Script");
 }
 
+/** =========================================================
+     VERIFICA DUPLICIDADE DE NÚMERO USP PARA O TIPO DE CURSO
+    ========================================================= */
+/**
+ * Verifica se um Número USP já possui depósito para o tipo selecionado.
+ * @param {string} nrUsp - O número USP vindo do formulário.
+ * @param {string} tipo - O tipo de depósito (ME, DOU, QUALI).
+ * @return {string} - Retorna 'DUPLICADO' ou 'LIBERADO'.
+ */
+function validarDuplicidadeUsp(nrUsp, tipo) {
+  try {
+    const ss = SpreadsheetApp.openById(ID_PLANILHA);
+    const sheet = ss.getSheetByName(NOME_ABA_CADASTRO);
+    const data = sheet.getDataRange().getValues();
+    const cabecalho = data[0];
+
+    // Busca as colunas ignorando espaços extras que vi na sua imagem
+    let idxUsp = -1;
+    let idxCurso = -1;
+
+    for (let i = 0; i < cabecalho.length; i++) {
+      let nomeLimpo = cabecalho[i].toString().trim();
+      if (nomeLimpo === "nrUsp") idxUsp = i;
+      if (nomeLimpo === "tipo") idxCurso = i;
+    }
+
+    if (idxUsp === -1 || idxCurso === -1) return "ERRO_COLUNAS";
+
+    const nrUspBusca = String(nrUsp).trim();
+    const tipoBusca = String(tipo).trim();
+
+    for (var i = 1; i < data.length; i++) {
+      // Converte para string e remove o ".0" caso o Sheets formate como número
+      var uspPlanilha = data[i][idxUsp] ? String(data[i][idxUsp]).split('.')[0].trim() : "";
+      var cursoPlanilha = data[i][idxCurso] ? String(data[i][idxCurso]).trim() : "";
+
+      if (uspPlanilha === nrUspBusca && cursoPlanilha === tipoBusca) {
+        return "DUPLICADO";
+      }
+    }
+    return "LIBERADO";
+  } catch (e) {
+    return "ERRO: " + e.message;
+  }
+}
+
+
 /** =============================================
      CONSULTA DE DISPONIBILIDADE
     ============================================= */
