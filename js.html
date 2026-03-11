@@ -41,6 +41,33 @@
             return;
         }
 
+        // --- BLOQUEIO DE ALMOÇO (12:00 às 13:30) ---
+        const [h, m] = horaVal.split(':').map(Number);
+        const totalMinutos = (h * 60) + m;
+        
+        if (totalMinutos >= 720 && totalMinutos < 811) { 
+            
+            // HTML apenas com texto, usando classes do Bootstrap para ficar compacto
+            const conteudoModal = `
+                <div class="text-center">
+                    <p class="mb-2">
+                        O horário das <b>12:00 às 13:30</b> é reservado para o 
+                        <b>intervalo de almoço</b> do departamento.
+                    </p>
+                    <p class="small text-muted mb-0">Por favor, escolha outro horário para o agendamento.</p>
+                </div>
+            `;
+
+            // Título: Horário Indisponível
+            mostrarModalDecisao(
+                conteudoModal, 
+                "Horário Indisponível", 
+                "error" // Mantém o X de erro padrão do SweetAlert (que é discreto e funcional)
+            );
+
+            return; 
+        }
+
         toggleLoading(true, "Consultando agenda...");
 
         google.script.run
@@ -78,14 +105,14 @@
     const elLoaderTexto = document.getElementById('loadingTexto'); 
 
     // 1. Antes de chamar o servidor
-    if (elLoaderTexto) elLoaderTexto.innerText = "Verificando número USP...";
+    if (elLoaderTexto) elLoaderTexto.innerText = "Validando Nº USP...";
     if (elLoader) elLoader.classList.remove('d-none');
 
     google.script.run
         .withSuccessHandler(function (status) {
             // 2. No sucesso
             if (elLoader) elLoader.classList.add('d-none');
-            if (elLoaderTexto) elLoaderTexto.innerText = "Processando...";
+            if (elLoaderTexto) elLoaderTexto.innerText = "Validando Nº USP...";
 
             if (status === "DUPLICADO") {
                 Swal.fire({
@@ -309,6 +336,10 @@
                 .withSuccessHandler(function (lista) {
                     select.innerHTML = '<option value="" selected disabled>Selecione o Orientador...</option>';
                     if (lista && lista.length > 0) {
+
+                        // --- ORDENAÇÃO INTELIGENTE (Português) ---
+                        lista.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
                         lista.forEach(nome => {
                             let opt = document.createElement('option');
                             opt.value = nome;
@@ -331,7 +362,15 @@
              Função para carregar os docentes no select
             ================================================ */
         function carregarDocentes() {
-            const idsDocentes = ['nomeTitular2', 'nomeTitular3', 'nomeTitular4', 'nomeTitular5'];
+            const idsDocentes = ['nomeTitular2',
+                                'nomeTitular3',
+                                'nomeTitular4',
+                                'nomeTitular5',
+                                'nomeSuplente1',
+                                'nomeSuplente2',
+                                'nomeSuplente3',
+                                'nomeSuplente4',
+                                'nomeSuplente5'];
 
             google.script.run
                 .withSuccessHandler(function (lista) {
@@ -340,9 +379,25 @@
                         if (!select) return;
 
                         const valorSalvo = window[`docente_${id}`] || '';
-                        select.innerHTML = '<option value="" selected disabled>Selecione o Titular...</option>';
+                        // select.innerHTML = '<option value="" selected disabled>Selecione o Titular...</option>';
+
+                        // --- LÓGICA INTELIGENTE AQUI ---
+                        // Se o ID contiver a palavra 'Suplente', usa esse termo, senão usa 'Titular'
+                        const tipoDocente = id.toLowerCase().includes('suplente') ? 'Suplente' : 'Titular';
+                        select.innerHTML = `<option value="" selected disabled>Selecione o ${tipoDocente}...</option>`;
+                        // -------------------------------
 
                         if (lista && lista.length > 0) {
+
+                            // --- ORDENAÇÃO INTELIGENTE (Português) ---
+                            lista.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+                            // 2. Insere a opção "OUTRO" logo no início ou fim (seguindo seu modelo)
+                            let optOutro = document.createElement('option');
+                            optOutro.value = "_outro_"; // Valor padrão do seu modelo
+                            optOutro.textContent = "Outro (digitar nome)";
+                            select.appendChild(optOutro);
+
                             lista.forEach(nome => {
                                 let opt = document.createElement('option');
                                 opt.value = nome;
@@ -350,6 +405,7 @@
                                 select.appendChild(opt);
                             });
                         }
+                        // Restaura seleção se houver
                         if (valorSalvo) select.value = valorSalvo;
                     });
                 })
@@ -361,6 +417,22 @@
             carregarOrientadores();
             carregarDocentes();
         });
+
+        /** ====================================================================================
+             Verifica se o OUTRO do Select dos docentes, titulares ou suplentse foi selecionado
+            ==================================================================================== */
+        function verificarOutro(sel) {
+            const campoOutro = document.getElementById('outro_' + sel.id);
+            if (!campoOutro) return;
+
+                if (sel.value === '_outro_') {
+                    campoOutro.style.display = 'block';
+                    campoOutro.focus();
+                } else {
+                    campoOutro.style.display = 'none';
+                    campoOutro.value = '';
+                }
+            }
 
         /** =============================
              3. NAVEGAÇÃO E AUXILIARES
@@ -933,26 +1005,44 @@
                 window.dadosAluno.orientador = document.getElementById('orientador')?.value;
                 window.dadosAluno.vinculoOrientador = "USP - Universidade de São Paulo"; // Valor fixo para o orientador
                 window.dadosAluno.emailOrientador = "365studiobr@gmail.com"; // Mande para você mesmo
+
+    // --- LISTA DE IDs DOS TITULARES ---
+    const idsTitulares = ['nomeTitular2', 'nomeTitular3', 'nomeTitular4', 'nomeTitular5'];
+    
+    // --- LOOP DE CAPTURA (Trata o "Outro" e o Select) ---
+    idsTitulares.forEach(id => {
+        const sel = document.getElementById(id);
+        const inp = document.getElementById('outro_' + id);
+
+        if (sel) {
+            const nomeFinal = (sel.value === "_outro_") ? (inp?.value.trim() || "") : sel.value;
+            window.dadosAluno[id] = nomeFinal;
+        }
+    });
+
                 // SEGUNDO TITULAR
-                window.dadosAluno.nomeTitular2 = document.getElementById('nomeTitular2')?.value;
+                // window.dadosAluno.nomeTitular2 = document.getElementById('nomeTitular2')?.value;
                 window.dadosAluno.emailTitular2 = document.getElementById('emailTitular2')?.value;
                 window.dadosAluno.vinculoTitular2 = document.getElementById('vinculoTitular2')?.value;
                 window.dadosAluno.diariaT2 = document.querySelector('input[name="diaria2"]:checked')?.value || "";
                 window.dadosAluno.passT2 = document.querySelector('input[name="tipoPassagem2"]:checked')?.value || "";
+                
                 // TERCEIRO TITULAR
-                window.dadosAluno.nomeTitular3 = document.getElementById('nomeTitular3')?.value;
+                //window.dadosAluno.nomeTitular3 = document.getElementById('nomeTitular3')?.value;
                 window.dadosAluno.emailTitular3 = document.getElementById('emailTitular3')?.value;
                 window.dadosAluno.vinculoTitular3 = document.getElementById('vinculoTitular3')?.value;
                 window.dadosAluno.diariaT3 = document.querySelector('input[name="diaria3"]:checked')?.value || "";
                 window.dadosAluno.passT3 = document.querySelector('input[name="tipoPassagem3"]:checked')?.value || "";
+                
                 // QUARTO TITULAR
-                window.dadosAluno.nomeTitular4 = document.getElementById('nomeTitular4')?.value;
+                //window.dadosAluno.nomeTitular4 = document.getElementById('nomeTitular4')?.value;
                 window.dadosAluno.emailTitular4 = document.getElementById('emailTitular4')?.value;
                 window.dadosAluno.vinculoTitular4 = document.getElementById('vinculoTitular4')?.value;
                 window.dadosAluno.diariaT4 = document.querySelector('input[name="diaria4"]:checked')?.value || "";
                 window.dadosAluno.passT4 = document.querySelector('input[name="tipoPassagem4"]:checked')?.value || "";
+                
                 // QUINTO TITULAR
-                window.dadosAluno.nomeTitular5 = document.getElementById('nomeTitular5')?.value;
+                //window.dadosAluno.nomeTitular5 = document.getElementById('nomeTitular5')?.value;
                 window.dadosAluno.emailTitular5 = document.getElementById('emailTitular5')?.value;
                 window.dadosAluno.vinculoTitular5 = document.getElementById('vinculoTitular5')?.value;
                 window.dadosAluno.diariaT5 = document.querySelector('input[name="diaria5"]:checked')?.value || "";
@@ -964,24 +1054,42 @@
                 console.log(`✅ Formato definido como: ${window.dadosAluno.tipoDefesa}`);
             }
             else if (etapa === 3) {
+    // --- LISTA DE IDs DOS TITULARES ---
+    const idsSuplentes = ['nomeSuplente1', 'nomeSuplente2', 'nomeSuplente3', 'nomeSuplente4', 'nomeSuplente5'];
+    
+    // --- LOOP DE CAPTURA (Trata o "Outro" e o Select) ---
+    idsSuplentes.forEach(id => {
+        const sel = document.getElementById(id);
+        const inp = document.getElementById('outro_' + id);
+
+        if (sel) {
+            const nomeFinal = (sel.value === "_outro_") ? (inp?.value.trim() || "") : sel.value;
+            window.dadosAluno[id] = nomeFinal;
+        }
+    });
+
                 // PRIMEIRO SUPLENTE
-                window.dadosAluno.nomeSuplente1 = document.getElementById('nomeSuplente1')?.value;
+                // window.dadosAluno.nomeSuplente1 = document.getElementById('nomeSuplente1')?.value;
                 window.dadosAluno.emailSuplente1 = document.getElementById('emailSuplente1')?.value;
                 window.dadosAluno.vinculoSuplente1 = document.getElementById('vinculoSuplente1')?.value;
+                
                 // SEGUNDO SUPLENTE
-                window.dadosAluno.nomeSuplente2 = document.getElementById('nomeSuplente2')?.value;
+                // window.dadosAluno.nomeSuplente2 = document.getElementById('nomeSuplente2')?.value;
                 window.dadosAluno.emailSuplente2 = document.getElementById('emailSuplente2')?.value;
                 window.dadosAluno.vinculoSuplente2 = document.getElementById('vinculoSuplente2')?.value;
+                
                 // TERCEIRO SUPLENTE
-                window.dadosAluno.nomeSuplente3 = document.getElementById('nomeSuplente3')?.value;
+                // window.dadosAluno.nomeSuplente3 = document.getElementById('nomeSuplente3')?.value;
                 window.dadosAluno.emailSuplente3 = document.getElementById('emailSuplente3')?.value;
                 window.dadosAluno.vinculoSuplente3 = document.getElementById('vinculoSuplente3')?.value;
+                
                 // QUARTO SUPLENTE
-                window.dadosAluno.nomeSuplente4 = document.getElementById('nomeSuplente4')?.value;
+                //window.dadosAluno.nomeSuplente4 = document.getElementById('nomeSuplente4')?.value;
                 window.dadosAluno.emailSuplente4 = document.getElementById('emailSuplente4')?.value;
                 window.dadosAluno.vinculoSuplente4 = document.getElementById('vinculoSuplente4')?.value;
+                
                 // QUINTO SUPLENTE
-                window.dadosAluno.nomeSuplente5 = document.getElementById('nomeSuplente5')?.value;
+                //window.dadosAluno.nomeSuplente5 = document.getElementById('nomeSuplente5')?.value;
                 window.dadosAluno.emailSuplente5 = document.getElementById('emailSuplente5')?.value;
                 window.dadosAluno.vinculoSuplente5 = document.getElementById('vinculoSuplente5')?.value;
             }
@@ -1062,6 +1170,7 @@
 
                 <h6 class="fw-bold border-bottom pb-1 text-primary">2. DADOS ACADÊMICOS</h6>
                 <table class="table table-sm table-borderless mb-3">
+                                        <tr><td width="30%" class="text-muted">Área de Concentração:</td><td class="fw-bold">${d.areaConcentracao || '-'}</td></tr>
                     <tr><td class="text-muted">Título:</td><td class="fw-bold">${d.tituloTese || '-'}</td></tr>
                 </table>
 
@@ -1073,7 +1182,6 @@
 
                 <h6 class="fw-bold border-bottom pb-1 text-primary">4. MEMBROS TITULARES</h6>
                 <table class="table table-sm table-borderless mb-3">
-                    <tr><td width="30%" class="text-muted">Área de Concentração:</td><td class="fw-bold">${d.areaConcentracao || '-'}</td></tr>
                     <tr><td width="30%" class="text-muted">Orientador(a):</td><td class="fw-bold">${d.orientador || '-'}</td></tr>
                 </table>
 
@@ -1254,7 +1362,7 @@
                 <p>Este formulário será enviado automaticamente para o e-mail do(a) <b>orientador(a)</b> cadastrado.</p>
                 <p><b>Atenção aos próximos passos:</b></p>
                 <ol>
-                    <li>O(A) orientador(a) deverá, obrigatoriamente, realizar a <b>assinatura digital (GOV.BR)</b> no documento.</li>
+                    <li>O(A) orientador(a) deverá, obrigatoriamente, realizar a <b>assinatura digital (GOV.BR ou USPAssina)</b> no documento.</li>
                     <li>Após assinar, o(a) orientador(a) deve encaminhá-lo para <b>posfe@usp.br</b>.</li>
                 </ol>
                 <div style="background-color: #fff3cd; padding: 12px; border-radius: 5px; border-left: 5px solid #ffc107; margin-top: 15px;">

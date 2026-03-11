@@ -60,7 +60,7 @@ function testarVisualizacao() {
 /** ========================
      Configurações Globais  
     ======================== */
-const ID_TIPO_POS = 'ME'; // 1=QUALI, 2=ME, 3=DOU
+const ID_TIPO_POS = 'QUALI'; // 1=QUALI, 2=ME, 3=DOU
 const ID_AGENDA_DEPOSITOS = 'c_f0c47043a5564c65f0ac0835c28e3b3fa13c3bf80618daa471d01679bc7a281d@group.calendar.google.com';
 const ID_PLANILHA = '1yXdWwSiTsSbour4dQ-WhSl2r3LVzf_acxk3-EY2nV8E';
 
@@ -506,7 +506,8 @@ function enviarEmailConfirmacao(dados) {
   MailApp.sendEmail({
     to: dados.emailAluno,
     subject: "Confirmação de Depósito - FEUSP",
-    htmlBody: corpoAluno
+    htmlBody: corpoAluno,
+    name: 'FEUSP - Depósito Digital' // nome que aparece no remetente
   });
 
   // Envio para o ORIENTADOR
@@ -516,6 +517,7 @@ function enviarEmailConfirmacao(dados) {
     to: '365studiobr@gmail.com', // TESTE: seu e-mail fixo por enquanto
     subject: "Assinatura Necessária - Depósito de " + dados.nome,
     htmlBody: corpoOrientador,
+    name: 'FEUSP - Depósito Digital', // nome que aparece no remetente
     attachments: [pdfOficial] // <--- Ele vê o PDF gerado do Word
   });
 
@@ -526,6 +528,7 @@ function enviarEmailConfirmacao(dados) {
     to: "apmbraga@gmail.com",
     subject: "Novo Depósito Digital: " + dados.nome,
     htmlBody: corpoSecretaria,
+    name: 'FEUSP - Depósito Digital', // nome que aparece no remetente
     //attachments: anexoTese // <--- O PDF entra aqui
     attachments: arquivosParaSecretaria // <--- Os PDFs dos titulares entram aqui
   });

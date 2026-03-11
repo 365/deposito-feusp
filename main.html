@@ -73,14 +73,14 @@
 
                                     <!-- Data e Horário do Agendamento -->
                                     <div class="col-md-6">
-                                        <label for="dataAgenda" class="form-label fw-semibold">Data do Depósito</label>
+                                        <label for="dataAgenda" class="form-label fw-semibold">Data do Defesa</label>
                                         <input type="date" class="form-control custom-input" id="dataAgenda"
                                             name="dataAgenda" required>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label for="horaAgenda" class="form-label fw-semibold">Horário do
-                                            Depósito</label>
+                                            Defesa</label>
                                         <input type="time" class="form-control custom-input" id="horaAgenda"
                                             name="horaAgenda" required>
                                     </div>
@@ -147,13 +147,25 @@
                                     <div class="membro-card">
                                         <h6 class="fw-bold text-dark">SEGUNDO TITULAR</h6>
 
-                                        <div class="mb-3">
+<!--                                         <div class="mb-3">
                                             <label class="form-label">Prof. (a) Dr. (a):</label>
                                             <select class="form-select custom-input" id="nomeTitular2">
                                                 <option value="">Selecione o Segundo Titular...</option>
-                                            </select>
+                                            </select> -->
+                                            
                                             <!-- <input type="text" class="form-control custom-input" id="nomeTitular2">-->
-                                        </div>
+                                        <!--</div> -->
+
+<div class="mb-3">
+  <label class="form-label">Prof. (a) Dr. (a):</label>
+  
+  <select class="form-select custom-input" id="nomeTitular2" onchange="verificarOutro(this)">
+    <option value="">Selecione o Segundo Titular...</option>
+  </select>
+
+  <input type="text" id="outro_nomeTitular2" class="form-control mt-2" style="display: none;" placeholder="Digite o nome que não está na lista">
+</div>
+
 
                                         <div class="mb-3">
                                             <label for="emailTitular2" class="form-label">E-mail</label>
@@ -186,31 +198,30 @@
 
                                         <!-- Logística (Diária/Passagem) -->
                                         <div id="logistica2" class="d-none">
-    <div class="divisor-interno"></div>
+                                            <div class="divisor-interno"></div>
 
                                             <label class="form-label fw-bold">Precisa de diária?</label>
-<div class="form-check form-check-inline ms-2">
-    <input class="form-check-input" type="radio" name="diaria2" id="diaria2Sim" value="Sim" onchange="toggleDiariaPassagem(2, true)">
-    <label class="form-check-label" for="diaria2Sim">Sim</label>
-</div>
-<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
-    <input class="form-check-input" type="radio" name="diaria2" id="diaria2Nao" value="Nao" onchange="toggleDiariaPassagem(2, false)">
-    <label class="form-check-label ms-1" for="diaria2Nao">Não</label>
-</div>
-
+                                            <div class="form-check form-check-inline ms-2">
+                                                <input class="form-check-input" type="radio" name="diaria2" id="diaria2Sim" value="Sim" onchange="toggleDiariaPassagem(2, true)">
+                                                <label class="form-check-label" for="diaria2Sim">Sim</label>
+                                            </div>
+                                            <div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+                                                <input class="form-check-input" type="radio" name="diaria2" id="diaria2Nao" value="Nao" onchange="toggleDiariaPassagem(2, false)">
+                                                <label class="form-check-label ms-1" for="diaria2Nao">Não</label>
+                                            </div>
 
                                             <div id="divEscolhaPassagem2" class="d-none mt-3">
                                                 <div class="mb-3">
                                                     <label class="small fw-bold d-block mb-2">Tipo de Passagem:</label>
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio"
-                                                            name="tipoPassagem2" id="aerea2" value="Aerea"
+                                                            name="tipoPassagem2" id="aerea2" value="Aérea"
                                                             onchange="toggleUploadFinal(2)">
                                                         <label class="small" for="aerea2">Aérea</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio"
-                                                            name="tipoPassagem2" id="rodoviaria2" value="Rodoviaria"
+                                                            name="tipoPassagem2" id="rodoviaria2" value="Rodoviária"
                                                             onchange="toggleUploadFinal(2)">
                                                         <label class="small" for="rodoviaria2">Rodoviária</label>
                                                     </div>
@@ -219,6 +230,16 @@
 
                                             <div id="campoUpload2" class="d-none mt-3">
                                                 <div class="divisor-interno"></div>
+
+<div class="alert alert-warning border-start border-4 border-warning rounded-1 shadow-sm mb-3" role="alert">
+  <div class="d-flex align-items-center">
+    <i class="bi bi-info-circle-fill me-2 fs-5 text-warning"></i>
+    <div style="font-size: 0.9rem; color: #555;">
+      <strong>Lembre-se:</strong> O anexo deve conter o <b>cadastro de docente externo</b> e a <b>justificativa</b> em um <b>arquivo único em PDF ou DOC</b>.
+    </div>
+  </div>
+</div>
+
                                                 <label class="form-label text-danger small fw-bold">Anexar Cadastro de
                                                     Professor (PDF/DOC):</label>
                                                 <input class="form-control form-control-sm" type="file"
@@ -232,13 +253,24 @@
                                     <div class="membro-card">
                                         <h6 class="fw-bold text-dark">TERCEIRO TITULAR</h6>
 
-                                        <div class="mb-3">
+<!--                                         <div class="mb-3">
                                             <label class="form-label">Prof. (a) Dr. (a):</label>
                                             <select class="form-select custom-input" id="nomeTitular3">
                                                 <option value="">Selecione o Terceiro Titular...</option>
-                                            </select>
-                                            <!--  <input type="text" class="form-control custom-input" id="nomeTitular3"> -->
-                                        </div>
+                                            </select> -->
+                                            <!--  <input type="text" class="form-control custom-input" id="nomeTitular3"> 
+                                        </div> -->
+
+
+<div class="mb-3">
+  <label class="form-label">Prof. (a) Dr. (a):</label>
+  
+  <select class="form-select custom-input" id="nomeTitular3" onchange="verificarOutro(this)">
+    <option value="">Selecione o Terceiro Titular...</option>
+  </select>
+
+  <input type="text" id="outro_nomeTitular3" class="form-control mt-2" style="display: none;" placeholder="Digite o nome que não está na lista">
+</div>
 
                                         <div class="mb-3">
                                             <label for="emailTitular3" class="form-label">E-mail</label>
@@ -274,28 +306,27 @@
                                             <div class="divisor-interno"></div>
 
                                             <label class="form-label fw-bold">Precisa de diária?</label>
-<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
-    <input class="form-check-input" type="radio" name="diaria3" id="diaria3Sim" value="Sim" onchange="toggleDiariaPassagem(3, true)">
-    <label class="form-check-label ms-1" for="diaria3Sim">Sim</label>
-</div>
-<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
-    <input class="form-check-input" type="radio" name="diaria3" id="diaria3Nao" value="Nao" onchange="toggleDiariaPassagem(3, false)">
-    <label class="form-check-label ms-1" for="diaria3Nao">Não</label>
-</div>
-
+                                            <div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+                                                <input class="form-check-input" type="radio" name="diaria3" id="diaria3Sim" value="Sim" onchange="toggleDiariaPassagem(3, true)">
+                                                <label class="form-check-label ms-1" for="diaria3Sim">Sim</label>
+                                            </div>
+                                            <div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+                                                <input class="form-check-input" type="radio" name="diaria3" id="diaria3Nao" value="Nao" onchange="toggleDiariaPassagem(3, false)">
+                                                <label class="form-check-label ms-1" for="diaria3Nao">Não</label>
+                                            </div>
 
                                             <div id="divEscolhaPassagem3" class="d-none mt-3">
                                                 <div class="mb-3">
                                                     <label class="small fw-bold d-block mb-2">Tipo de Passagem:</label>
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio"
-                                                            name="tipoPassagem3" id="aerea3" value="Aerea"
+                                                            name="tipoPassagem3" id="aerea3" value="Aérea"
                                                             onchange="toggleUploadFinal(3)">
                                                         <label class="small" for="aerea3">Aérea</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio"
-                                                            name="tipoPassagem3" id="rodoviaria3" value="Rodoviaria"
+                                                            name="tipoPassagem3" id="rodoviaria3" value="Rodoviária"
                                                             onchange="toggleUploadFinal(3)">
                                                         <label class="small" for="rodoviaria3">Rodoviária</label>
                                                     </div>
@@ -304,6 +335,15 @@
 
                                             <div id="campoUpload3" class="d-none mt-3">
                                                 <div class="divisor-interno"></div>
+
+<div class="alert alert-warning border-start border-4 border-warning rounded-1 shadow-sm mb-3" role="alert">
+  <div class="d-flex align-items-center">
+    <i class="bi bi-info-circle-fill me-2 fs-5 text-warning"></i>
+    <div style="font-size: 0.9rem; color: #555;">
+      <strong>Lembre-se:</strong> O anexo deve conter o <b>cadastro de docente externo</b> e a <b>justificativa</b> em um <b>arquivo único em PDF ou DOC</b>.
+    </div>
+  </div>
+</div>
                                                 <label class="form-label text-danger small fw-bold">Anexar Cadastro de
                                                     Professor (PDF/DOC):</label>
                                                 <input class="form-control form-control-sm" type="file"
@@ -317,13 +357,24 @@
                                     <div class="membro-card">
                                         <h6 class="fw-bold text-dark">QUARTO TITULAR</h6>
 
-                                        <div class="mb-3">
+<!--                                         <div class="mb-3">
                                             <label class="form-label">Prof. (a) Dr. (a):</label>
                                             <select class="form-select custom-input" id="nomeTitular4">
                                                 <option value="">Selecione o Quarto Titular...</option>
-                                            </select>
+                                            </select> -->
                                             <!-- <input type="text" class="form-control custom-input" id="nomeTitular4"> -->
-                                        </div>
+                                        <!-- </div> -->
+
+
+<div class="mb-3">
+  <label class="form-label">Prof. (a) Dr. (a):</label>
+  
+  <select class="form-select custom-input" id="nomeTitular4" onchange="verificarOutro(this)">
+    <option value="">Selecione o Quarto Titular...</option>
+  </select>
+
+  <input type="text" id="outro_nomeTitular4" class="form-control mt-2" style="display: none;" placeholder="Digite o nome que não está na lista">
+</div>
 
                                         <div class="mb-3">
                                             <label for="emailTitular4" class="form-label">E-mail</label>
@@ -357,31 +408,28 @@
                                         <!-- Logística -->
                                         <div id="logistica4" class="d-none">
                                             <div class="divisor-interno"></div>
-
                                             <label class="form-label fw-bold">Precisa de diária?</label>
-<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
-    <input class="form-check-input" type="radio" name="diaria4" id="diaria4Sim" value="Sim" onchange="toggleDiariaPassagem(4, true)">
-    <label class="form-check-label ms-1" for="diaria4Sim">Sim</label>
-</div>
-<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
-    <input class="form-check-input" type="radio" name="diaria4" id="diaria4Nao" value="Nao" onchange="toggleDiariaPassagem(4, false)">
-    <label class="form-check-label ms-1" for="diaria4Nao">Não</label>
-</div>
-
-
+                                            <div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+                                                <input class="form-check-input" type="radio" name="diaria4" id="diaria4Sim" value="Sim" onchange="toggleDiariaPassagem(4, true)">
+                                                <label class="form-check-label ms-1" for="diaria4Sim">Sim</label>
+                                            </div>
+                                            <div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+                                                <input class="form-check-input" type="radio" name="diaria4" id="diaria4Nao" value="Nao" onchange="toggleDiariaPassagem(4, false)">
+                                                <label class="form-check-label ms-1" for="diaria4Nao">Não</label>
+                                            </div>
 
                                             <div id="divEscolhaPassagem4" class="d-none mt-3">
                                                 <div class="mb-3">
                                                     <label class="small fw-bold d-block mb-2">Tipo de Passagem:</label>
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio"
-                                                            name="tipoPassagem4" id="aerea4" value="Aerea"
+                                                            name="tipoPassagem4" id="aerea4" value="Aérea"
                                                             onchange="toggleUploadFinal(4)">
                                                         <label class="small" for="aerea4">Aérea</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio"
-                                                            name="tipoPassagem4" id="rodoviaria4" value="Rodoviaria"
+                                                            name="tipoPassagem4" id="rodoviaria4" value="Rodoviária"
                                                             onchange="toggleUploadFinal(4)">
                                                         <label class="small" for="rodoviaria4">Rodoviária</label>
                                                     </div>
@@ -390,6 +438,15 @@
 
                                             <div id="campoUpload4" class="d-none mt-3">
                                                 <div class="divisor-interno"></div>
+
+<div class="alert alert-warning border-start border-4 border-warning rounded-1 shadow-sm mb-3" role="alert">
+  <div class="d-flex align-items-center">
+    <i class="bi bi-info-circle-fill me-2 fs-5 text-warning"></i>
+    <div style="font-size: 0.9rem; color: #555;">
+      <strong>Lembre-se:</strong> O anexo deve conter o <b>cadastro de docente externo</b> e a <b>justificativa</b> em um <b>arquivo único em PDF ou DOC</b>.
+    </div>
+  </div>
+</div>
                                                 <label class="form-label text-danger small fw-bold">Anexar Cadastro de
                                                     Professor (PDF/DOC):</label>
                                                 <input class="form-control form-control-sm" type="file"
@@ -403,13 +460,23 @@
                                     <div class="membro-card">
                                         <h6 class="fw-bold text-dark">QUINTO TITULAR</h6>
 
-                                        <div class="mb-3">
+<!--                                         <div class="mb-3">
                                             <label class="form-label">Prof. (a) Dr. (a):</label>
                                             <select class="form-select custom-input" id="nomeTitular5">
                                                 <option value="">Selecione o Quinto Titular...</option>
-                                            </select>
+                                            </select> -->
                                             <!-- <input type="text" class="form-control custom-input" id="nomeTitular5"> -->
-                                        </div>
+                                        <!-- </div> -->
+
+<div class="mb-3">
+  <label class="form-label">Prof. (a) Dr. (a):</label>
+  
+  <select class="form-select custom-input" id="nomeTitular5" onchange="verificarOutro(this)">
+    <option value="">Selecione o Quinto Titular...</option>
+  </select>
+
+  <input type="text" id="outro_nomeTitular5" class="form-control mt-2" style="display: none;" placeholder="Digite o nome que não está na lista">
+</div>
 
                                         <div class="mb-3">
                                             <label for="emailTitular5" class="form-label">E-mail</label>
@@ -445,29 +512,27 @@
                                             <div class="divisor-interno"></div>
 
                                             <label class="form-label fw-bold">Precisa de diária?</label>
-<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
-    <input class="form-check-input" type="radio" name="diaria5" id="diaria5Sim" value="Sim" onchange="toggleDiariaPassagem(5, true)">
-    <label class="form-check-label ms-1" for="diaria5Sim">Sim</label>
-</div>
-<div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
-    <input class="form-check-input" type="radio" name="diaria5" id="diaria5Nao" value="Nao" onchange="toggleDiariaPassagem(5, false)">
-    <label class="form-check-label ms-1" for="diaria5Nao">Não</label>
-</div>
-
-
+                                            <div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+                                                <input class="form-check-input" type="radio" name="diaria5" id="diaria5Sim" value="Sim" onchange="toggleDiariaPassagem(5, true)">
+                                                <label class="form-check-label ms-1" for="diaria5Sim">Sim</label>
+                                            </div>
+                                            <div class="form-check form-check-inline ms-2 d-inline-flex align-items-center">
+                                                <input class="form-check-input" type="radio" name="diaria5" id="diaria5Nao" value="Nao" onchange="toggleDiariaPassagem(5, false)">
+                                                <label class="form-check-label ms-1" for="diaria5Nao">Não</label>
+                                            </div>
 
                                             <div id="divEscolhaPassagem5" class="d-none mt-3">
                                                 <div class="mb-3">
                                                     <label class="small fw-bold d-block mb-2">Tipo de Passagem:</label>
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio"
-                                                            name="tipoPassagem5" id="aerea5" value="Aerea"
+                                                            name="tipoPassagem5" id="aerea5" value="Aérea"
                                                             onchange="toggleUploadFinal(5)">
                                                         <label class="small" for="aerea5">Aérea</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio"
-                                                            name="tipoPassagem5" id="rodoviaria5" value="Rodoviaria"
+                                                            name="tipoPassagem5" id="rodoviaria5" value="Rodoviária"
                                                             onchange="toggleUploadFinal(5)">
                                                         <label class="small" for="rodoviaria5">Rodoviária</label>
                                                     </div>
@@ -476,6 +541,15 @@
 
                                             <div id="campoUpload5" class="d-none mt-3">
                                                 <div class="divisor-interno"></div>
+
+<div class="alert alert-warning border-start border-4 border-warning rounded-1 shadow-sm mb-3" role="alert">
+  <div class="d-flex align-items-center">
+    <i class="bi bi-info-circle-fill me-2 fs-5 text-warning"></i>
+    <div style="font-size: 0.9rem; color: #555;">
+      <strong>Lembre-se:</strong> O anexo deve conter o <b>cadastro de docente externo</b> e a <b>justificativa</b> em um <b>arquivo único em PDF ou DOC</b>.
+    </div>
+  </div>
+</div>
                                                 <label class="form-label text-danger small fw-bold">Anexar Cadastro de
                                                     Professor (PDF/DOC):</label>
                                                 <input class="form-control form-control-sm" type="file"
@@ -516,10 +590,24 @@
                                     <div class="membro-card">
                                         <h6 class="fw-bold text-dark">PRIMEIRO SUPLENTE</h6>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Prof. (a) Dr. (a):</label>
-                                            <input type="text" class="form-control custom-input" id="nomeSuplente1">
-                                        </div>
+<!--                                         <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label> -->
+                                            <!-- <input type="text" class="form-control custom-input" id="nomeSuplente1"> -->
+
+<!--                                             <select class="form-select custom-input" id="nomeSuplente1">
+                                                <option value="">Prof. (a) Dr. (a):</option>
+                                            </select>
+                                        </div> -->
+
+<div class="mb-3">
+  <label class="form-label">Prof. (a) Dr. (a):</label>
+  
+  <select class="form-select custom-input" id="nomeSuplente1" onchange="verificarOutro(this)">
+    <option value="">Selecione o Primeiro Suplente...</option>
+  </select>
+
+  <input type="text" id="outro_nomeSuplente1" class="form-control mt-2" style="display: none;" placeholder="Digite o nome que não está na lista">
+</div>
 
                                         <div class="mb-3">
                                             <label for="emailSuplente1" class="form-label">E-mail</label>
@@ -539,10 +627,24 @@
                                     <div class="membro-card">
                                         <h6 class="fw-bold text-dark">SEGUNDO SUPLENTE</h6>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Prof. (a) Dr. (a):</label>
-                                            <input type="text" class="form-control custom-input" id="nomeSuplente2">
-                                        </div>
+<!--                                         <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label> -->
+                                            <!-- <input type="text" class="form-control custom-input" id="nomeSuplente2"> -->
+
+<!--                                             <select class="form-select custom-input" id="nomeSuplente2">
+                                                <option value="">Prof. (a) Dr. (a):</option>
+                                            </select>
+                                        </div> -->
+
+<div class="mb-3">
+  <label class="form-label">Prof. (a) Dr. (a):</label>
+  
+  <select class="form-select custom-input" id="nomeSuplente2" onchange="verificarOutro(this)">
+    <option value="">Selecione o Segundo Suplente...</option>
+  </select>
+
+  <input type="text" id="outro_nomeSuplente2" class="form-control mt-2" style="display: none;" placeholder="Digite o nome que não está na lista">
+</div>
 
                                         <div class="mb-3">
                                             <label for="emailSuplente2" class="form-label">E-mail</label>
@@ -562,10 +664,24 @@
                                     <div class="membro-card">
                                         <h6 class="fw-bold text-dark">TERCEIRO SUPLENTE</h6>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Prof. (a) Dr. (a):</label>
-                                            <input type="text" class="form-control custom-input" id="nomeSuplente3">
-                                        </div>
+<!--                                         <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label> -->
+                                            <!-- <input type="text" class="form-control custom-input" id="nomeSuplente3"> -->
+
+<!--                                             <select class="form-select custom-input" id="nomeSuplente3">
+                                                <option value="">Prof. (a) Dr. (a):</option>
+                                            </select>
+                                        </div> -->
+
+<div class="mb-3">
+  <label class="form-label">Prof. (a) Dr. (a):</label>
+  
+  <select class="form-select custom-input" id="nomeSuplente3" onchange="verificarOutro(this)">
+    <option value="">Selecione o Terceiro Suplente...</option>
+  </select>
+
+  <input type="text" id="outro_nomeSuplente3" class="form-control mt-2" style="display: none;" placeholder="Digite o nome que não está na lista">
+</div>
 
                                         <div class="mb-3">
                                             <label for="emailSuplente3" class="form-label">E-mail</label>
@@ -585,10 +701,24 @@
                                     <div class="membro-card">
                                         <h6 class="fw-bold text-dark">QUARTO SUPLENTE</h6>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Prof. (a) Dr. (a):</label>
-                                            <input type="text" class="form-control custom-input" id="nomeSuplente4">
-                                        </div>
+<!--                                         <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label> -->
+                                            <!-- <input type="text" class="form-control custom-input" id="nomeSuplente4"> -->
+
+<!--                                             <select class="form-select custom-input" id="nomeSuplente4">
+                                                <option value="">Prof. (a) Dr. (a):</option>
+                                            </select>
+                                        </div> -->
+
+<div class="mb-3">
+  <label class="form-label">Prof. (a) Dr. (a):</label>
+  
+  <select class="form-select custom-input" id="nomeSuplente4" onchange="verificarOutro(this)">
+    <option value="">Selecione o Quarto Suplente...</option>
+  </select>
+
+  <input type="text" id="outro_nomeSuplente4" class="form-control mt-2" style="display: none;" placeholder="Digite o nome que não está na lista">
+</div>
 
                                         <div class="mb-3">
                                             <label for="emailSuplente4" class="form-label">E-mail</label>
@@ -608,10 +738,24 @@
                                     <div class="membro-card">
                                         <h6 class="fw-bold text-dark">QUINTO SUPLENTE</h6>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Prof. (a) Dr. (a):</label>
-                                            <input type="text" class="form-control custom-input" id="nomeSuplente5">
-                                        </div>
+<!--                                         <div class="mb-3">
+                                            <label class="form-label">Prof. (a) Dr. (a):</label> -->
+                                            <!-- <input type="text" class="form-control custom-input" id="nomeSuplente5"> -->
+
+<!--                                             <select class="form-select custom-input" id="nomeSuplente5">
+                                                <option value="">Prof. (a) Dr. (a):</option>
+                                            </select>
+                                        </div> -->
+
+<div class="mb-3">
+  <label class="form-label">Prof. (a) Dr. (a):</label>
+  
+  <select class="form-select custom-input" id="nomeSuplente5" onchange="verificarOutro(this)">
+    <option value="">Selecione o Quinto Suplente...</option>
+  </select>
+
+  <input type="text" id="outro_nomeSuplente5" class="form-control mt-2" style="display: none;" placeholder="Digite o nome que não está na lista">
+</div>
 
                                         <div class="mb-3">
                                             <label for="emailSuplente5" class="form-label fw-semibold">E-mail</label>
@@ -678,10 +822,19 @@
 
                                     </div>
 
-                                    <!-- Anexar tese -->
+                                    <!-- Anexar tese / dissertação -->
                                     <div class="mb-3">
                                         <label for="arquivoPDF" class="form-label fw-bold text-preto small">ANEXAR
                                             TESE/DISSERTAÇÃO (PDF)</label>
+                                        <div class="alert alert-warning border-start border-4 border-warning rounded-1 shadow-sm mb-3" role="alert">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-info-circle-fill me-2 fs-5 text-warning"></i>
+                                                <div style="font-size: 0.9rem; color: #555;">
+                                                <strong>Lembre-se:</strong> Incluir a <b>Ficha catalográfica</b> e <b>Título</b>, <b>Resumo</b> e <b>Palavras chave</b> em <b>Português</b> e <b>Inglês</b>.
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="text-danger small fw-bold mb-1">
                                             <i class="fas fa-exclamation-triangle me-1"></i> Atenção: Apenas PDFs
                                             desprotegidos serão aceitos.
