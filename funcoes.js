@@ -275,6 +275,18 @@ function processarAgendamento(dados) {
     // 2. Lógica Coluna I (tipoDefesa) baseada nas marcações do frontend
     dados.tipoDefesa = calcularTipoDefesa(dados.listaMarcacoes);
 
+    console.log("Tipo atual:", ID_TIPO_POS);
+    console.log("Nível recebido do front:", dados.nivelPos);
+
+    // --- REGRA DO NÍVEL (Adicionada aqui) ---
+    // Se NÃO for Qualificação, forçamos o nívelPos a ficar vazio
+    if (ID_TIPO_POS !== 'QUALI') {
+      dados.nivelPos = ""; 
+    }
+    // ----------------------------------------
+
+    console.log("Nível após a regra:", dados.nivelPos);
+
     // 3. Gravar Planilha DINÂMICA
       const headers = planilha.getRange(1, 1, 1, planilha.getLastColumn()).getValues()[0];
       const novaLinha = headers.map(header => {

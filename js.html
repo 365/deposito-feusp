@@ -94,48 +94,48 @@
 
     // Função que dispara a verificação
     function verificarDuplicidade() {
-    const campoUsp = document.getElementById('nrUsp');
-    const nrUsp = campoUsp.value;
-    const tipoCurso = CURSO_ATUAL;
+        const campoUsp = document.getElementById('nrUsp');
+        const nrUsp = campoUsp.value;
+        const tipoCurso = CURSO_ATUAL;
 
-    if (!nrUsp || !tipoCurso) return;
+        if (!nrUsp || !tipoCurso) return;
 
-    // Mudamos o nome das constantes internas para evitar o SyntaxError
-    const elLoader = document.getElementById('loadingOverlay');
-    const elLoaderTexto = document.getElementById('loadingTexto'); 
+        // Mudamos o nome das constantes internas para evitar o SyntaxError
+        const elLoader = document.getElementById('loadingOverlay');
+        const elLoaderTexto = document.getElementById('loadingTexto'); 
 
-    // 1. Antes de chamar o servidor
-    if (elLoaderTexto) elLoaderTexto.innerText = "Validando Nº USP...";
-    if (elLoader) elLoader.classList.remove('d-none');
+        // 1. Antes de chamar o servidor
+        if (elLoaderTexto) elLoaderTexto.innerText = "Validando Nº USP...";
+        if (elLoader) elLoader.classList.remove('d-none');
 
-    google.script.run
-        .withSuccessHandler(function (status) {
-            // 2. No sucesso
-            if (elLoader) elLoader.classList.add('d-none');
-            if (elLoaderTexto) elLoaderTexto.innerText = "Validando Nº USP...";
+        google.script.run
+            .withSuccessHandler(function (status) {
+                // 2. No sucesso
+                if (elLoader) elLoader.classList.add('d-none');
+                if (elLoaderTexto) elLoaderTexto.innerText = "Validando Nº USP...";
 
-            if (status === "DUPLICADO") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Atenção!',
-                    text: 'Número USP já registrado para este curso!',
-                    confirmButtonColor: '#d33'
-                });
-                campoUsp.value = "";
-                document.getElementById('btn-proximo-etapa1').classList.add('disabled');
-            } else if (status === "LIBERADO") {
-                document.getElementById('btn-proximo-etapa1').classList.remove('disabled');
-            }
-        })
-        .withFailureHandler(function (erro) {
-            // 3. No erro: Também limpa o estado do loader
-            if (loader) loader.classList.add('d-none');
-            if (loaderText) loaderText.innerText = "Processando...";
-            console.error("Erro técnico:", erro);
-            Swal.fire("Erro", "Falha ao conectar com o servidor.", "error");
-        })
-        .validarDuplicidadeUsp(nrUsp, tipoCurso);
-}
+                if (status === "DUPLICADO") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Atenção!',
+                        text: 'Número USP já registrado para este curso!',
+                        confirmButtonColor: '#d33'
+                    });
+                    campoUsp.value = "";
+                    document.getElementById('btn-proximo-etapa1').classList.add('disabled');
+                } else if (status === "LIBERADO") {
+                    document.getElementById('btn-proximo-etapa1').classList.remove('disabled');
+                }
+            })
+            .withFailureHandler(function (erro) {
+                // 3. No erro: Também limpa o estado do loader
+                if (loader) loader.classList.add('d-none');
+                if (loaderText) loaderText.innerText = "Processando...";
+                console.error("Erro técnico:", erro);
+                Swal.fire("Erro", "Falha ao conectar com o servidor.", "error");
+            })
+            .validarDuplicidadeUsp(nrUsp, tipoCurso);
+    }
 
 
         /** =============================================
@@ -270,10 +270,13 @@
 
             // EVENTO DE CLIQUE (Dentro da função para herdar as variáveis acima)
             btnAgendar.onclick = function () {
+                const nivelChecked = document.querySelector('input[name="nivelPos"]:checked');
+
                 window.dadosAluno.nome = document.getElementById('nome').value;
                 window.dadosAluno.nrUsp = document.getElementById('nrUsp').value;
                 window.dadosAluno.emailAluno = document.getElementById('emailAluno').value;
                 window.dadosAluno.emailAlternativo = document.getElementById('emailAlternativo').value;
+                window.dadosAluno.nivelPos = nivelChecked ? nivelChecked.value : "";
                 window.dadosAluno.tituloTese = document.getElementById('tituloTese').value;
                 window.dadosAluno.dataAgenda = document.getElementById('dataAgenda').value;
                 window.dadosAluno.horaAgenda = document.getElementById('horaAgenda').value;
@@ -448,6 +451,7 @@
             window.dadosAluno.nrUsp = document.getElementById('nrUsp').value;
             window.dadosAluno.emailAluno = document.getElementById('emailAluno').value;
             window.dadosAluno.emailAlternativo = document.getElementById('emailAlternativo').value;
+            window.dadosAluno.nivelPos = document.querySelector('input[name="nivelPos"]:checked').value;
             window.dadosAluno.tituloTese = document.getElementById('tituloTese').value;
             window.dadosAluno.dataAgenda = document.getElementById('dataAgenda').value;
             window.dadosAluno.horaAgenda = document.getElementById('horaAgenda').value;
@@ -678,6 +682,7 @@
                 ['resumoNome', dados.nome],
                 ['resumoNrUsp', dados.nrUsp],
                 ['resumoEmail', dados.emailAluno],
+                ['resumoNivel', dados.nivelPos],
                 ['resumoTitulo', dados.tituloTese]
             ];
 
@@ -716,6 +721,7 @@
                     nrUsp: "Nº USP",
                     emailAluno: "E-mail",
                     emailAlternativo: "E-mail Alternativo",
+                    //nivelPos: "Nível",
                     tituloTese: "Título da Tese"
                 };
 
@@ -1006,19 +1012,19 @@
                 window.dadosAluno.vinculoOrientador = "USP - Universidade de São Paulo"; // Valor fixo para o orientador
                 window.dadosAluno.emailOrientador = "365studiobr@gmail.com"; // Mande para você mesmo
 
-    // --- LISTA DE IDs DOS TITULARES ---
-    const idsTitulares = ['nomeTitular2', 'nomeTitular3', 'nomeTitular4', 'nomeTitular5'];
-    
-    // --- LOOP DE CAPTURA (Trata o "Outro" e o Select) ---
-    idsTitulares.forEach(id => {
-        const sel = document.getElementById(id);
-        const inp = document.getElementById('outro_' + id);
+                // --- LISTA DE IDs DOS TITULARES ---
+                const idsTitulares = ['nomeTitular2', 'nomeTitular3', 'nomeTitular4', 'nomeTitular5'];
+                
+                // --- LOOP DE CAPTURA (Trata o "Outro" e o Select) ---
+                idsTitulares.forEach(id => {
+                    const sel = document.getElementById(id);
+                    const inp = document.getElementById('outro_' + id);
 
-        if (sel) {
-            const nomeFinal = (sel.value === "_outro_") ? (inp?.value.trim() || "") : sel.value;
-            window.dadosAluno[id] = nomeFinal;
-        }
-    });
+                    if (sel) {
+                        const nomeFinal = (sel.value === "_outro_") ? (inp?.value.trim() || "") : sel.value;
+                        window.dadosAluno[id] = nomeFinal;
+                    }
+                });
 
                 // SEGUNDO TITULAR
                 // window.dadosAluno.nomeTitular2 = document.getElementById('nomeTitular2')?.value;
@@ -1054,19 +1060,19 @@
                 console.log(`✅ Formato definido como: ${window.dadosAluno.tipoDefesa}`);
             }
             else if (etapa === 3) {
-    // --- LISTA DE IDs DOS TITULARES ---
-    const idsSuplentes = ['nomeSuplente1', 'nomeSuplente2', 'nomeSuplente3', 'nomeSuplente4', 'nomeSuplente5'];
-    
-    // --- LOOP DE CAPTURA (Trata o "Outro" e o Select) ---
-    idsSuplentes.forEach(id => {
-        const sel = document.getElementById(id);
-        const inp = document.getElementById('outro_' + id);
+                // --- LISTA DE IDs DOS TITULARES ---
+                const idsSuplentes = ['nomeSuplente1', 'nomeSuplente2', 'nomeSuplente3', 'nomeSuplente4', 'nomeSuplente5'];
+                
+                // --- LOOP DE CAPTURA (Trata o "Outro" e o Select) ---
+                idsSuplentes.forEach(id => {
+                    const sel = document.getElementById(id);
+                    const inp = document.getElementById('outro_' + id);
 
-        if (sel) {
-            const nomeFinal = (sel.value === "_outro_") ? (inp?.value.trim() || "") : sel.value;
-            window.dadosAluno[id] = nomeFinal;
-        }
-    });
+                    if (sel) {
+                        const nomeFinal = (sel.value === "_outro_") ? (inp?.value.trim() || "") : sel.value;
+                        window.dadosAluno[id] = nomeFinal;
+                    }
+                });
 
                 // PRIMEIRO SUPLENTE
                 // window.dadosAluno.nomeSuplente1 = document.getElementById('nomeSuplente1')?.value;
@@ -1170,7 +1176,8 @@
 
                 <h6 class="fw-bold border-bottom pb-1 text-primary">2. DADOS ACADÊMICOS</h6>
                 <table class="table table-sm table-borderless mb-3">
-                                        <tr><td width="30%" class="text-muted">Área de Concentração:</td><td class="fw-bold">${d.areaConcentracao || '-'}</td></tr>
+                    <tr><td width="30%" class="text-muted">Área de Concentração:</td><td class="fw-bold">${d.areaConcentracao || '-'}</td></tr>
+                    <tr><td width="30%" class="text-muted">Nível:</td><td class="fw-bold">${d.nivelPos || '-'}</td></tr>
                     <tr><td class="text-muted">Título:</td><td class="fw-bold">${d.tituloTese || '-'}</td></tr>
                 </table>
 

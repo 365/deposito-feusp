@@ -23,7 +23,7 @@
                             <!-- ============================================ -->
                             <div class="step-section" id="step-1">
 
-                                <!-- Título da Etapa -->
+                                <!-- Título da Etapa 1 -->
                                 <div class="mb-4">
                                     <h2 class="h4 fw-bold text-dark">Dados de Identificação</h2>
                                     <p class="text-muted small">Insira seus dados acadêmicos básicos e a data
@@ -62,6 +62,21 @@
                                         <input type="email" class="form-control custom-input" id="emailAlternativo"
                                             name="emailAlternativo" placeholder="Pessoal (Gmail/etc)"
                                             onblur="validarEmail('emailAlternativo')">
+                                    </div>
+
+                                    <!-- Nivel de Pós-Graduação -->
+                                    <div class="col-12 mt-2 mb-3">
+                                        <label class="form-label fw-semibold">Nível</label>
+                                        <div class="d-flex gap-4 p-3 border rounded"> 
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="nivelPos" id="radioMestrado" value="Mestrado" checked>
+                                                <label class="form-check-label" for="radioMestrado">Mestrado</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="nivelPos" id="radioDoutorado" value="Doutorado">
+                                                <label class="form-check-label" for="radioDoutorado">Doutorado</label>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- Título da Tese -->
